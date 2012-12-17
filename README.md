@@ -7,6 +7,21 @@ Even better, we are aiming for an overall design that is minimal, simple and rob
 
 There's not much to see here right now, but check back soon and see how we're doing.
 
+## incoming ##
+1. algorithms: I'm trying to get some discussion and collaboration
+   going with respect to an algorithm classification scheme. I would like to code up some algorithmic approaches that:
+  - are security detail agnostic (ie can be applied to any tradable asset)
+  - are divided into three categories: functions of historical price
+    (technicals), functions of the historical prices of other
+    securities (stat arb) and functions of factors exogenous to price
+    (fundamentals).
+  
+2. prototype: I like your idea of reusable components but I think the
+   group would need a working prototype. I'm new to high-frequency
+   trading and I personally need to build and run a complete system to
+   develop intuition. I suspect there are many others in the same boat.
+
+
 ## component radar ##
 
 Let us know if a trading solution or component should be on our R&D radar:
@@ -89,4 +104,8 @@ Algorthims that seek to exploit relationships between price and factors external
 - security selection
 - P&L distribution choices (objective function)
 
+
+# linkedin discussion groups #
+
+http://www.linkedin.com/groups?home=&gid=62719&trk=anet_ug_hm
 
