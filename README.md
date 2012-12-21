@@ -5,107 +5,121 @@ HFT is a small project with a big ambition. We aim to build the worlds fastest a
 
 Even better, we are aiming for an overall design that is minimal, simple and robust.  Ultimately, we would like the high-frequency community, whether serious professional or keen amateur enthusiast to look towards hft as the backbone of their next project.
 
-There's not much to see here right now, but check back soon and see how we're doing.
 
-## incoming ##
-1. algorithms: I'm trying to get some discussion and collaboration
-   going with respect to an algorithm classification scheme. I would like to code up some algorithmic approaches that:
-  - are security detail agnostic (ie can be applied to any tradable asset)
-  - are divided into three categories: functions of historical price
-    (technicals), functions of the historical prices of other
-    securities (stat arb) and functions of factors exogenous to price
-    (fundamentals).
-  
-2. prototype: I like your idea of reusable components but I think the
-   group would need a working prototype. I'm new to high-frequency
-   trading and I personally need to build and run a complete system to
-   develop intuition. I suspect there are many others in the same boat.
+# technology stack #
 
+The planned tech stack is along the following lines:
 
-## component radar ##
+## Broker and Data interface ##
 
-Let us know if a trading solution or component should be on our R&D radar:
+### Interactive Brokers ###
 
-- http://tradexoft.wordpress.com
-- http://esper.codehaus.org
-- http://code.google.com/p/tradelink/
+Interactive Brokers consolidates tick data into 0.3 second time slices so it isn't appropriate for low-latency work.  The big advantage though is the dummy account that will enable anyone to pick up the project and have an end-to-end example out of the box.
+
+### IBrokers API ###
+
+IBroker works out the box.
+
+### algo research ###
+
+R is fast enough to start the algo R&D process and has the most comprehensive hooks into the range of possible directions the project could take.
 
 
+## data storage and management ##
 
-### lockfree++ ###
+RHadoop via R package
 
-A low-latency messaging system impleneting the Actor model.
-
-http://tradexoft.com
-
+http://www.activequant.org
 
 
-# algorithm design #
+## cep ##
 
-This is a summary of discussions on algorithm classification that will eventually become a coding specification for the algorithm component of `hft`
+### disruptor ###
 
-The lists below are examples of categories and not meant to be exhaustive.
+https://github.com/odeheurles/Disruptor-net
+http://disruptor.googlecode.com/files/Disruptor-1.0.pdf
 
-## data-set choice ##
+The disrupture is a quality open-source project with a committment to low-latency.
 
-### Price Endogenous ###
-
-Algorithms that are endogenous to price
-
-- moment-based calculations
-  - moving average
-  - GARCH
-  - volatility
-  - momentum
-- technical analytics
-
-### Market Structure Endogenous ###
-
-Algorithms that are endogenous to Price and market components closely related to a single security such as:
-- volume
-- bid/ask
-- market depth, order book
-
-### Statistical Arbitrage ###
-
-Algorithms that look to exploit near-arbitrage bound relationships between securities. 
-- VIX versus SP500 versus options
-- cross-correlation or lead-lag relationships between securities
+https://github.com/Neverlord/libcppa
 
 
-### Exogenous ###
+### messaging ###
 
-Algorthims that seek to exploit relationships between price and factors external to the security market price information set.
+Google Protocol Buffer example:
+http://activequant.org/svn/aq2o/trunk/base/src/main/proto/messages.proto
 
-- fundamentals
-- twitter mentions
-- earnings announcement/ event-based analytics
+Protocol Buffers: http://code.google.com/p/protobuf-net/ 
++1 for speed
 
-## time horizon choice ##
+FAST: https://code.google.com/p/quickfast/ 
++1 for speed
+
+http://triceps.sourceforge.net
+http://code.google.com/p/cep-trader/
+http://kenai.com/downloads/javafx-sam/EventProcessinginAction.pdf
+http://esper.codehaus.org
+http://lmax-exchange.github.com/disruptor/
+http://martinfowler.com/articles/lmax.html
+http://www.activequant.org
+    
+# other platforms #
+
+http://algo-trader.googlecode.com
+http://code.google.com/p/tradelink/
+
+## academic notes ##
+
+### sornette ###
+
+http://arxiv.org/find/all/1/all:+sornette/0/1/0/all/0/1
+
+some specific articles
+
+http://arxiv.org/pdf/cond-mat/0301543.pdf
+http://arxiv.org/pdf/1108.0077.pdf
+http://arxiv.org/ftp/arxiv/papers/1012/1012.4118.pdf
+http://arxiv.org/pdf/1011.2882.pdf
+http://arxiv.org/pdf/1007.2420.pdf
+http://arxiv.org/pdf/0909.1007.pdf
+http://arxiv.org/ftp/arxiv/papers/0812/0812.2449.pdf
+http://www.er.ethz.ch/people/sornette
 
 
-## algorithmic theoretica choice ##
+ln[E[p(t)]] = a + b (tc -t)^m  b<0 0<m<1
 
-- linear 
-  - regression
-- non-linear
-  - NN
-  - GA
-- parameter fit 
-  - local versus global minima
-  - stationary versus non-stationary (versus semi-stationary)
-- contrarian versus continuation (???)  
+log periodic power law (LPPL) model (Sornette,
+2003a,b; Zhou, 2007).
 
-## trading choices ##
+ln[p(t)] = A + Bx^m + Cx^m cos(w ln x + )
+where x = tc−t measures the time to the critical time tc. For 0 < m < 1 and B < 0 (or m ≤ 0 and B > 0
 
-- leverage employed
-- transactional cost importance
-- entry and exit methodologies
-- security selection
-- P&L distribution choices (objective function)
+practical paper
+
+http://arxiv.org/pdf/0909.1007.pdf  
+
+p5 gives an optimisation approach
+
+Taboo search + levenberg-marquardt
+
+### Artificial Stock Market ###
+
+http://artstkmkt.sourceforge.net/
+
+# other open source projects to watch #
+
+https://github.com/penberg/libtrading
+https://github.com/dakka/fix8
+http://fix8.org
+http://tradexoft.wordpress.com/
+
+# articles #
+
+http://www.aurorasolutions.org/over-6-million-transactions-per-second-in-a-real-time-system-an-out-of-the-box-approach/
+http://programmers.stackexchange.com/questions/121592/what-to-look-for-in-selecting-a-language-for-algorithmic-high-frequency-trading
+http://stackoverflow.com/questions/731233/activemq-or-rabbitmq-or-zeromq-or
+http://wiki.msgpack.org/pages/viewpage.action?pageId=1081387
 
 
-# linkedin discussion groups #
 
-http://www.linkedin.com/groups?home=&gid=62719&trk=anet_ug_hm
 
