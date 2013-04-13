@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>hft,</title>
+  <link href="http://scarcecapital.com/hft/index.xml" rel="self" />
+  <link href="http://scarcecapital.com/hft"/>
+  <updated>2013-04-13T19:32:54Z</updated>
+  <id>http://scarcecapital.com/hft/index.xml</id>
+  <entry>
+<title type="html">Latency Research</title>
+<author><name>tony day</name></author>
+<link href="http://scarcecapital.com/hft/blog/latency-research.html"/>
+<updated>2013-04-12T16:46:00Z</updated>
+<published>2013-04-12T16:46:00Z</published>
+<id>http://scarcecapital.com/hft/blog/latency-research.html</id>
+<category scheme="http://scarcecapital.com/hft/tags/research.html" term="research" label="research"/>
+<content type="html">&lt;p&gt;
+I collected trade and order ticks for 12 contracts on 14th March from iqfeed,
+and timestamped each tick with current system time. There was about 8 million
+data points.
+&lt;/p&gt;
+
+
+&lt;div id="outline-container-1" class="outline-3"&gt;
+&lt;h3 id="sec-1"&gt;feed ping latency&lt;/h3&gt;
+&lt;div class="outline-text-3" id="text-1"&gt;
+
+
+&lt;p&gt;  
+Iqfeed sends a ping once a second as part of the stream.
+&lt;/p&gt;
+
+
+
+&lt;pre class="src src-R"&gt;t = read.csv(&lt;span class="org-string"&gt;"data/streamt.txt"&lt;/span&gt;,header=FALSE,as.is=TRUE)
+pingtime = strptime(t[,3], &lt;span class="org-string"&gt;"%Y%m%d %H:%M:%S"&lt;/span&gt;)
+stamp = strptime(paste(strftime(pingtime,&lt;span class="org-string"&gt;"%Y%m%d"&lt;/span&gt;), t[,1], sep=&lt;span class="org-string"&gt;" "&lt;/span&gt;), &lt;span class="org-string"&gt;"%Y%m%d %H:%M:%OS"&lt;/span&gt;)    
+latency = as.double(stamp - pingtime)
+df = data.frame(pingtime=pingtime, latency=latency)
+summary(df)
+&lt;/pre&gt;
+
+
+&lt;table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides"&gt;
+&lt;colgroup&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;
+&lt;/colgroup&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td class="left"&gt;Min.   :2013-03-14 07:30:57&lt;/td&gt;&lt;td class="left"&gt;Min.   :-0.90665&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;1st Qu.:2013-03-14 17:15:41&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:-0.01492&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;Median :2013-03-15 03:02:15&lt;/td&gt;&lt;td class="left"&gt;Median : 0.14950&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;Mean   :2013-03-15 03:01:28&lt;/td&gt;&lt;td class="left"&gt;Mean   : 0.38876&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;3rd Qu.:2013-03-15 12:46:33&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.: 0.22824&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;Max.   :2013-03-15 22:33:24&lt;/td&gt;&lt;td class="left"&gt;Max.   : 7.89887&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;NA's   :1&lt;/td&gt;&lt;td class="left"&gt;NA's   :1&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+
+
+
+&lt;pre class="src src-R"&gt;require(ggplot2)
+qplot(data=df, x=pingtime, y=latency)
+ggsave(&lt;span class="org-string"&gt;"ping-latency.svg"&lt;/span&gt;)
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+    &lt;img src="../blog/latency-research/ping-latency.png"  alt="../blog/latency-research/ping-latency.png" /&gt;
+&lt;/p&gt;
+&lt;p&gt;
+    The simple scatterplot shows many negative values, especially when the
+    market is open, and a step jump in the later pings (when no quotes were
+    being recorded).  These jumps may be due to changes in my system clock
+    (automatic appletime resolutions) or due to a lack of accuracy in the
+    iqfeed pings.
+&lt;/p&gt;
+&lt;p&gt;
+    Scatterplots tend to provide dubious visualisation for bigdata, and a new
+    package out that helps is &lt;a href="http://vita.had.co.nz/papers/bigvis.html"&gt;bigvis&lt;/a&gt;.
+&lt;/p&gt;
+&lt;p&gt;
+    Bigvis is not yet available at CRAN but can be installed via a github
+    repository (see &lt;a href="https://github.com/hadley/bigvis"&gt;https://github.com/hadley/bigvis&lt;/a&gt; for details).
+&lt;/p&gt;
+
+
+
+&lt;pre class="src src-R"&gt;install.packages(&lt;span class="org-string"&gt;"devtools"&lt;/span&gt;)
+devtools::install_github(&lt;span class="org-string"&gt;"bigvis"&lt;/span&gt;)
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+    Bigvis doesn't handle non-numeric data (like time), so rather than
+    autopilot, I use ggplot directly.   
+&lt;/p&gt;
+
+
+
+&lt;pre class="src src-R"&gt;require(bigvis)
+require(ggplot2)
+dfn = condense(bin(as.double(df$pingtime),60),bin(df$latency,.1))
+dfg = data.frame(as.POSIXct(dfn[,1],origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;"GMT"&lt;/span&gt;),dfn[,2],dfn[,3])
+colnames(dfg) = c(&lt;span class="org-string"&gt;"Time"&lt;/span&gt;,&lt;span class="org-string"&gt;"Latency"&lt;/span&gt;,&lt;span class="org-string"&gt;"Count"&lt;/span&gt;)
+g = ggplot(data=dfg,aes(x=Time,y=Latency))
+g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=&lt;span class="org-string"&gt;"#e5e5e5"&lt;/span&gt;, high = &lt;span class="org-string"&gt;"#444548"&lt;/span&gt;) + scale_y_continuous(limits=c(-1,1))
+ggsave(&lt;span class="org-string"&gt;"ping-latency-condensed.svg"&lt;/span&gt;)
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+   &lt;img src="../blog/latency-research/ping-latency-condensed.svg"  alt="../blog/latency-research/ping-latency-condensed.svg" /&gt;
+&lt;/p&gt;
+&lt;p&gt;
+   Using the bigvis techniques clarifies a few main issues for further research:
+&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;there is a step jump near market open where the majority of the pings
+     jump from around 250 msecs to -750 msecs. This looks like either a coding
+     error or the ping being off by up to a second.
+&lt;/li&gt;
+&lt;li&gt;during market open (when tick volume is high) ping can vary by a second.
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;div id="outline-container-2" class="outline-3"&gt;
+&lt;h3 id="sec-2"&gt;disconnects&lt;/h3&gt;
+&lt;div class="outline-text-3" id="text-2"&gt;
+
+&lt;p&gt;   Just looking at the ping counts after binning into one minute intervals:
+&lt;/p&gt;
+
+
+
+&lt;pre class="src src-R"&gt;df.dis = condense(bin(as.double(df$pingtime),60))
+dfg = data.frame(as.POSIXct(df.dis[,1],origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;"GMT"&lt;/span&gt;),60-df.dis[,2])
+colnames(dfg) = c(&lt;span class="org-string"&gt;"Time"&lt;/span&gt;,&lt;span class="org-string"&gt;"Count"&lt;/span&gt;)
+g = ggplot(data=dfg,aes(x=Time,y=Count))
+g + geom_line(aes())
+ggsave(&lt;span class="org-string"&gt;"disconnects.png"&lt;/span&gt;)
+
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+   &lt;img src="../blog/latency-research/disconnects.png"  alt="../blog/latency-research/disconnects.png" /&gt;
+&lt;/p&gt;
+&lt;p&gt;
+   iqfeed regularly suffers from disconnects with reconnection occuring within
+   a minute.
+&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;div id="outline-container-3" class="outline-3"&gt;
+&lt;h3 id="sec-3"&gt;event latency&lt;/h3&gt;
+&lt;div class="outline-text-3" id="text-3"&gt;
+
+
+&lt;p&gt;
+The ticks for the day were processed into column-data formats using the mmap
+package from R (see hft.org for the gory details).
+&lt;/p&gt;
+&lt;p&gt;
+From the R database of the one day quote ticks&amp;hellip;
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;open data
+
+
+
+&lt;pre class="src src-R"&gt;rm(list = ls())
+require(&lt;span class="org-string"&gt;"mmap"&lt;/span&gt;)
+require(&lt;span class="org-string"&gt;"rindex"&lt;/span&gt;)
+require(&lt;span class="org-string"&gt;"plyr"&lt;/span&gt;)
+require(&lt;span class="org-string"&gt;"stringr"&lt;/span&gt;)
+raw.stream = &lt;span class="org-string"&gt;"streamqh"&lt;/span&gt;
+# where the mmap db is located
+db.path = paste(&lt;span class="org-string"&gt;"data/"&lt;/span&gt;,raw.stream,&lt;span class="org-string"&gt;"/"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;)
+
+load(paste(db.path,&lt;span class="org-string"&gt;".Rdbinfo"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;))
+#m = mmap(main.filename, mode=st)
+stream = NULL
+stream$stamp = mmap(paste(db.path,fields[1],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
+stream$code = mmap(paste(db.path,fields[2],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=char(1))
+stream$symbol = mmap(paste(db.path,fields[3],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=char(ticker.length))
+stream$trade = mmap(paste(db.path,fields[4],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
+stream$vol = mmap(paste(db.path,fields[5],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
+stream$tradetime = mmap(paste(db.path,fields[6],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
+stream$tradeex = mmap(paste(db.path,fields[7],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
+stream$volex = mmap(paste(db.path,fields[8],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
+stream$tradetimeex = mmap(paste(db.path,fields[9],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
+stream$voltot = mmap(paste(db.path,fields[10],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
+stream$bid = mmap(paste(db.path,fields[11],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
+stream$bidvol = mmap(paste(db.path,fields[12],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
+stream$bidtime = mmap(paste(db.path,fields[13],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
+stream$ask = mmap(paste(db.path,fields[14],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
+stream$askvol = mmap(paste(db.path,fields[15],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
+stream$asktime = mmap(paste(db.path,fields[16],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
+stream$event = mmap(paste(db.path,fields[17],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=char(12))
+stream$id = mmap(paste(db.path,fields[18],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
+
+&lt;/pre&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;Define events and extract relevant times
+
+
+
+&lt;pre class="src src-R"&gt;n = length(stream$event[])
+
+tC = grepl(&lt;span class="org-string"&gt;"C"&lt;/span&gt;,stream$event[])
+tO = grepl(&lt;span class="org-string"&gt;"O"&lt;/span&gt;,stream$event[])
+ta = grepl(&lt;span class="org-string"&gt;"a"&lt;/span&gt;,stream$event[])
+tb = grepl(&lt;span class="org-string"&gt;"b"&lt;/span&gt;,stream$event[])
+ta = ta &amp;amp; !(tC | tO)
+tb = tb &amp;amp; !(tC | tO | ta)
+tother = !(ta | tb | tC | tO)
+
+event.category = (1 * tC) + (2 * tO) + (3 * ta) + (4 * tb) + (5 * tother)
+
+event.time = (stream$tradetime[] * tC +
+        stream$tradetimeex[] * tO +
+        stream$asktime[] * ta +
+        stream$bidtime[] * tb +
+        stream$tradetime[] * tother)
+
+event.time.posix = as.POSIXct(event.time,origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;"GMT"&lt;/span&gt;)
+event.stamp = stream$stamp[]
+
+event.latency = event.stamp - event.time  
+
+event.df = data.frame(symbol=stream$symbol[],event.category,event.time, event.stamp, event.latency)
+summary(event.df)
+&lt;/pre&gt;
+
+
+&lt;table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides"&gt;
+&lt;colgroup&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;
+&lt;/colgroup&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td class="left"&gt;@ESM13 :2553308&lt;/td&gt;&lt;td class="left"&gt;Min.   :1.000&lt;/td&gt;&lt;td class="left"&gt;Min.   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Min.   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Min.   :-85800.76&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;@NQM13 :1285545&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:3.000&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:1.366e+09&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:1.366e+09&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:     0.22&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;@YMM13 :1216006&lt;/td&gt;&lt;td class="left"&gt;Median :3.000&lt;/td&gt;&lt;td class="left"&gt;Median :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Median :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Median :     0.33&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;EBK13  : 917275&lt;/td&gt;&lt;td class="left"&gt;Mean   :3.107&lt;/td&gt;&lt;td class="left"&gt;Mean   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Mean   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Mean   :   226.44&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;@JYM13 : 844995&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.:4.000&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.:1.366e+09&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.:1.366e+09&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.:   600.22&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;EBM13  : 610827&lt;/td&gt;&lt;td class="left"&gt;Max.   :5.000&lt;/td&gt;&lt;td class="left"&gt;Max.   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Max.   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Max.   :  9818.25&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;(Other):1373320&lt;/td&gt;&lt;td class="left"&gt;nil&lt;/td&gt;&lt;td class="left"&gt;nil&lt;/td&gt;&lt;td class="left"&gt;nil&lt;/td&gt;&lt;td class="left"&gt;nil&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;bigvis manipulations
+
+
+
+&lt;pre class="src src-R"&gt;require(&lt;span class="org-string"&gt;"bigvis"&lt;/span&gt;)
+require(&lt;span class="org-string"&gt;"ggplot2"&lt;/span&gt;)
+df1 = condense(bin(event.df$event.time,60),bin(event.df$event.latency,0.05))
+df2 = df1[(df1$event.df.event.latency &amp;gt; 0) &amp;amp; (df1$event.df.event.latency &amp;lt; 1),]   
+dfg = data.frame(as.POSIXct(df2[,1]+10*60*60,origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;""&lt;/span&gt;),df2[,2],df2[,3])
+colnames(dfg) = c(&lt;span class="org-string"&gt;"Time"&lt;/span&gt;,&lt;span class="org-string"&gt;"Latency"&lt;/span&gt;,&lt;span class="org-string"&gt;"Count"&lt;/span&gt;)
+g = ggplot(data=dfg,aes(x=Time,y=Latency))
+g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=&lt;span class="org-string"&gt;"#e5e5e5"&lt;/span&gt;, high = &lt;span class="org-string"&gt;"#444548"&lt;/span&gt;) + scale_y_continuous(limits=c(-1,1))
+ggsave(&lt;span class="org-string"&gt;"quote-latency-condensed.svg"&lt;/span&gt;)
+
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+  &lt;img src="../blog/latency-research/quote-latency-condensed.svg"  alt="../blog/latency-research/quote-latency-condensed.svg" /&gt;
+&lt;/p&gt;
+&lt;p&gt;
+  Unlike the iqfeed ping, there is a consistent latency pattern when comparing
+  market stamp and local system stamp, with no spurious negative values.
+  Latency values from 9am to 4pm (regular market open) at 500 millsecs are
+  common and may be due to TCP issues (dropped packets say).
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;symbols
+
+
+
+
+&lt;pre class="src src-R"&gt;summary(as.factor(stream$symbol[]))
+&lt;/pre&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;emini latency
+
+&lt;p&gt;  
+  The latency pattern for the E-MINI SP500 (@ESM13 is the iqfeed code) is
+  very similar to the overall latency pattern. The average latency over the
+  day was:
+&lt;/p&gt;
+
+
+
+&lt;pre class="src src-R"&gt;require(ggplot2)
+require(bigvis)
+ind.emini = indexEQ(ind.symbol,&lt;span class="org-string"&gt;"@ESM13 "&lt;/span&gt;)
+df1 = condense(bin(event.df$event.time[ind.emini],300,name=&lt;span class="org-string"&gt;"time"&lt;/span&gt;),bin(event.df$event.latency[ind.emini],0.05,name=&lt;span class="org-string"&gt;"latency"&lt;/span&gt;))
+df2 = df1[(df1$latency &amp;gt; 0) &amp;amp; (df1$latency &amp;lt; 2),]
+lat.av = tapply(df2$latency*df2$.count,df2$time,sum)/tapply(df2$.count,df2$time,sum)
+dfg = data.frame(Time=as.POSIXct(as.double(row.names(lat.av))+10*60*60,origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;""&lt;/span&gt;),Latency=lat.av)
+#colnames(dfg) = c(&lt;span class="org-string"&gt;"Time"&lt;/span&gt;,&lt;span class="org-string"&gt;"Latency"&lt;/span&gt;,&lt;span class="org-string"&gt;"Count"&lt;/span&gt;)
+g = ggplot(data=dfg,aes(x=Time,y=Latency))
+g + geom_point()
+ggsave(&lt;span class="org-string"&gt;"quote-latency-averagecondensed.svg"&lt;/span&gt;)
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+  &lt;img src="../blog/latency-research/quote-latency-averagecondensed.svg"  alt="../blog/latency-research/quote-latency-averagecondensed.svg" /&gt;
+&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+&lt;/div&gt;
+&lt;/div&gt;
+</content>
+</entry>
+<entry>
+<title type="html">Market Feed Selection</title>
+<author><name>tony day</name></author>
+<link href="http://scarcecapital.com/hft/blog/market-feed-selection.html"/>
+<updated>2013-04-12T12:46:00Z</updated>
+<published>2013-04-12T12:46:00Z</published>
+<id>http://scarcecapital.com/hft/blog/market-feed-selection.html</id>
+<content type="html">&lt;p&gt;
+There is no such thing as live market data for free (please let us know if
+this is wrong!).
+&lt;/p&gt;
+&lt;p&gt;
+The closest to free data is the Interactive Brokers feed.  IB consolidate
+market data and post every 0.3 seconds however, making it unsuitable for
+testing lower-latency ideas.
+&lt;/p&gt;
+&lt;p&gt;
+Initial testing of market data is concentrating on &lt;a href="http://www.iqfeed.net/"&gt;iqfeed&lt;/a&gt;.
+&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;iqfeed is the cheapest "unencumbered" market data feed option
+&lt;/li&gt;
+&lt;li&gt;it can be downloaded for free and a demo account used for testing (data is
+  delayed)
+&lt;/li&gt;
+&lt;li&gt;5.0 has just been released and this includes millisecond resolution for
+  both trade and quote times.
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;
+Now the bad news:
+&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;iqfeed exists only as windows software 
+&lt;/li&gt;
+&lt;li&gt;the process is hardwired to communicate via a tcp connection. 
+&lt;/li&gt;
+&lt;li&gt;the feed has a habit of going down several times a day so that there will
+  be gaps in the event stream.
+&lt;/li&gt;
+&lt;li&gt;you will need a login id and password to use the software which you get in
+  a free trial
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+</content>
+</entry>
+<entry>
+<title type="html">Candidate Structure</title>
+<author><name>tony day</name></author>
+<link href="http://scarcecapital.com/hft/blog/candidate-structure.html"/>
+<updated>2013-04-11T16:46:00Z</updated>
+<published>2013-04-11T16:46:00Z</published>
+<id>http://scarcecapital.com/hft/blog/candidate-structure.html</id>
+<category scheme="http://scarcecapital.com/hft/tags/design.html" term="design" label="design"/>
+<content type="html">&lt;p&gt;
+hft is in an experimental phase and, as such, there is a need for flexibility
+in the top-down design of the system. To achieve this, the overall design is
+first being modelled using graphviz.  The current candidate system looks like this:
+&lt;/p&gt;
+
+
+&lt;img class="hero-chart" src="&lt;lisp&gt;(ob:path-to-root)&lt;/lisp&gt;/&lt;lisp&gt;(ob:blog-assets-dir BLOG)&lt;/lisp&gt;/candidate.svg" alt="design" width="100%"&gt;
+
+&lt;ul&gt;
+&lt;li&gt;blue boxes represent individual components of the system
+&lt;/li&gt;
+&lt;li&gt;other colors represent external systems and data sources
+&lt;/li&gt;
+&lt;li&gt;each edge of the chart represents a messaging sytem requirement
+&lt;/li&gt;
+&lt;li&gt;there are two main one-way message passing routines that probably
+  need to be very very fast (blue lines)
+&lt;/li&gt;
+&lt;li&gt;there is one read from database and one write to database (red lines) 
+&lt;/li&gt;
+&lt;li&gt;every component registers to an observer component that records system
+  state and dynamics (grey dotted).
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+&lt;p&gt;
+The components have been grouped into several clusters:
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;market data: representing trade data, order book and news information
+  flowing from outside the sytem to a local data node.
+&lt;/li&gt;
+&lt;li&gt;broker data: representing communication with trading mechanisms
+&lt;/li&gt;
+&lt;li&gt;onwire: components that are "in the event stream".  This is motivated by
+  the specifications and documentation of the disruptor which argues that a
+  single thread "wheel" is the best way to enable fast processing of market
+  data into trading orders.
+&lt;/li&gt;
+&lt;li&gt;offwire: this represents algorithms and processing that are not on the
+  single-thread process.  The motivation here is to test the hypothesis in
+  the disruptor argument.
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;
+There are several ideas that are being tested:
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;that the entire system should be the subject of search and optimisation,
+  rather than componentry.  One example of this is separation of complex
+  event definitions from the statistical analysis once events are defined.
+&lt;/li&gt;
+&lt;li&gt;there is a focus on automation and machine learning.  As such there is no
+  place for human interaction.  In particular, no visualization is required. 
+&lt;/li&gt;
+&lt;li&gt;messaging between components can be the same general process.  The
+  components can also be tested in exactly the same way (such as speed and
+  robustness testing)
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;
+And here's the dot code:
+&lt;/p&gt;
+
+
+
+&lt;pre class="src src-dot"&gt;digraph G {
+        node [label=&lt;span class="org-string"&gt;"\N"&lt;/span&gt;];
+        node [style=filled, color=&lt;span class="org-string"&gt;"#1f3950"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#eeeeee"&lt;/span&gt;,shape=box]; 
+        subgraph cluster_market_data {
+                graph [label=&lt;span class="org-string"&gt;"market data"&lt;/span&gt;, color=&lt;span class="org-string"&gt;"#909090"&lt;/span&gt;];
+                exchange [shape=egg,color=&lt;span class="org-string"&gt;"#ff111111"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#101010"&lt;/span&gt;,label=&lt;span class="org-string"&gt;"exchanges"&lt;/span&gt;];
+                aggregator [shape=egg,color=&lt;span class="org-string"&gt;"#cc11cc22"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#101010"&lt;/span&gt;,label=&lt;span class="org-string"&gt;"data stream"&lt;/span&gt;];
+                localport [label=&lt;span class="org-string"&gt;"local node"&lt;/span&gt;];
+                exchange -&amp;gt; aggregator [dir=none];
+                aggregator -&amp;gt; localport [dir=both];
+        }
+        subgraph cluster_offwire {
+                graph [label=&lt;span class="org-string"&gt;"offwire"&lt;/span&gt;,
+                        color=&lt;span class="org-string"&gt;"#909090"&lt;/span&gt;];
+                offwirealgo [label=&lt;span class="org-string"&gt;"offline algo"&lt;/span&gt;];
+                observer;
+                databases;
+                observer -&amp;gt; databases [color=red,label=&lt;span class="org-string"&gt;"write"&lt;/span&gt;,fontcolor=red];
+        }
+        subgraph cluster_onwire {
+                graph [label=&lt;span class="org-string"&gt;"onwire"&lt;/span&gt;,
+                        color=&lt;span class="org-string"&gt;"#909090"&lt;/span&gt;];
+                node [style=filled];
+                disruptor [label=&lt;span class="org-string"&gt;"event server"&lt;/span&gt;];
+                eventalgo [label=&lt;span class="org-string"&gt;"algo"&lt;/span&gt;];
+                controller;
+                controller -&amp;gt; eventalgo [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,dir=both]
+                disruptor -&amp;gt; listener;
+                disruptor -&amp;gt; eventalgo;
+                disruptor -&amp;gt; controller;
+                controller -&amp;gt; disruptor [color=&lt;span class="org-string"&gt;"#0080ff"&lt;/span&gt;];
+        }
+        subgraph cluster_broker {
+                graph [label=&lt;span class="org-string"&gt;"broker data"&lt;/span&gt;,
+                        color=&lt;span class="org-string"&gt;"#909090"&lt;/span&gt;];
+                broker [shape=egg,color=&lt;span class="org-string"&gt;"#ff111111"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#101010"&lt;/span&gt;,label=&lt;span class="org-string"&gt;"brokers"&lt;/span&gt;];
+                brokeraggregator [shape=egg,color=&lt;span class="org-string"&gt;"#cc11cc22"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#101010"&lt;/span&gt;,label=&lt;span class="org-string"&gt;"aggregation"&lt;/span&gt;];
+                broker -&amp;gt; brokeraggregator [dir=none];
+                brokeraggregator -&amp;gt; trader [dir=both];
+        }
+        localport -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        controller -&amp;gt; localport [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;];
+        localport -&amp;gt; disruptor [color=&lt;span class="org-string"&gt;"#0080ff"&lt;/span&gt;];
+        listener -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        controller -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        controller -&amp;gt; trader [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,dir=both];
+        controller -&amp;gt; offwirealgo [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,dir=both];
+        databases -&amp;gt; offwirealgo [color=red,label=&lt;span class="org-string"&gt;"read"&lt;/span&gt;,fontcolor=red];
+        trader -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        eventalgo -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        offwirealgo -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+}
+&lt;/pre&gt;
+
+
+
+&lt;div id="outline-container-1" class="outline-3"&gt;
+&lt;h3 id="sec-1"&gt;haskell interaction&lt;/h3&gt;
+&lt;div class="outline-text-3" id="text-1"&gt;
+
+
+&lt;p&gt;
+Via haskell, the dot chart can be the specifications for an actual system as well as a
+representation. And via svg technology, the picture can also be modified to
+be a reporting front-end in a production environment.
+&lt;/p&gt;
+
+
+
+&lt;pre class="src src-haskell"&gt;&lt;span class="org-keyword"&gt;module&lt;/span&gt; &lt;span class="org-type"&gt;ControllerTest&lt;/span&gt;&lt;span class="org-whitespace-trailing"&gt; &lt;/span&gt;
+( importDotFile
+, importDot
+, printGraph
+, nodeList
+, edgeList
+) &lt;span class="org-keyword"&gt;where&lt;/span&gt;
+
+&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;Data.GraphViz&lt;/span&gt;
+&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-keyword"&gt;qualified&lt;/span&gt; &lt;span class="org-type"&gt;Data.Text.Lazy&lt;/span&gt; &lt;span class="org-keyword"&gt;as&lt;/span&gt; &lt;span class="org-type"&gt;L&lt;/span&gt;
+&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-keyword"&gt;qualified&lt;/span&gt; &lt;span class="org-type"&gt;Data.Text.Lazy.IO&lt;/span&gt; &lt;span class="org-keyword"&gt;as&lt;/span&gt; &lt;span class="org-type"&gt;I&lt;/span&gt;
+&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-keyword"&gt;qualified&lt;/span&gt; &lt;span class="org-type"&gt;Data.GraphViz.Types.Generalised&lt;/span&gt; &lt;span class="org-keyword"&gt;as&lt;/span&gt; &lt;span class="org-type"&gt;G&lt;/span&gt;
+&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;Data.Graph.Inductive.Graph&lt;/span&gt;
+
+&lt;span class="org-function-name"&gt;importDotFile&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;FilePath&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="org-type"&gt;IO&lt;/span&gt; (&lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;String&lt;/span&gt;)
+&lt;span class="org-function-name"&gt;importDotFile&lt;/span&gt; f &lt;span class="org-variable-name"&gt;=&lt;/span&gt; &lt;span class="org-keyword"&gt;do&lt;/span&gt;
+        dotText &lt;span class="org-variable-name"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="org-type"&gt;I&lt;/span&gt;&lt;span class="org-variable-name"&gt;.&lt;/span&gt;readFile f&lt;span class="org-whitespace-trailing"&gt; &lt;/span&gt;
+        return &lt;span class="org-variable-name"&gt;$&lt;/span&gt; parseDotGraph dotText
+
+&lt;span class="org-function-name"&gt;importDot&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;L.Text&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;Node&lt;/span&gt;
+&lt;span class="org-function-name"&gt;importDot&lt;/span&gt; s &lt;span class="org-variable-name"&gt;=&lt;/span&gt; parseDotGraph s
+
+&lt;span class="org-function-name"&gt;printGraph&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;String&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="org-type"&gt;IO&lt;/span&gt; &lt;span class="org-type"&gt;()&lt;/span&gt;
+&lt;span class="org-function-name"&gt;printGraph&lt;/span&gt; d &lt;span class="org-variable-name"&gt;=&lt;/span&gt; &lt;span class="org-keyword"&gt;do&lt;/span&gt;
+        putStrLn &lt;span class="org-variable-name"&gt;$&lt;/span&gt; &lt;span class="org-type"&gt;L&lt;/span&gt;&lt;span class="org-variable-name"&gt;.&lt;/span&gt;unpack &lt;span class="org-variable-name"&gt;$&lt;/span&gt; printDotGraph d
+        return&lt;span class="org-type"&gt;()&lt;/span&gt;
+
+&lt;span class="org-function-name"&gt;nodeList&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;String&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; [&lt;span class="org-type"&gt;String&lt;/span&gt;]
+&lt;span class="org-function-name"&gt;nodeList&lt;/span&gt; g &lt;span class="org-variable-name"&gt;=&lt;/span&gt; map nodeID &lt;span class="org-variable-name"&gt;$&lt;/span&gt; graphNodes g
+
+&lt;span class="org-function-name"&gt;edgeList&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;String&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; [(&lt;span class="org-type"&gt;String&lt;/span&gt;,&lt;span class="org-type"&gt;String&lt;/span&gt;)]
+&lt;span class="org-function-name"&gt;edgeList&lt;/span&gt; g &lt;span class="org-variable-name"&gt;=&lt;/span&gt;  map (&lt;span class="org-variable-name"&gt;\&lt;/span&gt;x &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; (fromNode x, toNode x)) &lt;span class="org-variable-name"&gt;$&lt;/span&gt; graphEdges g
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+So, a new picture generates a new system with potentially new components
+(nodes) and messaging requirements (edges).
+&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;div id="outline-container-2" class="outline-3"&gt;
+&lt;h3 id="sec-2"&gt;edges&lt;/h3&gt;
+&lt;div class="outline-text-3" id="text-2"&gt;
+
+
+
+
+
+&lt;pre class="src src-haskell"&gt;&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;ControllerTest&lt;/span&gt;
+g &lt;span class="org-variable-name"&gt;&amp;lt;-&lt;/span&gt; importDotFile &lt;span class="org-string"&gt;"../candidate.dot"&lt;/span&gt;
+&lt;span class="org-function-name"&gt;edgeList&lt;/span&gt; g
+&lt;/pre&gt;
+
+
+&lt;table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides"&gt;
+&lt;colgroup&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;
+&lt;/colgroup&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td class="left"&gt;exchange&lt;/td&gt;&lt;td class="left"&gt;aggregator&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;aggregator&lt;/td&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;td class="left"&gt;databases&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;eventalgo&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;td class="left"&gt;listener&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;td class="left"&gt;eventalgo&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;broker&lt;/td&gt;&lt;td class="left"&gt;brokeraggregator&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;brokeraggregator&lt;/td&gt;&lt;td class="left"&gt;trader&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;listener&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;trader&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;offwirealgo&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;databases&lt;/td&gt;&lt;td class="left"&gt;offwirealgo&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;trader&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;eventalgo&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;offwirealgo&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;div id="outline-container-3" class="outline-3"&gt;
+&lt;h3 id="sec-3"&gt;nodes&lt;/h3&gt;
+&lt;div class="outline-text-3" id="text-3"&gt;
+
+
+
+
+
+&lt;pre class="src src-haskell"&gt;&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;ControllerTest&lt;/span&gt;
+&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;Data.List&lt;/span&gt;
+g &lt;span class="org-variable-name"&gt;&amp;lt;-&lt;/span&gt; importDotFile &lt;span class="org-string"&gt;"../dot/candidate.dot"&lt;/span&gt;
+&lt;span class="org-function-name"&gt;map&lt;/span&gt; (&lt;span class="org-variable-name"&gt;\&lt;/span&gt;x &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; [x]) &lt;span class="org-variable-name"&gt;$&lt;/span&gt; nodeList g
+&lt;/pre&gt;
+
+
+&lt;table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides"&gt;
+&lt;colgroup&gt;&lt;col class="left" /&gt;
+&lt;/colgroup&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td class="left"&gt;aggregator&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;broker&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;brokeraggregator&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;databases&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;eventalgo&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;exchange&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;listener&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;offwirealgo&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="left"&gt;trader&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+&lt;/div&gt;
+&lt;/div&gt;
+</content>
+</entry>
+<entry>
+<title type="html">Welcome to HFT!</title>
+<author><name>tony day</name></author>
+<link href="http://scarcecapital.com/hft/about.html"/>
+<updated>2013-04-11T15:47:00Z</updated>
+<published>2013-04-11T15:47:00Z</published>
+<id>http://scarcecapital.com/hft/about.html</id>
+<content type="html">&lt;p&gt;&lt;img src="&lt;lisp&gt;(ob:path-to-root)&lt;/lisp&gt;/&lt;lisp&gt;(ob:blog-assets-dir
+BLOG)&lt;/lisp&gt;/hft-blue.png" width="100" alt=""&gt;&lt;/p&gt;
+
+&lt;br&gt;
+
+&lt;p&gt;HFT is a small project with a big ambition. We aim to build the worlds best
+algorithmic trading platform using the best off-the-shelf open source
+technology stack to be found. And all of this on a tight budget.&lt;/p&gt;
+
+&lt;p&gt;HFT is created and maintained by &lt;a href="http://twitter.com/tonyday567"&gt;Tony Day&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1&gt;Quick Start&lt;/h1&gt;
+
+&lt;p&gt;There is no quick start for hft.  The easiest way to get up to speed is to read the project &lt;a href="http://scarcecapital.com/hft"&gt;blog&lt;/a&gt;.  If you're interested in contributing to development or find a logic bug, then fork me with:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+$ git clone https://github.com/tonyday567/hft.git
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h1&gt;Technology Stack&lt;/h1&gt;
+
+&lt;p&gt;The world of high frequency trading is a broad church of opinion, technology, ideas and motivations.  hft is being developed using many different tools:&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.gnu.org/software/emacs/"&gt;emacs&lt;/a&gt;, &lt;a href="http://orgmode.org"&gt;org-mode&lt;/a&gt; and literate programming&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href="https://github.com/tonyday567/hft/blob/master/hft.org"&gt;hft.org&lt;/a&gt; is the nerve
+center of active development and contains just about all the important code, research notes
+and design tools being used.&lt;/p&gt;
+
+&lt;p&gt;The project makes heavy use of &lt;a href="http://orgmode.org/worg/org-contrib/babel/"&gt;babel&lt;/a&gt; to pick and mix between coding environments and languages, whilst still remaining &lt;a href="http://www.haskell.org/haskellwiki/Literate_programming"&gt;literate&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The main idea is to regard a program as a communication to human beings rather than as a set of instructions to a computer. ~ Knuth&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Similarly, a project such as hft is as much about communication between human beings as it is about maintenance of source code.&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.r-project.org"&gt;R&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;R is a strongly functional but imperative language being used for rapid
+development and research of hft and algo ideas as they arise. Most everything
+that you can think of (databases, broker interfaces, statistical analysis,
+visualization) has an R package ready to get you up and going in 5 minutes.&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.haskell.org/haskellwiki/Haskell"&gt;haskell&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;R can be many things but what it is least set up for is development of
+asyncronous code. To fill this gap, the project is using haskell to frame the
+system as and when it develops.&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.interactivebrokers.com/en/main.php"&gt;Interactive Brokers&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;Eventually, hft will be broker independent but during the development phase IB
+is the test case. Interactive has the most mature API that works out of the
+box and a demo account so that hft can come pre-plumbed so that (eventually)
+the project can also run out of the box.&lt;/p&gt;
+
+&lt;p&gt;Interactive Brokers consolidates tick data into 0.3 second time slices so it
+isn't appropriate for low-latency work.&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.iqfeed.net"&gt;iqfeed&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;Just because it's open-source doesn't mean that it's cost free. iqfeed has
+been chosen as an initial data feed to base project R&amp;amp;D efforts on. iqfeed
+costs dollars but the software can be downloaded for free and a demo version
+allows live data to flow with a lag.&lt;/p&gt;
+
+&lt;p&gt;A useful way to support the hft project is to let DTN know if you decide to
+purshase iqfeed due to the project.&lt;/p&gt;
+
+&lt;h2&gt;Bug Tracker&lt;/h2&gt;
+
+&lt;p&gt;Have a bug or a feature request? &lt;br&gt; &lt;a href="https://github.com/tonyday567/hft/issues"&gt;Please open a new issue&lt;/a&gt;. &lt;/p&gt;
+
+&lt;h2&gt;Community&lt;/h2&gt;
+
+&lt;p&gt;hft is sponsored by &lt;a href="http://scarcecapital.com"&gt;Scarce Capital&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Follow &lt;a href="http://twitter.com/scarcecapital"&gt;@scarcecapital on Twitter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Read, subscribe (and contribute!) to the hft &lt;a href="http://scarcecapital.com/hft"&gt;blog&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Contributing&lt;/h2&gt;
+
+&lt;p&gt;Please submit all pull requests against the master branch.&lt;/p&gt;
+
+&lt;p&gt;Thanks!&lt;/p&gt;
+
+&lt;h2&gt;Authors&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Tony Day&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://twitter.com/tonyday567"&gt;http://twitter.com/tonyday567&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://github.com/tonyday567"&gt;http://github.com/tonyday567&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+</entry>
+<entry>
+<title type="html">Welcome to hft,</title>
+<author><name>tony day</name></author>
+<link href="http://scarcecapital.com/hft/blog/welcome-to-hft.html"/>
+<updated>2013-04-11T15:47:00Z</updated>
+<published>2013-04-11T15:47:00Z</published>
+<id>http://scarcecapital.com/hft/blog/welcome-to-hft.html</id>
+<content type="html">&lt;p&gt;&lt;img src="&lt;lisp&gt;(ob:path-to-root)&lt;/lisp&gt;/&lt;lisp&gt;(ob:blog-assets-dir
+BLOG)&lt;/lisp&gt;/hft-blue.png" width="100" alt=""&gt;&lt;/p&gt;
+
+&lt;br&gt;
+
+&lt;p&gt;HFT is a small project with a big ambition. We aim to build the worlds best
+algorithmic trading platform using the best off-the-shelf open source
+technology stack to be found. And all of this on a tight budget.&lt;/p&gt;
+
+&lt;p&gt;HFT is created and maintained by &lt;a href="http://twitter.com/tonyday567"&gt;Tony Day&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1&gt;Quick Start&lt;/h1&gt;
+
+&lt;p&gt;There is no quick start for hft.  The easiest way to get up to speed is to read the project &lt;a href="http://scarcecapital.com/hft"&gt;blog&lt;/a&gt;.  If you're interested in contributing to development or find a logic bug, then fork me with:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+$ git clone https://github.com/tonyday567/hft.git
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h1&gt;Technology Stack&lt;/h1&gt;
+
+&lt;p&gt;The world of high frequency trading is a broad church of opinion, technology, ideas and motivations.  hft is being developed using many different tools:&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.gnu.org/software/emacs/"&gt;emacs&lt;/a&gt;, &lt;a href="http://orgmode.org"&gt;org-mode&lt;/a&gt; and literate programming&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href="https://github.com/tonyday567/hft/blob/master/hft.org"&gt;hft.org&lt;/a&gt; is the nerve
+center of active development and contains just about all the important code, research notes
+and design tools being used.&lt;/p&gt;
+
+&lt;p&gt;The project makes heavy use of &lt;a href="http://orgmode.org/worg/org-contrib/babel/"&gt;babel&lt;/a&gt; to pick and mix between coding environments and languages, whilst still remaining &lt;a href="http://www.haskell.org/haskellwiki/Literate_programming"&gt;literate&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The main idea is to regard a program as a communication to human beings rather than as a set of instructions to a computer. ~ Knuth&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Similarly, a project such as hft is as much about communication between human beings as it is about maintenance of source code.&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.r-project.org"&gt;R&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;R is a strongly functional but imperative language being used for rapid
+development and research of hft and algo ideas as they arise. Most everything
+that you can think of (databases, broker interfaces, statistical analysis,
+visualization) has an R package ready to get you up and going in 5 minutes.&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.haskell.org/haskellwiki/Haskell"&gt;haskell&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;R can be many things but what it is least set up for is development of
+asyncronous code. To fill this gap, the project is using haskell to frame the
+system as and when it develops.&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.interactivebrokers.com/en/main.php"&gt;Interactive Brokers&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;Eventually, hft will be broker independent but during the development phase IB
+is the test case. Interactive has the most mature API that works out of the
+box and a demo account so that hft can come pre-plumbed so that (eventually)
+the project can also run out of the box.&lt;/p&gt;
+
+&lt;p&gt;Interactive Brokers consolidates tick data into 0.3 second time slices so it
+isn't appropriate for low-latency work.&lt;/p&gt;
+
+&lt;h3&gt;&lt;a href="http://www.iqfeed.net"&gt;iqfeed&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;Just because it's open-source doesn't mean that it's cost free. iqfeed has
+been chosen as an initial data feed to base project R&amp;amp;D efforts on. iqfeed
+costs dollars but the software can be downloaded for free and a demo version
+allows live data to flow with a lag.&lt;/p&gt;
+
+&lt;p&gt;A useful way to support the hft project is to let DTN know if you decide to
+purshase iqfeed due to the project.&lt;/p&gt;
+
+&lt;h2&gt;Bug Tracker&lt;/h2&gt;
+
+&lt;p&gt;Have a bug or a feature request? &lt;br&gt; &lt;a href="https://github.com/tonyday567/hft/issues"&gt;Please open a new issue&lt;/a&gt;. &lt;/p&gt;
+
+&lt;h2&gt;Community&lt;/h2&gt;
+
+&lt;p&gt;hft is sponsored by &lt;a href="http://scarcecapital.com"&gt;Scarce Capital&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Follow &lt;a href="http://twitter.com/scarcecapital"&gt;@scarcecapital on Twitter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Read, subscribe (and contribute!) to the hft &lt;a href="http://scarcecapital.com/hft"&gt;blog&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Contributing&lt;/h2&gt;
+
+&lt;p&gt;Please submit all pull requests against the master branch.&lt;/p&gt;
+
+&lt;p&gt;Thanks!&lt;/p&gt;
+
+&lt;h2&gt;Authors&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Tony Day&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://twitter.com/tonyday567"&gt;http://twitter.com/tonyday567&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://github.com/tonyday567"&gt;http://github.com/tonyday567&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+</entry>
+
+</feed>

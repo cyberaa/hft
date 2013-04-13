@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Latency Research</title>
+    <link rel="stylesheet" type="text/css" href="../style/css/scarce.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="generator" content="o-blog version 1.2-144-g8a78ab9"/>
+
+<script src="../style/js/jquery-1.7.1.min.js" type="text/javascript"></script>
+<script src="../style/bootstrap/js/bootstrap-modal.js" type="text/javascript"></script>
+<script src="../style/bootstrap/js/bootstrap-transition.js" type="text/javascript"></script>
+<script src="../style/bootstrap/js/bootstrap-dropdown.js" type="text/javascript"></script>
+<script src="../style/bootstrap/js/bootstrap-collapse.js" type="text/javascript"></script>
+<script src="../style/js/prettify.js" type="text/javascript"></script>
+<script src="../style/js/o-blog.linenumber.js" type="text/javascript"></script>
+<script src="../style/js/o-blog-fix.js" type="text/javascript"></script>
+<script src="../style/js/scarce.js" type="text/javascript"></script>
+<script src="../style/js/twitter-bootstrap-hover-dropdown.js" type="text/javascript"></script>
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-22236293-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<!-- Le fav and touch icons -->
+<link rel="shortcut icon" href="../favicon.ico?v=2">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../style/ico/apple-touch-icon-144-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="../style/ico/apple-touch-icon-114-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="../style/ico/apple-touch-icon-72-precomposed.png">
+<link rel="apple-touch-icon-precomposed" href="../style/ico/apple-touch-icon-57-precomposed.png">
+
+</head>
+<body>
+
+<div class="container">
+  <div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-hover=".nav-collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+      <a class="brand" href="../index.html">hft,</a>
+      <div class="nav-collapse collapse">
+          <ul class="nav">
+   <li>
+     <a href="../about.html"><i>icon-user icon-white</i> About</a>
+   </li>
+   <li>
+  <a class="caret-before" href="../blog/latency-research.html">
+       <i class="icon-coffee icon-white">
+       </i>
+       Blog
+     </a>
+  </li>
+   <li class="dropdown">
+ <a class="dropdown-toggle caret-after" data-toggle="dropdown" data-hover="dropdown" data-delay="2000">
+ </a>
+     <ul class="dropdown-menu">
+
+
+<li><a href="../blog/latency-research.html">Latency Research</a></li><li><a href="../blog/market-feed-selection.html">Market Feed Selection</a></li><li><a href="../blog/candidate-structure.html">Candidate Structure</a></li><li><a href="../blog/welcome-to-hft.html">Welcome to hft,</a></li>
+         
+  </ul>
+  
+  </li>
+  <li><a href="https://github.com/tonyday567/hft"><i>icon-github icon-white</i> HFT</a>
+  
+  </li>
+  <li><a href="../tags.html"><i>icon-tags icon-white</i> Tags</a>
+  
+  </li>
+  <li><a href="../archives.html"><i>icon-list icon-white</i> Archives</a>
+  
+  </li>
+  <li><a href="../index.xml"><i>icon-rss icon-white</i> RSS</a>
+  </li>
+  </ul>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="page">
+  <div class="row">    
+    <div class="arrow_nav top">
+      <a class="previous skiphover" href="../blog/market-feed-selection.html">
+                                    <span class="symbol">
+                                    </span>
+                                    <span class="label">
+                                       older
+                                    </span>
+                                    <span class="tooltip">
+                                      Market Feed Selection
+                                    </span>
+                                 </a>
+      <div class="sepline"></div>
+      
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span9">
+      <article>
+        <header class="article-header">
+          <h1 class="post-header">Latency Research</h1>
+          <h3 class="date-header">12 April 2013</h3>
+        </header>
+        <div class="article-content">
+          <p>
+I collected trade and order ticks for 12 contracts on 14th March from iqfeed,
+and timestamped each tick with current system time. There was about 8 million
+data points.
+</p>
+
+
+<div id="outline-container-1" class="outline-3">
+<h3 id="sec-1">feed ping latency</h3>
+<div class="outline-text-3" id="text-1">
+
+
+<p>  
+Iqfeed sends a ping once a second as part of the stream.
+</p>
+
+
+
+<pre class="src src-R">t = read.csv(<span class="org-string">"data/streamt.txt"</span>,header=FALSE,as.is=TRUE)
+pingtime = strptime(t[,3], <span class="org-string">"%Y%m%d %H:%M:%S"</span>)
+stamp = strptime(paste(strftime(pingtime,<span class="org-string">"%Y%m%d"</span>), t[,1], sep=<span class="org-string">" "</span>), <span class="org-string">"%Y%m%d %H:%M:%OS"</span>)    
+latency = as.double(stamp - pingtime)
+df = data.frame(pingtime=pingtime, latency=latency)
+summary(df)
+</pre>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Min.   :2013-03-14 07:30:57</td><td class="left">Min.   :-0.90665</td></tr>
+<tr><td class="left">1st Qu.:2013-03-14 17:15:41</td><td class="left">1st Qu.:-0.01492</td></tr>
+<tr><td class="left">Median :2013-03-15 03:02:15</td><td class="left">Median : 0.14950</td></tr>
+<tr><td class="left">Mean   :2013-03-15 03:01:28</td><td class="left">Mean   : 0.38876</td></tr>
+<tr><td class="left">3rd Qu.:2013-03-15 12:46:33</td><td class="left">3rd Qu.: 0.22824</td></tr>
+<tr><td class="left">Max.   :2013-03-15 22:33:24</td><td class="left">Max.   : 7.89887</td></tr>
+<tr><td class="left">NA's   :1</td><td class="left">NA's   :1</td></tr>
+</tbody>
+</table>
+
+
+
+
+
+<pre class="src src-R">require(ggplot2)
+qplot(data=df, x=pingtime, y=latency)
+ggsave(<span class="org-string">"ping-latency.svg"</span>)
+</pre>
+
+
+<p>
+    <img src="../blog/latency-research/ping-latency.png"  alt="../blog/latency-research/ping-latency.png" />
+</p>
+<p>
+    The simple scatterplot shows many negative values, especially when the
+    market is open, and a step jump in the later pings (when no quotes were
+    being recorded).  These jumps may be due to changes in my system clock
+    (automatic appletime resolutions) or due to a lack of accuracy in the
+    iqfeed pings.
+</p>
+<p>
+    Scatterplots tend to provide dubious visualisation for bigdata, and a new
+    package out that helps is <a href="http://vita.had.co.nz/papers/bigvis.html">bigvis</a>.
+</p>
+<p>
+    Bigvis is not yet available at CRAN but can be installed via a github
+    repository (see <a href="https://github.com/hadley/bigvis">https://github.com/hadley/bigvis</a> for details).
+</p>
+
+
+
+<pre class="src src-R">install.packages(<span class="org-string">"devtools"</span>)
+devtools::install_github(<span class="org-string">"bigvis"</span>)
+</pre>
+
+
+<p>
+    Bigvis doesn't handle non-numeric data (like time), so rather than
+    autopilot, I use ggplot directly.   
+</p>
+
+
+
+<pre class="src src-R">require(bigvis)
+require(ggplot2)
+dfn = condense(bin(as.double(df$pingtime),60),bin(df$latency,.1))
+dfg = data.frame(as.POSIXct(dfn[,1],origin=<span class="org-string">"1960-01-01"</span>, tz=<span class="org-string">"GMT"</span>),dfn[,2],dfn[,3])
+colnames(dfg) = c(<span class="org-string">"Time"</span>,<span class="org-string">"Latency"</span>,<span class="org-string">"Count"</span>)
+g = ggplot(data=dfg,aes(x=Time,y=Latency))
+g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=<span class="org-string">"#e5e5e5"</span>, high = <span class="org-string">"#444548"</span>) + scale_y_continuous(limits=c(-1,1))
+ggsave(<span class="org-string">"ping-latency-condensed.svg"</span>)
+</pre>
+
+
+<p>
+   <img src="../blog/latency-research/ping-latency-condensed.svg"  alt="../blog/latency-research/ping-latency-condensed.svg" />
+</p>
+<p>
+   Using the bigvis techniques clarifies a few main issues for further research:
+</p><ul>
+<li>there is a step jump near market open where the majority of the pings
+     jump from around 250 msecs to -750 msecs. This looks like either a coding
+     error or the ping being off by up to a second.
+</li>
+<li>during market open (when tick volume is high) ping can vary by a second.
+</li>
+</ul>
+
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-3">
+<h3 id="sec-2">disconnects</h3>
+<div class="outline-text-3" id="text-2">
+
+<p>   Just looking at the ping counts after binning into one minute intervals:
+</p>
+
+
+
+<pre class="src src-R">df.dis = condense(bin(as.double(df$pingtime),60))
+dfg = data.frame(as.POSIXct(df.dis[,1],origin=<span class="org-string">"1960-01-01"</span>, tz=<span class="org-string">"GMT"</span>),60-df.dis[,2])
+colnames(dfg) = c(<span class="org-string">"Time"</span>,<span class="org-string">"Count"</span>)
+g = ggplot(data=dfg,aes(x=Time,y=Count))
+g + geom_line(aes())
+ggsave(<span class="org-string">"disconnects.png"</span>)
+
+</pre>
+
+
+<p>
+   <img src="../blog/latency-research/disconnects.png"  alt="../blog/latency-research/disconnects.png" />
+</p>
+<p>
+   iqfeed regularly suffers from disconnects with reconnection occuring within
+   a minute.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-3">
+<h3 id="sec-3">event latency</h3>
+<div class="outline-text-3" id="text-3">
+
+
+<p>
+The ticks for the day were processed into column-data formats using the mmap
+package from R (see hft.org for the gory details).
+</p>
+<p>
+From the R database of the one day quote ticks&hellip;
+</p>
+<ul>
+<li>open data
+
+
+
+<pre class="src src-R">rm(list = ls())
+require(<span class="org-string">"mmap"</span>)
+require(<span class="org-string">"rindex"</span>)
+require(<span class="org-string">"plyr"</span>)
+require(<span class="org-string">"stringr"</span>)
+raw.stream = <span class="org-string">"streamqh"</span>
+# where the mmap db is located
+db.path = paste(<span class="org-string">"data/"</span>,raw.stream,<span class="org-string">"/"</span>,sep=<span class="org-string">""</span>)
+
+load(paste(db.path,<span class="org-string">".Rdbinfo"</span>,sep=<span class="org-string">""</span>))
+#m = mmap(main.filename, mode=st)
+stream = NULL
+stream$stamp = mmap(paste(db.path,fields[1],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=double())
+stream$code = mmap(paste(db.path,fields[2],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=char(1))
+stream$symbol = mmap(paste(db.path,fields[3],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=char(ticker.length))
+stream$trade = mmap(paste(db.path,fields[4],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=double())
+stream$vol = mmap(paste(db.path,fields[5],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=integer())
+stream$tradetime = mmap(paste(db.path,fields[6],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=double())
+stream$tradeex = mmap(paste(db.path,fields[7],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=double())
+stream$volex = mmap(paste(db.path,fields[8],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=integer())
+stream$tradetimeex = mmap(paste(db.path,fields[9],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=double())
+stream$voltot = mmap(paste(db.path,fields[10],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=integer())
+stream$bid = mmap(paste(db.path,fields[11],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=double())
+stream$bidvol = mmap(paste(db.path,fields[12],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=integer())
+stream$bidtime = mmap(paste(db.path,fields[13],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=double())
+stream$ask = mmap(paste(db.path,fields[14],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=double())
+stream$askvol = mmap(paste(db.path,fields[15],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=integer())
+stream$asktime = mmap(paste(db.path,fields[16],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=double())
+stream$event = mmap(paste(db.path,fields[17],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=char(12))
+stream$id = mmap(paste(db.path,fields[18],<span class="org-string">".data"</span>,sep=<span class="org-string">""</span>), mode=integer())
+
+</pre>
+
+
+</li>
+<li>Define events and extract relevant times
+
+
+
+<pre class="src src-R">n = length(stream$event[])
+
+tC = grepl(<span class="org-string">"C"</span>,stream$event[])
+tO = grepl(<span class="org-string">"O"</span>,stream$event[])
+ta = grepl(<span class="org-string">"a"</span>,stream$event[])
+tb = grepl(<span class="org-string">"b"</span>,stream$event[])
+ta = ta &amp; !(tC | tO)
+tb = tb &amp; !(tC | tO | ta)
+tother = !(ta | tb | tC | tO)
+
+event.category = (1 * tC) + (2 * tO) + (3 * ta) + (4 * tb) + (5 * tother)
+
+event.time = (stream$tradetime[] * tC +
+        stream$tradetimeex[] * tO +
+        stream$asktime[] * ta +
+        stream$bidtime[] * tb +
+        stream$tradetime[] * tother)
+
+event.time.posix = as.POSIXct(event.time,origin=<span class="org-string">"1960-01-01"</span>, tz=<span class="org-string">"GMT"</span>)
+event.stamp = stream$stamp[]
+
+event.latency = event.stamp - event.time  
+
+event.df = data.frame(symbol=stream$symbol[],event.category,event.time, event.stamp, event.latency)
+summary(event.df)
+</pre>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">@ESM13 :2553308</td><td class="left">Min.   :1.000</td><td class="left">Min.   :1.366e+09</td><td class="left">Min.   :1.366e+09</td><td class="left">Min.   :-85800.76</td></tr>
+<tr><td class="left">@NQM13 :1285545</td><td class="left">1st Qu.:3.000</td><td class="left">1st Qu.:1.366e+09</td><td class="left">1st Qu.:1.366e+09</td><td class="left">1st Qu.:     0.22</td></tr>
+<tr><td class="left">@YMM13 :1216006</td><td class="left">Median :3.000</td><td class="left">Median :1.366e+09</td><td class="left">Median :1.366e+09</td><td class="left">Median :     0.33</td></tr>
+<tr><td class="left">EBK13  : 917275</td><td class="left">Mean   :3.107</td><td class="left">Mean   :1.366e+09</td><td class="left">Mean   :1.366e+09</td><td class="left">Mean   :   226.44</td></tr>
+<tr><td class="left">@JYM13 : 844995</td><td class="left">3rd Qu.:4.000</td><td class="left">3rd Qu.:1.366e+09</td><td class="left">3rd Qu.:1.366e+09</td><td class="left">3rd Qu.:   600.22</td></tr>
+<tr><td class="left">EBM13  : 610827</td><td class="left">Max.   :5.000</td><td class="left">Max.   :1.366e+09</td><td class="left">Max.   :1.366e+09</td><td class="left">Max.   :  9818.25</td></tr>
+<tr><td class="left">(Other):1373320</td><td class="left">nil</td><td class="left">nil</td><td class="left">nil</td><td class="left">nil</td></tr>
+</tbody>
+</table>
+
+
+</li>
+<li>bigvis manipulations
+
+
+
+<pre class="src src-R">require(<span class="org-string">"bigvis"</span>)
+require(<span class="org-string">"ggplot2"</span>)
+df1 = condense(bin(event.df$event.time,60),bin(event.df$event.latency,0.05))
+df2 = df1[(df1$event.df.event.latency &gt; 0) &amp; (df1$event.df.event.latency &lt; 1),]   
+dfg = data.frame(as.POSIXct(df2[,1]+10*60*60,origin=<span class="org-string">"1960-01-01"</span>, tz=<span class="org-string">""</span>),df2[,2],df2[,3])
+colnames(dfg) = c(<span class="org-string">"Time"</span>,<span class="org-string">"Latency"</span>,<span class="org-string">"Count"</span>)
+g = ggplot(data=dfg,aes(x=Time,y=Latency))
+g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=<span class="org-string">"#e5e5e5"</span>, high = <span class="org-string">"#444548"</span>) + scale_y_continuous(limits=c(-1,1))
+ggsave(<span class="org-string">"quote-latency-condensed.svg"</span>)
+
+</pre>
+
+
+<p>
+  <img src="../blog/latency-research/quote-latency-condensed.svg"  alt="../blog/latency-research/quote-latency-condensed.svg" />
+</p>
+<p>
+  Unlike the iqfeed ping, there is a consistent latency pattern when comparing
+  market stamp and local system stamp, with no spurious negative values.
+  Latency values from 9am to 4pm (regular market open) at 500 millsecs are
+  common and may be due to TCP issues (dropped packets say).
+</p>
+</li>
+<li>symbols
+
+
+
+
+<pre class="src src-R">summary(as.factor(stream$symbol[]))
+</pre>
+
+
+</li>
+<li>emini latency
+
+<p>  
+  The latency pattern for the E-MINI SP500 (@ESM13 is the iqfeed code) is
+  very similar to the overall latency pattern. The average latency over the
+  day was:
+</p>
+
+
+
+<pre class="src src-R">require(ggplot2)
+require(bigvis)
+ind.emini = indexEQ(ind.symbol,<span class="org-string">"@ESM13 "</span>)
+df1 = condense(bin(event.df$event.time[ind.emini],300,name=<span class="org-string">"time"</span>),bin(event.df$event.latency[ind.emini],0.05,name=<span class="org-string">"latency"</span>))
+df2 = df1[(df1$latency &gt; 0) &amp; (df1$latency &lt; 2),]
+lat.av = tapply(df2$latency*df2$.count,df2$time,sum)/tapply(df2$.count,df2$time,sum)
+dfg = data.frame(Time=as.POSIXct(as.double(row.names(lat.av))+10*60*60,origin=<span class="org-string">"1960-01-01"</span>, tz=<span class="org-string">""</span>),Latency=lat.av)
+#colnames(dfg) = c(<span class="org-string">"Time"</span>,<span class="org-string">"Latency"</span>,<span class="org-string">"Count"</span>)
+g = ggplot(data=dfg,aes(x=Time,y=Latency))
+g + geom_point()
+ggsave(<span class="org-string">"quote-latency-averagecondensed.svg"</span>)
+</pre>
+
+
+<p>
+  <img src="../blog/latency-research/quote-latency-averagecondensed.svg"  alt="../blog/latency-research/quote-latency-averagecondensed.svg" />
+</p></li>
+</ul>
+
+
+
+</div>
+</div>
+
+        </div>
+      </article>
+    </div>  
+    <div class ="span3">
+      <div id="sidebar">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-via="scarcecapital" data-hashtags="research">Tweet</a>
+      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+      <!-- Place this tag where you want the +1 button to render. -->
+<div class="g-plusone" data-annotation="bubble" data-size="medium" data-width="300"></div>
+
+<!-- Place this tag after the last +1 button tag. -->
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+<div class="get-scarce">
+      <p>feeds:   <a href="https://twitter.com/scarcecapital">Twitter</a> | <a href="../index.xml">RSS</a> | <a href="http://eepurl.com/xZDev">Email</a>
+      </p>
+</div>
+    <p>
+      Top Posts:
+      
+    </p>
+    <a class="postlink" href="../blog/latency-research.html">Latency Research</a><br><a class="postlink" href="../blog/market-feed-selection.html">Market Feed Selection</a><br><a class="postlink" href="../blog/candidate-structure.html">Candidate Structure</a><br><a class="postlink" href="../about.html">Welcome to HFT!</a>
+    <p><br>Related Articles:<br></p><a class="postlink" href="../tags/research.html">research</a>
+</div>
+
+    </div>
+  </div>
+  <div class="row-fluid">
+      <div class="span9">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'scarce'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+</div>
+
+  <hr>
+<div id="footer">
+  <div class="copyright" style="text-align: center;">
+    Copyright <a href="http://scarcecapital.com">Scarce Capital</a> 2010-2013
+
+<p>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this work except in compliance with the License.
+You may obtain a copy of the License in the LICENSE file, or at:</p>
+
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+
+
+
+
+  </div>  
+  <p>
+    Powered by
+    <a href="http://twitter.github.com/bootstrap/">bootstrap</a>
+     via 
+    <a href="https://github.com/renard/o-blog">o-blog</a>.
+  </p>
+</div>
+
+</div>
+</body>
+</html>
