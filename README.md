@@ -1,129 +1,110 @@
-welcome to hft!
-===============
+<img src="http://scarcecapital.com/assets/hft-blue.png" width="100px">
 
-HFT is a small project with a big ambition. We aim to build the worlds best algorithmic trading platform using the best off-the-shelf open source technology stack to be found.
+[Blog](http://scarcecapital.com/hft)
 
-Even better, we are aiming for an overall design that is minimal, simple and robust.  Ultimately, we would like the high-frequency community, whether serious professional or keen amateur enthusiast to look towards hft as the backbone of their next project.
+hft is a small project with a big ambition. We aim to build the worlds best
+algorithmic trading platform using the best off-the-shelf open source
+technology stack to be found.
+
+hft is created and maintained by [Tony Day](http://scarcecapital.com).
+
+## Quick start
+
+There is no quick start for hft.  The easiest way to get up to speed is to read the project [blog](http://scarcecapital.com/hft).  If you're interested in contributing to development or find a logic bug, then fork me with:
+
+```
+$ git clone https://github.com/tonyday567/hft.git
+```
 
 # technology stack #
 
-The planned tech stack is along the following lines:
+The world of high frequency trading is a broad church of opinion, technology, ideas and motivations.  hft is being developed using many different tools:
 
-## Broker and Data interface ##
+### [emacs](http://www.gnu.org/software/emacs/), [org-mode](http://orgmode.org) and literate programming###
 
-### Interactive Brokers ###
+[hft.org](https://github.com/tonyday567/hft/blob/master/hft.org) is the nerve
+center of active development and contains just about all the important code, research notes
+and design tools being used.
 
-Interactive Brokers consolidates tick data into 0.3 second time slices so it isn't appropriate for low-latency work.  The big advantage though is the dummy account that will enable anyone to pick up the project and have an end-to-end example out of the box.
+The project makes heavy use of [babel](http://orgmode.org/worg/org-contrib/babel/) to pick and mix between coding environments and languages, whilst still remaining [literate](http://www.haskell.org/haskellwiki/Literate_programming):
 
-### IBrokers API ###
+>The main idea is to regard a program as a communication to human beings rather than as a set of instructions to a computer. ~ Knuth
 
-IBroker works out the box.
+Similarly, a project such as hft is as much about communication between human beings as it is about maintenance of source code.
 
-### algo research ###
+### [R](http://www.r-project.org) ###
 
-R is fast enough to start the algo R&D process and has the most comprehensive hooks into the range of possible directions the project could take.
+R is a strongly functional but imperative language being used for rapid
+development and research of hft and algo ideas as they arise. Most everything
+that you can think of (databases, broker interfaces, statistical analysis,
+visualization) has an R package ready to get you up and going in 5 minutes.
 
+### [haskell](http://www.haskell.org/haskellwiki/Haskell) ###
 
-## data storage and management ##
+R can be many things but what it is least set up for is development of
+asyncronous code. To fill this gap, the project is using haskell to frame the
+system as and when it develops.
 
-RHadoop via R package
+### [Interactive Brokers](http://www.interactivebrokers.com/en/main.php) ###
 
-[Active Quant](http://www.activequant.org)
+Eventually, hft will be broker independent but during the development phase IB
+is the test case. Interactive has the most mature API that works out of the
+box and a demo account so that hft can come pre-plumbed so that (eventually)
+the project can also run out of the box.
 
+Interactive Brokers consolidates tick data into 0.3 second time slices so it
+isn't appropriate for low-latency work.
 
-## cep ##
+### [iqfeed](http://www.iqfeed.net)  ###
 
-### disruptor ###
+Just because it's open-source doesn't mean that it's cost free. iqfeed has
+been chosen as an initial data feed to base project R&D efforts on. iqfeed
+costs dollars but the software can be downloaded for free and a demo version
+allows live data to flow with a lag.
 
-[Disruptor Project](https://github.com/odeheurles/Disruptor-net)
-[Doc](http://disruptor.googlecode.com/files/Disruptor-1.0.pdf)
-[lmax](http://lmax-exchange.github.com/disruptor/)
-[article](http://martinfowler.com/articles/lmax.html)
+A useful way to support the hft project is to let DTN know if you decide to
+purshase iqfeed due to the project.
 
-The disrupture is a quality open-source project with a committment to low-latency.
+## bug tracker
 
-### libcppa ####
-For miscellaneous actor framework needs:
-[libcppa](https://github.com/Neverlord/libcppa)
+Have a bug or a feature request? [Please open a new issue](https://github.com/tonyday567/hft/issues). 
 
+## Community
 
-### messaging ###
+hft is sponsored by [Scarce Capital](http://scarcecapital.com) as an adjunct to client advisory services.
 
-[Protocol Buffers](http://code.google.com/p/protobuf-net/) 
-+1 for speed
+Follow [@scarcecapital on Twitter](http://twitter.com/scarcecapital).
 
-[FAST](https://code.google.com/p/quickfast/) 
-+1 for speed
+Read, subscribe (and contribute!) to the [The Official hft Blog](http://scarcecapital.com/hft).
 
-[ActiveQuant Google Protocol Buffer example](http://activequant.org/svn/aq2o/trunk/base/src/main/proto/messages.proto)
+The project is partially due to active discussions on the [Open Source HFT Linkedin group](http://www.linkedin.com/groups?home=&gid=4405119&trk=anet_ug_hm)
 
+## Contributing
 
-### cep platforms ###
-[esper](http://esper.codehaus.org)
-[triceps](http://triceps.sourceforge.net)
-[cep-trader](http://code.google.com/p/cep-trader/)
+Please submit all pull requests against the master branch.
 
-    
-# other platforms #
+Thanks!
 
-http://algo-trader.googlecode.com
-http://code.google.com/p/tradelink/
+## Authors
 
-## academic notes ##
+**Tony Day**
 
-### sornette ###
-
-[sornette list](http://arxiv.org/find/all/1/all:+sornette/0/1/0/all/0/1)
-
-some specific articles
-
-[1](http://arxiv.org/pdf/cond-mat/0301543.pdf)
-[2](http://arxiv.org/pdf/1108.0077.pdf)
-[3](http://arxiv.org/ftp/arxiv/papers/1012/1012.4118.pdf)
-[4](http://arxiv.org/pdf/1011.2882.pdf)
-[5](http://arxiv.org/pdf/1007.2420.pdf)
-[6](http://arxiv.org/pdf/0909.1007.pdf)
-[7](http://arxiv.org/ftp/arxiv/papers/0812/0812.2449.pdf)
++ [http://twitter.com/tonyday567](http://twitter.com/tonyday567)
++ [http://github.com/tonyday567](http://github.com/tonyday567)
 
 
-ln[E[p(t)]] = a + b (tc -t)^m  b<0 0<m<1
+## Copyright and license
 
-log periodic power law (LPPL) model (Sornette,
-2003a,b; Zhou, 2007).
+Copyright 2013 Scarce Capital.
 
-ln[p(t)] = A + Bx^m + Cx^m cos(w ln x + )
-where x = tc−t measures the time to the critical time tc. For 0 < m < 1 and B < 0 (or m ≤ 0 and B > 0
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this work except in compliance with the License.
+You may obtain a copy of the License in the LICENSE file, or at:
 
-[practical paper](http://arxiv.org/pdf/0909.1007.pdf)
+  [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-p5 gives an optimisation approach
-
-Taboo search + levenberg-marquardt
-
-### Artificial Stock Market ###
-
-[ASM](http://artstkmkt.sourceforge.net/)
-
-# other open source projects to watch #
-
-[libtrading](https://github.com/penberg/libtrading)
-[fix project](https://github.com/dakka/fix8)
-[fix site](http://fix8.org)
-[tradexoft](http://tradexoft.wordpress.com/)
-
-# articles #
-
-http://www.aurorasolutions.org/over-6-million-transactions-per-second-in-a-real-time-system-an-out-of-the-box-approach/
-
-http://programmers.stackexchange.com/questions/121592/what-to-look-for-in-selecting-a-language-for-algorithmic-high-frequency-trading
-
-http://stackoverflow.com/questions/731233/activemq-or-rabbitmq-or-zeromq-or
-
-http://wiki.msgpack.org/pages/viewpage.action?pageId=1081387
-
-http://kenai.com/downloads/javafx-sam/EventProcessinginAction.pdf
-
-
-
-
-
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
