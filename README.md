@@ -15,12 +15,14 @@ There is no quick start for hft.  The easiest way to get up to speed is to read 
 ```
 $ git clone https://github.com/tonyday567/hft.git
 ```
+  
+  
 
-# technology stack #
+## Technology stack ##
 
 The world of high frequency trading is a broad church of opinion, technology, ideas and motivations.  hft is being developed using many different tools:
 
-### [emacs](http://www.gnu.org/software/emacs/), [org-mode](http://orgmode.org) and literate programming###
+### [emacs](http://www.gnu.org/software/emacs/), [org-mode](http://orgmode.org) and [literate programming](http://en.wikipedia.org/wiki/Literate_programming)###
 
 [hft.org](https://github.com/tonyday567/hft/blob/master/hft.org) is the nerve
 center of active development and contains just about all the important code, research notes
@@ -65,7 +67,7 @@ allows live data to flow with a lag.
 A useful way to support the hft project is to let DTN know if you decide to
 purshase iqfeed due to the project.
 
-## bug tracker
+## Bug tracker
 
 Have a bug or a feature request? [Please open a new issue](https://github.com/tonyday567/hft/issues). 
 
