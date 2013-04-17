@@ -5,7 +5,7 @@
     <title>Candidate Structure</title>
     <link rel="stylesheet" type="text/css" href="../style/css/scarce.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="generator" content="o-blog version 1.2-144-g8a78ab9"/>
+    <meta name="generator" content="o-blog version 1.2-147-gccd36b0"/>
 
 <script src="../style/js/jquery-1.7.1.min.js" type="text/javascript"></script>
 <script src="../style/bootstrap/js/bootstrap-modal.js" type="text/javascript"></script>
@@ -60,7 +60,7 @@
      <a href="../about.html"><i>icon-user icon-white</i> About</a>
    </li>
    <li>
-  <a class="caret-before" href="../blog/latency-research.html">
+  <a class="caret-before" href="../blog/statistical-forecasting.html">
        <i class="icon-coffee icon-white">
        </i>
        Blog
@@ -72,7 +72,7 @@
      <ul class="dropdown-menu">
 
 
-<li><a href="../blog/latency-research.html">Latency Research</a></li><li><a href="../blog/market-feed-selection.html">Market Feed Selection</a></li><li><a href="../blog/candidate-structure.html">Candidate Structure</a></li><li><a href="../blog/welcome-to-hft.html">Welcome to hft,</a></li>
+<li><a href="../blog/statistical-forecasting.html">Statistical Forecasting</a></li><li><a href="../blog/latency-research.html">Latency Research</a></li><li><a href="../blog/market-feed-selection.html">Market Feed Selection</a></li><li><a href="../blog/candidate-structure.html">Candidate Structure</a></li>
          
   </ul>
   
@@ -92,7 +92,6 @@
   </li>
 
   </ul>
-
 
       </div>
     </div>
@@ -142,10 +141,9 @@ in the top-down design of the system. To achieve this, the overall design is
 first being modelled using graphviz.  The current candidate system looks like this:
 </p>
 
-
 <img class="hero-chart" src="../assets/candidate.svg" alt="design" width="100%">
 
-<ul>
+<ul class="org-ul">
 <li>blue boxes represent individual components of the system
 </li>
 <li>other colors represent external systems and data sources
@@ -153,122 +151,119 @@ first being modelled using graphviz.  The current candidate system looks like th
 <li>each edge of the chart represents a messaging sytem requirement
 </li>
 <li>there are two main one-way message passing routines that probably
-  need to be very very fast (blue lines)
+need to be very very fast (blue lines)
 </li>
 <li>there is one read from database and one write to database (red lines) 
 </li>
 <li>every component registers to an observer component that records system
-  state and dynamics (grey dotted).
+state and dynamics (grey dotted).
 </li>
 </ul>
-
 
 
 <p>
 The components have been grouped into several clusters:
 </p>
-<ul>
+
+<ul class="org-ul">
 <li>market data: representing trade data, order book and news information
-  flowing from outside the sytem to a local data node.
+flowing from outside the sytem to a local data node.
 </li>
 <li>broker data: representing communication with trading mechanisms
 </li>
 <li>onwire: components that are "in the event stream".  This is motivated by
-  the specifications and documentation of the disruptor which argues that a
-  single thread "wheel" is the best way to enable fast processing of market
-  data into trading orders.
+the specifications and documentation of the disruptor which argues that a
+single thread "wheel" is the best way to enable fast processing of market
+data into trading orders.
 </li>
 <li>offwire: this represents algorithms and processing that are not on the
-  single-thread process.  The motivation here is to test the hypothesis in
-  the disruptor argument.
+single-thread process.  The motivation here is to test the hypothesis in
+the disruptor argument.
 </li>
 </ul>
-
 
 <p>
 There are several ideas that are being tested:
 </p>
-<ul>
+
+<ul class="org-ul">
 <li>that the entire system should be the subject of search and optimisation,
-  rather than componentry.  One example of this is separation of complex
-  event definitions from the statistical analysis once events are defined.
+rather than componentry.  One example of this is separation of complex
+event definitions from the statistical analysis once events are defined.
 </li>
 <li>there is a focus on automation and machine learning.  As such there is no
-  place for human interaction.  In particular, no visualization is required. 
+place for human interaction.  In particular, no visualization is required. 
 </li>
 <li>messaging between components can be the same general process.  The
-  components can also be tested in exactly the same way (such as speed and
-  robustness testing)
+components can also be tested in exactly the same way (such as speed and
+robustness testing)
 </li>
 </ul>
-
 
 <p>
 And here's the dot code:
 </p>
 
-
+<div class="org-src-container">
 
 <pre class="src src-dot">digraph G {
-        node [label=<span class="org-string">"\N"</span>];
-        node [style=filled, color=<span class="org-string">"#1f3950"</span>,fontcolor=<span class="org-string">"#eeeeee"</span>,shape=box]; 
+        node [label=<span style="color: #cc9393;">"\N"</span>];
+        node [style=filled, color=<span style="color: #cc9393;">"#1f3950"</span>,fontcolor=<span style="color: #cc9393;">"#eeeeee"</span>,shape=box]; 
         subgraph cluster_market_data {
-                graph [label=<span class="org-string">"market data"</span>, color=<span class="org-string">"#909090"</span>];
-                exchange [shape=egg,color=<span class="org-string">"#ff111111"</span>,fontcolor=<span class="org-string">"#101010"</span>,label=<span class="org-string">"exchanges"</span>];
-                aggregator [shape=egg,color=<span class="org-string">"#cc11cc22"</span>,fontcolor=<span class="org-string">"#101010"</span>,label=<span class="org-string">"data stream"</span>];
-                localport [label=<span class="org-string">"local node"</span>];
+                graph [label=<span style="color: #cc9393;">"market data"</span>, color=<span style="color: #cc9393;">"#909090"</span>];
+                exchange [shape=egg,color=<span style="color: #cc9393;">"#ff111111"</span>,fontcolor=<span style="color: #cc9393;">"#101010"</span>,label=<span style="color: #cc9393;">"exchanges"</span>];
+                aggregator [shape=egg,color=<span style="color: #cc9393;">"#cc11cc22"</span>,fontcolor=<span style="color: #cc9393;">"#101010"</span>,label=<span style="color: #cc9393;">"data stream"</span>];
+                localport [label=<span style="color: #cc9393;">"local node"</span>];
                 exchange -&gt; aggregator [dir=none];
                 aggregator -&gt; localport [dir=both];
         }
         subgraph cluster_offwire {
-                graph [label=<span class="org-string">"offwire"</span>,
-                        color=<span class="org-string">"#909090"</span>];
-                offwirealgo [label=<span class="org-string">"offline algo"</span>];
+                graph [label=<span style="color: #cc9393;">"offwire"</span>,
+                        color=<span style="color: #cc9393;">"#909090"</span>];
+                offwirealgo [label=<span style="color: #cc9393;">"offline algo"</span>];
                 observer;
                 databases;
-                observer -&gt; databases [color=red,label=<span class="org-string">"write"</span>,fontcolor=red];
+                observer -&gt; databases [color=red,label=<span style="color: #cc9393;">"write"</span>,fontcolor=red];
         }
         subgraph cluster_onwire {
-                graph [label=<span class="org-string">"onwire"</span>,
-                        color=<span class="org-string">"#909090"</span>];
+                graph [label=<span style="color: #cc9393;">"onwire"</span>,
+                        color=<span style="color: #cc9393;">"#909090"</span>];
                 node [style=filled];
-                disruptor [label=<span class="org-string">"event server"</span>];
-                eventalgo [label=<span class="org-string">"algo"</span>];
+                disruptor [label=<span style="color: #cc9393;">"event server"</span>];
+                eventalgo [label=<span style="color: #cc9393;">"algo"</span>];
                 controller;
-                controller -&gt; eventalgo [color=<span class="org-string">"#aaaaaa"</span>,dir=both]
+                controller -&gt; eventalgo [color=<span style="color: #cc9393;">"#aaaaaa"</span>,dir=both]
                 disruptor -&gt; listener;
                 disruptor -&gt; eventalgo;
                 disruptor -&gt; controller;
-                controller -&gt; disruptor [color=<span class="org-string">"#0080ff"</span>];
+                controller -&gt; disruptor [color=<span style="color: #cc9393;">"#0080ff"</span>];
         }
         subgraph cluster_broker {
-                graph [label=<span class="org-string">"broker data"</span>,
-                        color=<span class="org-string">"#909090"</span>];
-                broker [shape=egg,color=<span class="org-string">"#ff111111"</span>,fontcolor=<span class="org-string">"#101010"</span>,label=<span class="org-string">"brokers"</span>];
-                brokeraggregator [shape=egg,color=<span class="org-string">"#cc11cc22"</span>,fontcolor=<span class="org-string">"#101010"</span>,label=<span class="org-string">"aggregation"</span>];
+                graph [label=<span style="color: #cc9393;">"broker data"</span>,
+                        color=<span style="color: #cc9393;">"#909090"</span>];
+                broker [shape=egg,color=<span style="color: #cc9393;">"#ff111111"</span>,fontcolor=<span style="color: #cc9393;">"#101010"</span>,label=<span style="color: #cc9393;">"brokers"</span>];
+                brokeraggregator [shape=egg,color=<span style="color: #cc9393;">"#cc11cc22"</span>,fontcolor=<span style="color: #cc9393;">"#101010"</span>,label=<span style="color: #cc9393;">"aggregation"</span>];
                 broker -&gt; brokeraggregator [dir=none];
                 brokeraggregator -&gt; trader [dir=both];
         }
-        localport -&gt; observer [color=<span class="org-string">"#aaaaaa"</span>,style=dotted];
-        controller -&gt; localport [color=<span class="org-string">"#aaaaaa"</span>];
-        localport -&gt; disruptor [color=<span class="org-string">"#0080ff"</span>];
-        listener -&gt; observer [color=<span class="org-string">"#aaaaaa"</span>,style=dotted];
-        controller -&gt; observer [color=<span class="org-string">"#aaaaaa"</span>,style=dotted];
-        controller -&gt; trader [color=<span class="org-string">"#aaaaaa"</span>,dir=both];
-        controller -&gt; offwirealgo [color=<span class="org-string">"#aaaaaa"</span>,dir=both];
-        databases -&gt; offwirealgo [color=red,label=<span class="org-string">"read"</span>,fontcolor=red];
-        trader -&gt; observer [color=<span class="org-string">"#aaaaaa"</span>,style=dotted];
-        eventalgo -&gt; observer [color=<span class="org-string">"#aaaaaa"</span>,style=dotted];
-        offwirealgo -&gt; observer [color=<span class="org-string">"#aaaaaa"</span>,style=dotted];
+        localport -&gt; observer [color=<span style="color: #cc9393;">"#aaaaaa"</span>,style=dotted];
+        controller -&gt; localport [color=<span style="color: #cc9393;">"#aaaaaa"</span>];
+        localport -&gt; disruptor [color=<span style="color: #cc9393;">"#0080ff"</span>];
+        listener -&gt; observer [color=<span style="color: #cc9393;">"#aaaaaa"</span>,style=dotted];
+        controller -&gt; observer [color=<span style="color: #cc9393;">"#aaaaaa"</span>,style=dotted];
+        controller -&gt; trader [color=<span style="color: #cc9393;">"#aaaaaa"</span>,dir=both];
+        controller -&gt; offwirealgo [color=<span style="color: #cc9393;">"#aaaaaa"</span>,dir=both];
+        databases -&gt; offwirealgo [color=red,label=<span style="color: #cc9393;">"read"</span>,fontcolor=red];
+        trader -&gt; observer [color=<span style="color: #cc9393;">"#aaaaaa"</span>,style=dotted];
+        eventalgo -&gt; observer [color=<span style="color: #cc9393;">"#aaaaaa"</span>,style=dotted];
+        offwirealgo -&gt; observer [color=<span style="color: #cc9393;">"#aaaaaa"</span>,style=dotted];
 }
 </pre>
+</div>
 
-
-
-<div id="outline-container-1" class="outline-3">
-<h3 id="sec-1">haskell interaction</h3>
-<div class="outline-text-3" id="text-1">
-
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">haskell interaction</h2>
+<div class="outline-text-2" id="text-1">
 
 <p>
 Via haskell, the dot chart can be the specifications for an actual system as well as a
@@ -276,135 +271,251 @@ representation. And via svg technology, the picture can also be modified to
 be a reporting front-end in a production environment.
 </p>
 
+<div class="org-src-container">
 
-
-<pre class="src src-haskell"><span class="org-keyword">module</span> <span class="org-type">ControllerTest</span><span class="org-whitespace-trailing"> </span>
+<pre class="src src-haskell"><span style="color: #f0dfaf; font-weight: bold;">module</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">ControllerTest</span><span style="color: #cc9393; background-color: #3f3f3f;"> </span>
 ( importDotFile
 , importDot
 , printGraph
 , nodeList
 , edgeList
-) <span class="org-keyword">where</span>
+) <span style="color: #f0dfaf; font-weight: bold;">where</span>
 
-<span class="org-keyword">import</span> <span class="org-type">Data.GraphViz</span>
-<span class="org-keyword">import</span> <span class="org-keyword">qualified</span> <span class="org-type">Data.Text.Lazy</span> <span class="org-keyword">as</span> <span class="org-type">L</span>
-<span class="org-keyword">import</span> <span class="org-keyword">qualified</span> <span class="org-type">Data.Text.Lazy.IO</span> <span class="org-keyword">as</span> <span class="org-type">I</span>
-<span class="org-keyword">import</span> <span class="org-keyword">qualified</span> <span class="org-type">Data.GraphViz.Types.Generalised</span> <span class="org-keyword">as</span> <span class="org-type">G</span>
-<span class="org-keyword">import</span> <span class="org-type">Data.Graph.Inductive.Graph</span>
+<span style="color: #f0dfaf; font-weight: bold;">import</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">Data.GraphViz</span>
+<span style="color: #f0dfaf; font-weight: bold;">import</span> <span style="color: #f0dfaf; font-weight: bold;">qualified</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">Data.Text.Lazy</span> <span style="color: #f0dfaf; font-weight: bold;">as</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">L</span>
+<span style="color: #f0dfaf; font-weight: bold;">import</span> <span style="color: #f0dfaf; font-weight: bold;">qualified</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">Data.Text.Lazy.IO</span> <span style="color: #f0dfaf; font-weight: bold;">as</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">I</span>
+<span style="color: #f0dfaf; font-weight: bold;">import</span> <span style="color: #f0dfaf; font-weight: bold;">qualified</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">Data.GraphViz.Types.Generalised</span> <span style="color: #f0dfaf; font-weight: bold;">as</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">G</span>
+<span style="color: #f0dfaf; font-weight: bold;">import</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">Data.Graph.Inductive.Graph</span>
 
-<span class="org-function-name">importDotFile</span> <span class="org-variable-name">::</span> <span class="org-type">FilePath</span> <span class="org-variable-name">-&gt;</span> <span class="org-type">IO</span> (<span class="org-type">G.DotGraph</span> <span class="org-type">String</span>)
-<span class="org-function-name">importDotFile</span> f <span class="org-variable-name">=</span> <span class="org-keyword">do</span>
-        dotText <span class="org-variable-name">&lt;-</span> <span class="org-type">I</span><span class="org-variable-name">.</span>readFile f<span class="org-whitespace-trailing"> </span>
-        return <span class="org-variable-name">$</span> parseDotGraph dotText
+<span style="color: #8cd0d3;">importDotFile</span> <span style="color: #dfaf8f;">::</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">FilePath</span> <span style="color: #dfaf8f;">-&gt;</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">IO</span> (<span style="color: #8cd0d3; background-color: #3f3f3f;">G.DotGraph</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">String</span>)
+<span style="color: #8cd0d3;">importDotFile</span> f <span style="color: #dfaf8f;">=</span> <span style="color: #f0dfaf; font-weight: bold;">do</span>
+        dotText <span style="color: #dfaf8f;">&lt;-</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">I</span><span style="color: #dfaf8f;">.</span>readFile f<span style="color: #cc9393; background-color: #3f3f3f;"> </span>
+        return <span style="color: #dfaf8f;">$</span> parseDotGraph dotText
 
-<span class="org-function-name">importDot</span> <span class="org-variable-name">::</span> <span class="org-type">L.Text</span> <span class="org-variable-name">-&gt;</span> <span class="org-type">G.DotGraph</span> <span class="org-type">Node</span>
-<span class="org-function-name">importDot</span> s <span class="org-variable-name">=</span> parseDotGraph s
+<span style="color: #8cd0d3;">importDot</span> <span style="color: #dfaf8f;">::</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">L.Text</span> <span style="color: #dfaf8f;">-&gt;</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">G.DotGraph</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">Node</span>
+<span style="color: #8cd0d3;">importDot</span> s <span style="color: #dfaf8f;">=</span> parseDotGraph s
 
-<span class="org-function-name">printGraph</span> <span class="org-variable-name">::</span> <span class="org-type">G.DotGraph</span> <span class="org-type">String</span> <span class="org-variable-name">-&gt;</span> <span class="org-type">IO</span> <span class="org-type">()</span>
-<span class="org-function-name">printGraph</span> d <span class="org-variable-name">=</span> <span class="org-keyword">do</span>
-        putStrLn <span class="org-variable-name">$</span> <span class="org-type">L</span><span class="org-variable-name">.</span>unpack <span class="org-variable-name">$</span> printDotGraph d
-        return<span class="org-type">()</span>
+<span style="color: #8cd0d3;">printGraph</span> <span style="color: #dfaf8f;">::</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">G.DotGraph</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">String</span> <span style="color: #dfaf8f;">-&gt;</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">IO</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">()</span>
+<span style="color: #8cd0d3;">printGraph</span> d <span style="color: #dfaf8f;">=</span> <span style="color: #f0dfaf; font-weight: bold;">do</span>
+        putStrLn <span style="color: #dfaf8f;">$</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">L</span><span style="color: #dfaf8f;">.</span>unpack <span style="color: #dfaf8f;">$</span> printDotGraph d
+        return<span style="color: #8cd0d3; background-color: #3f3f3f;">()</span>
 
-<span class="org-function-name">nodeList</span> <span class="org-variable-name">::</span> <span class="org-type">G.DotGraph</span> <span class="org-type">String</span> <span class="org-variable-name">-&gt;</span> [<span class="org-type">String</span>]
-<span class="org-function-name">nodeList</span> g <span class="org-variable-name">=</span> map nodeID <span class="org-variable-name">$</span> graphNodes g
+<span style="color: #8cd0d3;">nodeList</span> <span style="color: #dfaf8f;">::</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">G.DotGraph</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">String</span> <span style="color: #dfaf8f;">-&gt;</span> [<span style="color: #8cd0d3; background-color: #3f3f3f;">String</span>]
+<span style="color: #8cd0d3;">nodeList</span> g <span style="color: #dfaf8f;">=</span> map nodeID <span style="color: #dfaf8f;">$</span> graphNodes g
 
-<span class="org-function-name">edgeList</span> <span class="org-variable-name">::</span> <span class="org-type">G.DotGraph</span> <span class="org-type">String</span> <span class="org-variable-name">-&gt;</span> [(<span class="org-type">String</span>,<span class="org-type">String</span>)]
-<span class="org-function-name">edgeList</span> g <span class="org-variable-name">=</span>  map (<span class="org-variable-name">\</span>x <span class="org-variable-name">-&gt;</span> (fromNode x, toNode x)) <span class="org-variable-name">$</span> graphEdges g
+<span style="color: #8cd0d3;">edgeList</span> <span style="color: #dfaf8f;">::</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">G.DotGraph</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">String</span> <span style="color: #dfaf8f;">-&gt;</span> [(<span style="color: #8cd0d3; background-color: #3f3f3f;">String</span>,<span style="color: #8cd0d3; background-color: #3f3f3f;">String</span>)]
+<span style="color: #8cd0d3;">edgeList</span> g <span style="color: #dfaf8f;">=</span>  map (<span style="color: #dfaf8f;">\</span>x <span style="color: #dfaf8f;">-&gt;</span> (fromNode x, toNode x)) <span style="color: #dfaf8f;">$</span> graphEdges g
 </pre>
-
+</div>
 
 <p>
 So, a new picture generates a new system with potentially new components
 (nodes) and messaging requirements (edges).
 </p>
 </div>
-
 </div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">edges</h2>
+<div class="outline-text-2" id="text-2">
 
-<div id="outline-container-2" class="outline-3">
-<h3 id="sec-2">edges</h3>
-<div class="outline-text-3" id="text-2">
+<div class="org-src-container">
 
-
-
-
-
-<pre class="src src-haskell"><span class="org-keyword">import</span> <span class="org-type">ControllerTest</span>
-g <span class="org-variable-name">&lt;-</span> importDotFile <span class="org-string">"../candidate.dot"</span>
-<span class="org-function-name">edgeList</span> g
+<pre class="src src-haskell"><span style="color: #f0dfaf; font-weight: bold;">import</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">ControllerTest</span>
+g <span style="color: #dfaf8f;">&lt;-</span> importDotFile <span style="color: #cc9393;">"../candidate.dot"</span>
+<span style="color: #8cd0d3;">edgeList</span> g
 </pre>
-
+</div>
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-<colgroup><col class="left" /><col class="left" />
+
+
+<colgroup>
+<col class="left"/>
+
+<col class="left"/>
 </colgroup>
 <tbody>
-<tr><td class="left">exchange</td><td class="left">aggregator</td></tr>
-<tr><td class="left">aggregator</td><td class="left">localport</td></tr>
-<tr><td class="left">observer</td><td class="left">databases</td></tr>
-<tr><td class="left">controller</td><td class="left">eventalgo</td></tr>
-<tr><td class="left">disruptor</td><td class="left">listener</td></tr>
-<tr><td class="left">disruptor</td><td class="left">eventalgo</td></tr>
-<tr><td class="left">disruptor</td><td class="left">controller</td></tr>
-<tr><td class="left">controller</td><td class="left">disruptor</td></tr>
-<tr><td class="left">broker</td><td class="left">brokeraggregator</td></tr>
-<tr><td class="left">brokeraggregator</td><td class="left">trader</td></tr>
-<tr><td class="left">localport</td><td class="left">observer</td></tr>
-<tr><td class="left">controller</td><td class="left">localport</td></tr>
-<tr><td class="left">localport</td><td class="left">disruptor</td></tr>
-<tr><td class="left">listener</td><td class="left">observer</td></tr>
-<tr><td class="left">controller</td><td class="left">observer</td></tr>
-<tr><td class="left">controller</td><td class="left">trader</td></tr>
-<tr><td class="left">controller</td><td class="left">offwirealgo</td></tr>
-<tr><td class="left">databases</td><td class="left">offwirealgo</td></tr>
-<tr><td class="left">trader</td><td class="left">observer</td></tr>
-<tr><td class="left">eventalgo</td><td class="left">observer</td></tr>
-<tr><td class="left">offwirealgo</td><td class="left">observer</td></tr>
+<tr>
+<td class="left">exchange</td>
+<td class="left">aggregator</td>
+</tr>
+
+<tr>
+<td class="left">aggregator</td>
+<td class="left">localport</td>
+</tr>
+
+<tr>
+<td class="left">observer</td>
+<td class="left">databases</td>
+</tr>
+
+<tr>
+<td class="left">controller</td>
+<td class="left">eventalgo</td>
+</tr>
+
+<tr>
+<td class="left">disruptor</td>
+<td class="left">listener</td>
+</tr>
+
+<tr>
+<td class="left">disruptor</td>
+<td class="left">eventalgo</td>
+</tr>
+
+<tr>
+<td class="left">disruptor</td>
+<td class="left">controller</td>
+</tr>
+
+<tr>
+<td class="left">controller</td>
+<td class="left">disruptor</td>
+</tr>
+
+<tr>
+<td class="left">broker</td>
+<td class="left">brokeraggregator</td>
+</tr>
+
+<tr>
+<td class="left">brokeraggregator</td>
+<td class="left">trader</td>
+</tr>
+
+<tr>
+<td class="left">localport</td>
+<td class="left">observer</td>
+</tr>
+
+<tr>
+<td class="left">controller</td>
+<td class="left">localport</td>
+</tr>
+
+<tr>
+<td class="left">localport</td>
+<td class="left">disruptor</td>
+</tr>
+
+<tr>
+<td class="left">listener</td>
+<td class="left">observer</td>
+</tr>
+
+<tr>
+<td class="left">controller</td>
+<td class="left">observer</td>
+</tr>
+
+<tr>
+<td class="left">controller</td>
+<td class="left">trader</td>
+</tr>
+
+<tr>
+<td class="left">controller</td>
+<td class="left">offwirealgo</td>
+</tr>
+
+<tr>
+<td class="left">databases</td>
+<td class="left">offwirealgo</td>
+</tr>
+
+<tr>
+<td class="left">trader</td>
+<td class="left">observer</td>
+</tr>
+
+<tr>
+<td class="left">eventalgo</td>
+<td class="left">observer</td>
+</tr>
+
+<tr>
+<td class="left">offwirealgo</td>
+<td class="left">observer</td>
+</tr>
 </tbody>
 </table>
-
-
-
+</div>
 </div>
 
-</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">nodes</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
 
-<div id="outline-container-3" class="outline-3">
-<h3 id="sec-3">nodes</h3>
-<div class="outline-text-3" id="text-3">
-
-
-
-
-
-<pre class="src src-haskell"><span class="org-keyword">import</span> <span class="org-type">ControllerTest</span>
-<span class="org-keyword">import</span> <span class="org-type">Data.List</span>
-g <span class="org-variable-name">&lt;-</span> importDotFile <span class="org-string">"../dot/candidate.dot"</span>
-<span class="org-function-name">map</span> (<span class="org-variable-name">\</span>x <span class="org-variable-name">-&gt;</span> [x]) <span class="org-variable-name">$</span> nodeList g
+<pre class="src src-haskell"><span style="color: #f0dfaf; font-weight: bold;">import</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">ControllerTest</span>
+<span style="color: #f0dfaf; font-weight: bold;">import</span> <span style="color: #8cd0d3; background-color: #3f3f3f;">Data.List</span>
+g <span style="color: #dfaf8f;">&lt;-</span> importDotFile <span style="color: #cc9393;">"../dot/candidate.dot"</span>
+<span style="color: #8cd0d3;">map</span> (<span style="color: #dfaf8f;">\</span>x <span style="color: #dfaf8f;">-&gt;</span> [x]) <span style="color: #dfaf8f;">$</span> nodeList g
 </pre>
-
+</div>
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-<colgroup><col class="left" />
+
+
+<colgroup>
+<col class="left"/>
 </colgroup>
 <tbody>
-<tr><td class="left">aggregator</td></tr>
-<tr><td class="left">broker</td></tr>
-<tr><td class="left">brokeraggregator</td></tr>
-<tr><td class="left">controller</td></tr>
-<tr><td class="left">databases</td></tr>
-<tr><td class="left">disruptor</td></tr>
-<tr><td class="left">eventalgo</td></tr>
-<tr><td class="left">exchange</td></tr>
-<tr><td class="left">listener</td></tr>
-<tr><td class="left">localport</td></tr>
-<tr><td class="left">observer</td></tr>
-<tr><td class="left">offwirealgo</td></tr>
-<tr><td class="left">trader</td></tr>
+<tr>
+<td class="left">aggregator</td>
+</tr>
+
+<tr>
+<td class="left">broker</td>
+</tr>
+
+<tr>
+<td class="left">brokeraggregator</td>
+</tr>
+
+<tr>
+<td class="left">controller</td>
+</tr>
+
+<tr>
+<td class="left">databases</td>
+</tr>
+
+<tr>
+<td class="left">disruptor</td>
+</tr>
+
+<tr>
+<td class="left">eventalgo</td>
+</tr>
+
+<tr>
+<td class="left">exchange</td>
+</tr>
+
+<tr>
+<td class="left">listener</td>
+</tr>
+
+<tr>
+<td class="left">localport</td>
+</tr>
+
+<tr>
+<td class="left">observer</td>
+</tr>
+
+<tr>
+<td class="left">offwirealgo</td>
+</tr>
+
+<tr>
+<td class="left">trader</td>
+</tr>
 </tbody>
 </table>
-
-
 </div>
 </div>
 
@@ -434,7 +545,7 @@ g <span class="org-variable-name">&lt;-</span> importDotFile <span class="org-st
       Top Posts:
       
     </p>
-    <a class="postlink" href="../blog/latency-research.html">Latency Research</a><br><a class="postlink" href="../blog/market-feed-selection.html">Market Feed Selection</a><br><a class="postlink" href="../blog/candidate-structure.html">Candidate Structure</a><br><a class="postlink" href="../about.html">Welcome to HFT!</a>
+    <a class="postlink" href="../blog/statistical-forecasting.html">Statistical Forecasting</a><br><a class="postlink" href="../blog/latency-research.html">Latency Research</a><br><a class="postlink" href="../blog/market-feed-selection.html">Market Feed Selection</a><br><a class="postlink" href="../blog/candidate-structure.html">Candidate Structure</a>
     <p><br>Related Articles:<br></p><a class="postlink" href="../tags/design.html">design</a>
 </div>
 
@@ -475,9 +586,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</p>
-
-
-
 
   </div>  
   <p>

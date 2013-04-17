@@ -3,9 +3,387 @@
   <title>hft,</title>
   <link href="http://scarcecapital.com/hft/index.xml" rel="self" />
   <link href="http://scarcecapital.com/hft"/>
-  <updated>2013-04-14T12:10:38Z</updated>
+  <updated>2013-04-17T20:43:50Z</updated>
   <id>http://scarcecapital.com/hft/index.xml</id>
   <entry>
+<title type="html">Statistical Forecasting</title>
+<author><name>tony day</name></author>
+<link href="http://scarcecapital.com/hft/blog/statistical-forecasting.html"/>
+<updated>2013-04-17T16:23:00Z</updated>
+<published>2013-04-17T16:23:00Z</published>
+<id>http://scarcecapital.com/hft/blog/statistical-forecasting.html</id>
+<content type="html">&lt;script type="text/javascript"
+  src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;
+&lt;/script&gt;
+
+&lt;p&gt;
+A bewildering, seemingly infinite number of approaches exist for statistical
+forecasting of returns. An early mistake made in this choice can doom an
+algorithmic approach to trading (whether high-frequency or low) from the very
+beginning of the hunt.
+&lt;/p&gt;
+
+&lt;p&gt;
+My experience, however, is that many seemingly disparate techniques are, in
+fact, the same basic calculation of simple statistics with varying parameters
+and restrictions of the solution space.
+&lt;/p&gt;
+
+&lt;div id="outline-container-sec-1" class="outline-2"&gt;
+&lt;h2 id="sec-1"&gt;the moving average&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-1"&gt;
+&lt;p&gt;
+&lt;b&gt;Simple Moving Average (SMA)&lt;/b&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+The workhorse of technical market analytics is the moving average. As an
+example, the simplest and most famous technical signal is the 20-day moving
+average of price.  When the price falls below the moving average sell, and
+when it moves above the average, buy.  Reaching for my latex cheat sheet:
+&lt;/p&gt;
+
+&lt;p&gt;
+\(signal = price_{0} - \frac{\sum\limits_{i=0}^{19}price_{i}}{20}\)
+&lt;/p&gt;
+
+&lt;p&gt;
+where \(price_{0}\) is current price (as at a close say) and \(price_{19}\) the price 19 days ago.
+&lt;/p&gt;
+
+&lt;p&gt;
+Rearranging:
+&lt;/p&gt;
+
+\begin{align}
+signal = &amp;\left( \begin{array}{c} 0.95 &amp; -0.05 &amp; ... &amp; -0.05 \end{array} \right) \ast \\
+&amp;\left( \begin{array}{c} p_{0} &amp; p_{1} &amp; ... &amp; p_{19} \end{array} \right) 
+\end{align}
+
+&lt;p&gt;
+So the signal can be expressed as a weighted sum of price where the weights add to zero.
+&lt;/p&gt;
+
+
+&lt;p&gt;
+Moving on to the next most popular moving average crossover, let's look at the
+signal from that results from using the 100 day average crossing the 20 day
+average (120 actually but I'm making the maths easy):
+&lt;/p&gt;
+
+\begin{equation}
+\begin{split}
+signal &amp;= &amp;\frac{\sum\limits_{i=0}^{19}price_{-i}}{20} - \frac{\sum\limits_{i=0}^{99}price_{-i}}{100} &amp;\\
+&amp;= &amp;\left( \begin{array}{cccc} 0.04 &amp; 0.04 &amp; ... &amp; -0.01 &amp; ... &amp; -0.01 \end{array} \right) \ast \\
+&amp;&amp;\left( \begin{array}{c} p_{0} &amp; p_{1} &amp; ... &amp; p_{20} &amp; ... &amp; p_{99} \end{array} \right)
+\end{split}
+\end{equation}
+
+
+&lt;p&gt;
+&lt;b&gt;Exponential Moving Average (EMA)&lt;/b&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+An exponential moving average adopts a weighting scheme where the weight
+geometrically decays at a constant rate of \((1 - \frac{1}{days})\) the further back in time
+you go. Price crossing a 10-day EMA signal looks like:
+&lt;/p&gt;
+
+\begin{equation}
+\begin{split}
+signal &amp;= &amp;price_{0} - \frac{\sum\limits_{i=0}^{\infty}0.9^{i} \ast price_{i}}{10} \\
+&amp;= &amp;\left( \begin{array}{c} 0.9 &amp; -0.09 &amp; -0.081 &amp; ... \end{array} \right) \ast \\
+&amp;&amp;\left( \begin{array}{c} p_{0} &amp; p_{1} &amp; p_{2} &amp; ...  \end{array} \right)
+\end{split}
+\end{equation}
+
+&lt;p&gt;
+So, no matter how many different moving average rules are combined, nor the alternative
+ways of specifying a moving average, moving average signal rules all boil down to a weighted sum
+calculation of price.
+&lt;/p&gt;
+
+\begin{equation} 
+signal = \sum\limits_{i=0}^{n}(k_{i} \ast price_{i})
+\end{equation}
+
+&lt;p&gt;
+where \(k_{i}\) are weights adding to zero.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;return-based signals&lt;/b&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+A signal based on historical prices can also be expressed in terms of
+historical returns given:
+&lt;/p&gt;
+
+\begin{align} 
+1 + return_{n} = \frac{price_{n}}{price_{(n-1)}}
+\end{align}
+
+&lt;p&gt;
+and thus
+&lt;/p&gt;
+
+\begin{equation} 
+\frac{price_{0}}{price_{n}} =
+\end{equation}
+\begin{equation}
+\frac{price_{0}}{price_{1}} \ast \frac{price_{1}}{price_{2}} \ast \cdots \ast \frac{price_{(n-1)}}{price_{n}} =
+\end{equation}
+\begin{equation}
+\prod\limits_{i=0}^{n-1}(1+return_{i}) \approxeq
+\end{equation}
+\begin{equation}
+1 + return_{0} + return_{1} + \cdots + return_{n-1}
+\end{equation}
+&lt;p&gt;
+(dropping the insignificant terms from the taylor series expansion)
+&lt;/p&gt;
+
+
+&lt;p&gt;
+Now being a generic signal, you can divide by anything you want and it's still
+a signal.  Dividing by \(price_{19}\) (I'm making the maths easier) gives:
+&lt;/p&gt;
+
+\begin{align}
+&amp;(k_{0} \ast \frac{price_{0}}{price_{19}}) + (k_{1} \ast \frac{price_{1}}{price_{19}}) + \cdots + (k_{19} \ast \frac{price_{19}}{price_{19}}) \\
+\Rightarrow &amp;(k_{0} \ast (1 + return_{0} + ... + return_{19}) + \\
+&amp;(k_{1} \ast (1 + return_{1} + ... + return_{19}) + \cdots + (k_{19} \ast 1) \\
+\Rightarrow&amp;(\sum\limits_{0}^{19}k_{i}) + k_{0} \ast return_{0} + \\
+&amp;(k_{0} +k_{1}) \ast return_{1} + ... \\
+&amp;+ \sum\limits_{0}^{19}k_{i} \ast return_{19}  
+\end{align}
+
+&lt;p&gt;
+The first term (sum of weights) is zero, so for our first price MA example
+[SMA(20)] looks like this in return terms:
+&lt;/p&gt;
+
+\begin{align}
+signal = &amp;0.95 \ast return_{0} +\\
+&amp;0.9 \ast return_{1} + ... +\\
+&amp;0.05 \ast return_{19}  
+\end{align}
+
+&lt;p&gt;
+So a price moving average signal is the same as a return moving average where
+weights decline by 0.05 each time period (simple decay).
+&lt;/p&gt;
+
+&lt;p&gt;
+Before we leave technicals, it might be useful to show the EMA(10) example as
+a code snippet (and with a few practical tweaks) compared to the SMA(20) from
+the previous example:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;R code&lt;/b&gt;
+&lt;/p&gt;
+&lt;div class="org-src-container"&gt;
+
+&lt;pre class="src src-R"&gt;k.weights
+max.n = 20
+days = 10
+k.weights = -(1-(1/days))^(0:(max.n-1))/days &lt;span style="color: #7f9f7f;"&gt;# &lt;/span&gt;&lt;span style="color: #7f9f7f;"&gt;the ema weights&lt;/span&gt;
+k.weights[1] = 1 + k.weights[1] &lt;span style="color: #7f9f7f;"&gt;# &lt;/span&gt;&lt;span style="color: #7f9f7f;"&gt;the current price&lt;/span&gt;
+k.weights = k.weights/sum(k.weights) &lt;span style="color: #7f9f7f;"&gt;# &lt;/span&gt;&lt;span style="color: #7f9f7f;"&gt;normalising to sum=1 because we capped the length&lt;/span&gt;
+ema.weights = cumsum(k.weights)
+ema.weights = ema.weights/sum(ema.weights) &lt;span style="color: #7f9f7f;"&gt;# &lt;/span&gt;&lt;span style="color: #7f9f7f;"&gt;normalising so sum=1&lt;/span&gt;
+sma.weights = seq(0.95,0.00,by=-0.05)/sum(seq(0.95,0.00,by=-0.05))
+&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(reshape)
+&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(ggplot2)
+df.long = melt(data.frame(ema.weights,sma.weights,time=0:(max.n-1)),id=&lt;span style="color: #cc9393;"&gt;"time"&lt;/span&gt;) 
+g = ggplot(data=df.long,
+       aes(x=time, y=value,color=variable)) +
+  geom_line()
+&lt;/pre&gt;
+&lt;/div&gt;
+
+
+&lt;div class="figure"&gt;
+&lt;p&gt;&lt;img src="../blog/statistical-forecasting/rweights.png"  alt="rweights.png"/&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id="outline-container-sec-2" class="outline-2"&gt;
+&lt;h2 id="sec-2"&gt;momentum signals&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-2"&gt;
+&lt;p&gt;
+Momentum in standard finance literature is defined like this:
+&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;
+When the return over the last 12 months is negative, go short the market, otherwise stay long
+&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;
+Assuming there are 250 trading days in a year gives:
+&lt;/p&gt;
+
+\begin{equation} 
+signal = \sum\limits_{i=0}^{249}return_{i}
+\end{equation}
+\begin{equation} 
+signal = 1 \ast return_{0} + 1 \ast return_{1} + ... + 1 \ast return_{249}  
+\end{equation}
+
+
+&lt;p&gt;
+The weights are different and the signal uses a longer series but the
+underlying formulae structure is exactly the same. 
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id="outline-container-sec-3" class="outline-2"&gt;
+&lt;h2 id="sec-3"&gt;volatility&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-3"&gt;
+&lt;p&gt;
+The volatility of a return series is calculated as (20 day series say which
+would be broadly comparable to the VIX):
+&lt;/p&gt;
+
+\begin{align}
+vol_{0} = &amp;\sqrt(0.05 * (return_{0} - av)^{2} + 0.05 * (return_{1} - av)^{2} \\
+&amp;+ ... + 0.05 * (return_{19} - av)^{2}) 
+\end{align}
+
+&lt;p&gt;
+Now one problem with statistical analysis of time series that standard fiaince
+is all over is that this is often a bad estimate of underlying volatility, because
+volatility is auto-conditional (future volatility is highly dependent on
+recent historical volatility).
+&lt;/p&gt;
+
+&lt;p&gt;
+To deal with this, the workhorse of standard finance historical volatility
+analysis is the GARCH model. This note is getting quite long so I wont bore
+with the details but the guts of the model &lt;i&gt;uses an exponential weighting
+scheme&lt;/i&gt; to calculate volatility in a manner spookily like the EMA
+calculations in return space.
+&lt;/p&gt;
+
+\begin{align} 
+vol_{0} = \sqrt(&amp;0.09 * (return_{0} - av)^{2} + \\
+&amp;0.081 * (return_{1} - av)^{2} + ...) 
+\end{align}
+
+&lt;p&gt;
+Same as the standard volatility calculation but with a different weighting
+scheme.
+&lt;/p&gt;
+
+&lt;p&gt;
+Now, one more trick and I'll get to the main point. The average return in the
+volatility equation is there as an estimate of the underlying mean return.
+Much of technical analysis and momentum research is actually alternative
+specifications of a useful expected return approximation (once you constrain
+the weights to add up to 1). We can thus insert our weighted return formulae
+in the volatility formulae:
+&lt;/p&gt;
+
+\begin{align}
+E(return_{0}) = \sqrt(&amp;0.09 * return_{0} + 0.081 * return_{1} + ...) \\ 
+E(vol_{0}) = \sqrt(&amp;0.09 * (return_{0} - return estimate)^{2} + \\
+&amp;0.081 * (return_{1} - return estimate)^{2} + ...) 
+\end{align}
+&lt;p&gt;
+(the weighting schemes don't have to be the same)
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id="outline-container-sec-4" class="outline-2"&gt;
+&lt;h2 id="sec-4"&gt;weighted.historicals&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-4"&gt;
+&lt;p&gt;
+The function below applies these calculations to an historical time series
+where hist.weights$mean are the return weights and hist.weights$vol are the
+volatility weights.
+&lt;/p&gt;
+
+&lt;div class="org-src-container"&gt;
+
+&lt;pre class="src src-R"&gt;weighted.historicals = &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;function&lt;/span&gt;(rets, hist.weights) {
+  hmean=as.double(filter(rets,hist.weights$mean,sides=1))
+  hmean[1:length(hist.weights$mean)]=cumsum(rets[1:length(hist.weights$mean)]*t(as.matrix(hist.weights$mean)))
+  xvol=(rets-hmean)^2
+  hvol=as.double(filter(xvol,hist.weights$vol,sides=1))^0.5
+  hvol[1:length(hist.weights$vol)]=cumsum(xvol[length(hist.weights$vol)]*t(as.matrix(hist.weights$vol)))^0.5
+  weighted.historicals=data.frame(hmean=hmean, hvol=hvol)
+}
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id="outline-container-sec-5" class="outline-2"&gt;
+&lt;h2 id="sec-5"&gt;the point&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-5"&gt;
+&lt;p&gt;
+This function encapsulates a very broad church of finance theory concerned
+with forecasting future returns. Trend following and reversions, breakouts,
+technical analysis, bollinger bands, momentum theory, stochastic volatility,
+tweaks to option pricing, copulas (by extending the reasoning to correlations)
+and many other concepts can all be represented as operations involving
+calculating historical moments (average and volatility) using various
+weighting schemes.
+&lt;/p&gt;
+
+&lt;p&gt;
+On the one hand, this increases the rigour in systemically forecasting
+returns. In particular, accidentally combining two signals that you think are
+different (orthogonal) to each other but are very similar in reality often
+leads to spurious predictions.
+&lt;/p&gt;
+
+&lt;p&gt;
+On the other hand, it opens up a richer set of curves to test than the
+standard set used in forecasting. 
+&lt;/p&gt;
+
+&lt;div class="org-src-container"&gt;
+
+&lt;pre class="src src-R"&gt;mom.weights = rep(0.05,20)  
+df.long = melt(data.frame(ema.weights,sma.weights,mom.weights,time=0:(max.n-1)),id=&lt;span style="color: #cc9393;"&gt;"time"&lt;/span&gt;)
+ggplot(data=df.long,
+         aes(x=time, y=value,color=variable)) +
+    geom_line()
+&lt;/pre&gt;
+&lt;/div&gt;
+
+
+&lt;div class="figure"&gt;
+&lt;p&gt;&lt;img src="../blog/statistical-forecasting/mweights.png"  alt="mweights.png"/&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;br&gt;
+
+&lt;p&gt;
+A momentum signal doesn't have to be arrived at using a linear weighting
+scheme - it makes much more sense if recent returns are more important
+indicators of what will happen next compared with returns in the distant past.
+Always using an exponential weighting scheme is like assuming that markets
+behave exactly like atoms undergoing nuclear decay. There's no fundamental
+reason why weights can't go negative and doing this would naturally
+incorporate mean reversion potentials naturally with momentum forces.
+&lt;/p&gt;
+
+&lt;p&gt;
+Using this generalist approach to calculating historical statistics is a core
+of the proposed system design.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</content>
+</entry>
+<entry>
 <title type="html">Latency Research</title>
 <author><name>tony day</name></author>
 <link href="http://scarcecapital.com/hft/blog/latency-research.html"/>
@@ -20,208 +398,235 @@ data points.
 &lt;/p&gt;
 
 
-&lt;div id="outline-container-1" class="outline-3"&gt;
-&lt;h3 id="sec-1"&gt;feed ping latency&lt;/h3&gt;
-&lt;div class="outline-text-3" id="text-1"&gt;
-
-
-&lt;p&gt;  
+&lt;div id="outline-container-sec-1" class="outline-2"&gt;
+&lt;h2 id="sec-1"&gt;feed ping latency&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-1"&gt;
+&lt;p&gt;
 Iqfeed sends a ping once a second as part of the stream.
 &lt;/p&gt;
 
+&lt;div class="org-src-container"&gt;
 
-
-&lt;pre class="src src-R"&gt;t = read.csv(&lt;span class="org-string"&gt;"data/streamt.txt"&lt;/span&gt;,header=FALSE,as.is=TRUE)
-pingtime = strptime(t[,3], &lt;span class="org-string"&gt;"%Y%m%d %H:%M:%S"&lt;/span&gt;)
-stamp = strptime(paste(strftime(pingtime,&lt;span class="org-string"&gt;"%Y%m%d"&lt;/span&gt;), t[,1], sep=&lt;span class="org-string"&gt;" "&lt;/span&gt;), &lt;span class="org-string"&gt;"%Y%m%d %H:%M:%OS"&lt;/span&gt;)    
+&lt;pre class="src src-R"&gt;t = read.csv(&lt;span style="color: #cc9393;"&gt;"data/streamt.txt"&lt;/span&gt;,header=&lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;FALSE&lt;/span&gt;,as.is=&lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;TRUE&lt;/span&gt;)
+pingtime = strptime(t[,3], &lt;span style="color: #cc9393;"&gt;"%Y%m%d %H:%M:%S"&lt;/span&gt;)
+stamp = strptime(paste(strftime(pingtime,&lt;span style="color: #cc9393;"&gt;"%Y%m%d"&lt;/span&gt;), t[,1], sep=&lt;span style="color: #cc9393;"&gt;" "&lt;/span&gt;), &lt;span style="color: #cc9393;"&gt;"%Y%m%d %H:%M:%OS"&lt;/span&gt;)    
 latency = as.double(stamp - pingtime)
 df = data.frame(pingtime=pingtime, latency=latency)
 summary(df)
 &lt;/pre&gt;
-
+&lt;/div&gt;
 
 &lt;table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides"&gt;
-&lt;colgroup&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;
+
+
+&lt;colgroup&gt;
+&lt;col class="left"/&gt;
+
+&lt;col class="left"/&gt;
 &lt;/colgroup&gt;
 &lt;tbody&gt;
-&lt;tr&gt;&lt;td class="left"&gt;Min.   :2013-03-14 07:30:57&lt;/td&gt;&lt;td class="left"&gt;Min.   :-0.90665&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;1st Qu.:2013-03-14 17:15:41&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:-0.01492&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;Median :2013-03-15 03:02:15&lt;/td&gt;&lt;td class="left"&gt;Median : 0.14950&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;Mean   :2013-03-15 03:01:28&lt;/td&gt;&lt;td class="left"&gt;Mean   : 0.38876&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;3rd Qu.:2013-03-15 12:46:33&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.: 0.22824&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;Max.   :2013-03-15 22:33:24&lt;/td&gt;&lt;td class="left"&gt;Max.   : 7.89887&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;NA's   :1&lt;/td&gt;&lt;td class="left"&gt;NA's   :1&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="left"&gt;Min.   :2013-03-14 07:30:57&lt;/td&gt;
+&lt;td class="left"&gt;Min.   :-0.90665&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;1st Qu.:2013-03-14 17:15:41&lt;/td&gt;
+&lt;td class="left"&gt;1st Qu.:-0.01492&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;Median :2013-03-15 03:02:15&lt;/td&gt;
+&lt;td class="left"&gt;Median : 0.14950&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;Mean   :2013-03-15 03:01:28&lt;/td&gt;
+&lt;td class="left"&gt;Mean   : 0.38876&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;3rd Qu.:2013-03-15 12:46:33&lt;/td&gt;
+&lt;td class="left"&gt;3rd Qu.: 0.22824&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;Max.   :2013-03-15 22:33:24&lt;/td&gt;
+&lt;td class="left"&gt;Max.   : 7.89887&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;NA's   :1&lt;/td&gt;
+&lt;td class="left"&gt;NA's   :1&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 
+&lt;div class="org-src-container"&gt;
 
-
-
-
-&lt;pre class="src src-R"&gt;require(ggplot2)
+&lt;pre class="src src-R"&gt;&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(ggplot2)
 qplot(data=df, x=pingtime, y=latency)
-ggsave(&lt;span class="org-string"&gt;"ping-latency.svg"&lt;/span&gt;)
+ggsave(&lt;span style="color: #cc9393;"&gt;"ping-latency.svg"&lt;/span&gt;)
 &lt;/pre&gt;
+&lt;/div&gt;
 
+
+&lt;div class="figure"&gt;
+&lt;p&gt;&lt;img src="../blog/latency-research/ping-latency.png"  alt="ping-latency.png"/&gt;&lt;/p&gt;
+&lt;/div&gt;
 
 &lt;p&gt;
-    &lt;img src="../blog/latency-research/ping-latency.png"  alt="../blog/latency-research/ping-latency.png" /&gt;
-&lt;/p&gt;
-&lt;p&gt;
-    The simple scatterplot shows many negative values, especially when the
-    market is open, and a step jump in the later pings (when no quotes were
-    being recorded).  These jumps may be due to changes in my system clock
-    (automatic appletime resolutions) or due to a lack of accuracy in the
-    iqfeed pings.
-&lt;/p&gt;
-&lt;p&gt;
-    Scatterplots tend to provide dubious visualisation for bigdata, and a new
-    package out that helps is &lt;a href="http://vita.had.co.nz/papers/bigvis.html"&gt;bigvis&lt;/a&gt;.
-&lt;/p&gt;
-&lt;p&gt;
-    Bigvis is not yet available at CRAN but can be installed via a github
-    repository (see &lt;a href="https://github.com/hadley/bigvis"&gt;https://github.com/hadley/bigvis&lt;/a&gt; for details).
+The simple scatterplot shows many negative values, especially when the
+market is open, and a step jump in the later pings (when no quotes were
+being recorded).  These jumps may be due to changes in my system clock
+(automatic appletime resolutions) or due to a lack of accuracy in the
+iqfeed pings.
 &lt;/p&gt;
 
+&lt;p&gt;
+Scatterplots tend to provide dubious visualisation for bigdata, and a new
+package out that helps is &lt;a href="http://vita.had.co.nz/papers/bigvis.html"&gt;bigvis&lt;/a&gt;.
+&lt;/p&gt;
 
+&lt;p&gt;
+Bigvis is not yet available at CRAN but can be installed via a github
+repository (see &lt;a href="https://github.com/hadley/bigvis"&gt;https://github.com/hadley/bigvis&lt;/a&gt; for details).
+&lt;/p&gt;
 
-&lt;pre class="src src-R"&gt;install.packages(&lt;span class="org-string"&gt;"devtools"&lt;/span&gt;)
-devtools::install_github(&lt;span class="org-string"&gt;"bigvis"&lt;/span&gt;)
+&lt;div class="org-src-container"&gt;
+
+&lt;pre class="src src-R"&gt;install.packages(&lt;span style="color: #cc9393;"&gt;"devtools"&lt;/span&gt;)
+devtools::install_github(&lt;span style="color: #cc9393;"&gt;"bigvis"&lt;/span&gt;)
 &lt;/pre&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;
-    Bigvis doesn't handle non-numeric data (like time), so rather than
-    autopilot, I use ggplot directly.   
+Bigvis doesn't handle non-numeric data (like time), so rather than
+autopilot, I use ggplot directly.   
 &lt;/p&gt;
 
+&lt;div class="org-src-container"&gt;
 
-
-&lt;pre class="src src-R"&gt;require(bigvis)
-require(ggplot2)
+&lt;pre class="src src-R"&gt;&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(bigvis)
+&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(ggplot2)
 dfn = condense(bin(as.double(df$pingtime),60),bin(df$latency,.1))
-dfg = data.frame(as.POSIXct(dfn[,1],origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;"GMT"&lt;/span&gt;),dfn[,2],dfn[,3])
-colnames(dfg) = c(&lt;span class="org-string"&gt;"Time"&lt;/span&gt;,&lt;span class="org-string"&gt;"Latency"&lt;/span&gt;,&lt;span class="org-string"&gt;"Count"&lt;/span&gt;)
+dfg = data.frame(as.POSIXct(dfn[,1],origin=&lt;span style="color: #cc9393;"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span style="color: #cc9393;"&gt;"GMT"&lt;/span&gt;),dfn[,2],dfn[,3])
+colnames(dfg) = c(&lt;span style="color: #cc9393;"&gt;"Time"&lt;/span&gt;,&lt;span style="color: #cc9393;"&gt;"Latency"&lt;/span&gt;,&lt;span style="color: #cc9393;"&gt;"Count"&lt;/span&gt;)
 g = ggplot(data=dfg,aes(x=Time,y=Latency))
-g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=&lt;span class="org-string"&gt;"#e5e5e5"&lt;/span&gt;, high = &lt;span class="org-string"&gt;"#444548"&lt;/span&gt;) + scale_y_continuous(limits=c(-1,1))
-ggsave(&lt;span class="org-string"&gt;"ping-latency-condensed.svg"&lt;/span&gt;)
+g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=&lt;span style="color: #cc9393;"&gt;"#e5e5e5"&lt;/span&gt;, high = &lt;span style="color: #cc9393;"&gt;"#444548"&lt;/span&gt;) + scale_y_continuous(limits=c(-1,1))
+ggsave(&lt;span style="color: #cc9393;"&gt;"ping-latency-condensed.svg"&lt;/span&gt;)
 &lt;/pre&gt;
+&lt;/div&gt;
 
+
+&lt;div class="figure"&gt;
+&lt;p&gt;&lt;img src="../blog/latency-research/ping-latency-condensed.svg"  alt="ping-latency-condensed.svg"/&gt;&lt;/p&gt;
+&lt;/div&gt;
 
 &lt;p&gt;
-   &lt;img src="../blog/latency-research/ping-latency-condensed.svg"  alt="../blog/latency-research/ping-latency-condensed.svg" /&gt;
+Using the bigvis techniques clarifies a few main issues for further research:
 &lt;/p&gt;
-&lt;p&gt;
-   Using the bigvis techniques clarifies a few main issues for further research:
-&lt;/p&gt;&lt;ul&gt;
+&lt;ul class="org-ul"&gt;
 &lt;li&gt;there is a step jump near market open where the majority of the pings
-     jump from around 250 msecs to -750 msecs. This looks like either a coding
-     error or the ping being off by up to a second.
+jump from around 250 msecs to -750 msecs. This looks like either a coding
+error or the ping being off by up to a second.
 &lt;/li&gt;
 &lt;li&gt;during market open (when tick volume is high) ping can vary by a second.
 &lt;/li&gt;
 &lt;/ul&gt;
-
-
-
-
+&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;/div&gt;
 
-&lt;div id="outline-container-2" class="outline-3"&gt;
-&lt;h3 id="sec-2"&gt;disconnects&lt;/h3&gt;
-&lt;div class="outline-text-3" id="text-2"&gt;
-
-&lt;p&gt;   Just looking at the ping counts after binning into one minute intervals:
+&lt;div id="outline-container-sec-2" class="outline-2"&gt;
+&lt;h2 id="sec-2"&gt;disconnects&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-2"&gt;
+&lt;p&gt;
+Just looking at the ping counts after binning into one minute intervals:
 &lt;/p&gt;
 
-
+&lt;div class="org-src-container"&gt;
 
 &lt;pre class="src src-R"&gt;df.dis = condense(bin(as.double(df$pingtime),60))
-dfg = data.frame(as.POSIXct(df.dis[,1],origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;"GMT"&lt;/span&gt;),60-df.dis[,2])
-colnames(dfg) = c(&lt;span class="org-string"&gt;"Time"&lt;/span&gt;,&lt;span class="org-string"&gt;"Count"&lt;/span&gt;)
+dfg = data.frame(as.POSIXct(df.dis[,1],origin=&lt;span style="color: #cc9393;"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span style="color: #cc9393;"&gt;"GMT"&lt;/span&gt;),60-df.dis[,2])
+colnames(dfg) = c(&lt;span style="color: #cc9393;"&gt;"Time"&lt;/span&gt;,&lt;span style="color: #cc9393;"&gt;"Count"&lt;/span&gt;)
 g = ggplot(data=dfg,aes(x=Time,y=Count))
 g + geom_line(aes())
-ggsave(&lt;span class="org-string"&gt;"disconnects.png"&lt;/span&gt;)
-
+ggsave(&lt;span style="color: #cc9393;"&gt;"disconnects.png"&lt;/span&gt;)
 &lt;/pre&gt;
-
-
-&lt;p&gt;
-   &lt;img src="../blog/latency-research/disconnects.png"  alt="../blog/latency-research/disconnects.png" /&gt;
-&lt;/p&gt;
-&lt;p&gt;
-   iqfeed regularly suffers from disconnects with reconnection occuring within
-   a minute.
-&lt;/p&gt;
-
 &lt;/div&gt;
 
+
+&lt;div class="figure"&gt;
+&lt;p&gt;&lt;img src="../blog/latency-research/disconnects.png"  alt="disconnects.png"/&gt;&lt;/p&gt;
 &lt;/div&gt;
 
-&lt;div id="outline-container-3" class="outline-3"&gt;
-&lt;h3 id="sec-3"&gt;event latency&lt;/h3&gt;
-&lt;div class="outline-text-3" id="text-3"&gt;
+&lt;p&gt;
+iqfeed regularly suffers from disconnects with reconnection occuring within
+a minute.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 
-
+&lt;div id="outline-container-sec-3" class="outline-2"&gt;
+&lt;h2 id="sec-3"&gt;event latency&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-3"&gt;
 &lt;p&gt;
 The ticks for the day were processed into column-data formats using the mmap
 package from R (see hft.org for the gory details).
 &lt;/p&gt;
+
 &lt;p&gt;
-From the R database of the one day quote ticks&amp;hellip;
+From the R database of the one day quote ticks&amp;#x2026;
 &lt;/p&gt;
-&lt;ul&gt;
+
+&lt;ul class="org-ul"&gt;
 &lt;li&gt;open data
-
-
+&lt;div class="org-src-container"&gt;
 
 &lt;pre class="src src-R"&gt;rm(list = ls())
-require(&lt;span class="org-string"&gt;"mmap"&lt;/span&gt;)
-require(&lt;span class="org-string"&gt;"rindex"&lt;/span&gt;)
-require(&lt;span class="org-string"&gt;"plyr"&lt;/span&gt;)
-require(&lt;span class="org-string"&gt;"stringr"&lt;/span&gt;)
-raw.stream = &lt;span class="org-string"&gt;"streamqh"&lt;/span&gt;
-# where the mmap db is located
-db.path = paste(&lt;span class="org-string"&gt;"data/"&lt;/span&gt;,raw.stream,&lt;span class="org-string"&gt;"/"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;)
+&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(&lt;span style="color: #cc9393;"&gt;"mmap"&lt;/span&gt;)
+&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(&lt;span style="color: #cc9393;"&gt;"rindex"&lt;/span&gt;)
+&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(&lt;span style="color: #cc9393;"&gt;"plyr"&lt;/span&gt;)
+&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(&lt;span style="color: #cc9393;"&gt;"stringr"&lt;/span&gt;)
+raw.stream = &lt;span style="color: #cc9393;"&gt;"streamqh"&lt;/span&gt;
+&lt;span style="color: #7f9f7f;"&gt;# &lt;/span&gt;&lt;span style="color: #7f9f7f;"&gt;where the mmap db is located&lt;/span&gt;
+db.path = paste(&lt;span style="color: #cc9393;"&gt;"data/"&lt;/span&gt;,raw.stream,&lt;span style="color: #cc9393;"&gt;"/"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;)
 
-load(paste(db.path,&lt;span class="org-string"&gt;".Rdbinfo"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;))
-#m = mmap(main.filename, mode=st)
-stream = NULL
-stream$stamp = mmap(paste(db.path,fields[1],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
-stream$code = mmap(paste(db.path,fields[2],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=char(1))
-stream$symbol = mmap(paste(db.path,fields[3],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=char(ticker.length))
-stream$trade = mmap(paste(db.path,fields[4],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
-stream$vol = mmap(paste(db.path,fields[5],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
-stream$tradetime = mmap(paste(db.path,fields[6],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
-stream$tradeex = mmap(paste(db.path,fields[7],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
-stream$volex = mmap(paste(db.path,fields[8],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
-stream$tradetimeex = mmap(paste(db.path,fields[9],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
-stream$voltot = mmap(paste(db.path,fields[10],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
-stream$bid = mmap(paste(db.path,fields[11],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
-stream$bidvol = mmap(paste(db.path,fields[12],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
-stream$bidtime = mmap(paste(db.path,fields[13],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
-stream$ask = mmap(paste(db.path,fields[14],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
-stream$askvol = mmap(paste(db.path,fields[15],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
-stream$asktime = mmap(paste(db.path,fields[16],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=double())
-stream$event = mmap(paste(db.path,fields[17],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=char(12))
-stream$id = mmap(paste(db.path,fields[18],&lt;span class="org-string"&gt;".data"&lt;/span&gt;,sep=&lt;span class="org-string"&gt;""&lt;/span&gt;), mode=integer())
-
+load(paste(db.path,&lt;span style="color: #cc9393;"&gt;".Rdbinfo"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;))
+&lt;span style="color: #7f9f7f;"&gt;#&lt;/span&gt;&lt;span style="color: #7f9f7f;"&gt;m = mmap(main.filename, mode=st)&lt;/span&gt;
+stream = &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;NULL&lt;/span&gt;
+stream$stamp = mmap(paste(db.path,fields[1],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=double())
+stream$code = mmap(paste(db.path,fields[2],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=char(1))
+stream$symbol = mmap(paste(db.path,fields[3],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=char(ticker.length))
+stream$trade = mmap(paste(db.path,fields[4],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=double())
+stream$vol = mmap(paste(db.path,fields[5],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=integer())
+stream$tradetime = mmap(paste(db.path,fields[6],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=double())
+stream$tradeex = mmap(paste(db.path,fields[7],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=double())
+stream$volex = mmap(paste(db.path,fields[8],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=integer())
+stream$tradetimeex = mmap(paste(db.path,fields[9],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=double())
+stream$voltot = mmap(paste(db.path,fields[10],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=integer())
+stream$bid = mmap(paste(db.path,fields[11],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=double())
+stream$bidvol = mmap(paste(db.path,fields[12],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=integer())
+stream$bidtime = mmap(paste(db.path,fields[13],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=double())
+stream$ask = mmap(paste(db.path,fields[14],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=double())
+stream$askvol = mmap(paste(db.path,fields[15],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=integer())
+stream$asktime = mmap(paste(db.path,fields[16],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=double())
+stream$event = mmap(paste(db.path,fields[17],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=char(12))
+stream$id = mmap(paste(db.path,fields[18],&lt;span style="color: #cc9393;"&gt;".data"&lt;/span&gt;,sep=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;), mode=integer())
 &lt;/pre&gt;
-
-
+&lt;/div&gt;
 &lt;/li&gt;
+
 &lt;li&gt;Define events and extract relevant times
-
-
+&lt;div class="org-src-container"&gt;
 
 &lt;pre class="src src-R"&gt;n = length(stream$event[])
 
-tC = grepl(&lt;span class="org-string"&gt;"C"&lt;/span&gt;,stream$event[])
-tO = grepl(&lt;span class="org-string"&gt;"O"&lt;/span&gt;,stream$event[])
-ta = grepl(&lt;span class="org-string"&gt;"a"&lt;/span&gt;,stream$event[])
-tb = grepl(&lt;span class="org-string"&gt;"b"&lt;/span&gt;,stream$event[])
+tC = grepl(&lt;span style="color: #cc9393;"&gt;"C"&lt;/span&gt;,stream$event[])
+tO = grepl(&lt;span style="color: #cc9393;"&gt;"O"&lt;/span&gt;,stream$event[])
+ta = grepl(&lt;span style="color: #cc9393;"&gt;"a"&lt;/span&gt;,stream$event[])
+tb = grepl(&lt;span style="color: #cc9393;"&gt;"b"&lt;/span&gt;,stream$event[])
 ta = ta &amp;amp; !(tC | tO)
 tb = tb &amp;amp; !(tC | tO | ta)
 tother = !(ta | tb | tC | tO)
@@ -234,7 +639,7 @@ event.time = (stream$tradetime[] * tC +
         stream$bidtime[] * tb +
         stream$tradetime[] * tother)
 
-event.time.posix = as.POSIXct(event.time,origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;"GMT"&lt;/span&gt;)
+event.time.posix = as.POSIXct(event.time,origin=&lt;span style="color: #cc9393;"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span style="color: #cc9393;"&gt;"GMT"&lt;/span&gt;)
 event.stamp = stream$stamp[]
 
 event.latency = event.stamp - event.time  
@@ -242,92 +647,149 @@ event.latency = event.stamp - event.time
 event.df = data.frame(symbol=stream$symbol[],event.category,event.time, event.stamp, event.latency)
 summary(event.df)
 &lt;/pre&gt;
-
+&lt;/div&gt;
 
 &lt;table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides"&gt;
-&lt;colgroup&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;
+
+
+&lt;colgroup&gt;
+&lt;col class="left"/&gt;
+
+&lt;col class="left"/&gt;
+
+&lt;col class="left"/&gt;
+
+&lt;col class="left"/&gt;
+
+&lt;col class="left"/&gt;
 &lt;/colgroup&gt;
 &lt;tbody&gt;
-&lt;tr&gt;&lt;td class="left"&gt;@ESM13 :2553308&lt;/td&gt;&lt;td class="left"&gt;Min.   :1.000&lt;/td&gt;&lt;td class="left"&gt;Min.   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Min.   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Min.   :-85800.76&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;@NQM13 :1285545&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:3.000&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:1.366e+09&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:1.366e+09&lt;/td&gt;&lt;td class="left"&gt;1st Qu.:     0.22&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;@YMM13 :1216006&lt;/td&gt;&lt;td class="left"&gt;Median :3.000&lt;/td&gt;&lt;td class="left"&gt;Median :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Median :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Median :     0.33&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;EBK13  : 917275&lt;/td&gt;&lt;td class="left"&gt;Mean   :3.107&lt;/td&gt;&lt;td class="left"&gt;Mean   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Mean   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Mean   :   226.44&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;@JYM13 : 844995&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.:4.000&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.:1.366e+09&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.:1.366e+09&lt;/td&gt;&lt;td class="left"&gt;3rd Qu.:   600.22&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;EBM13  : 610827&lt;/td&gt;&lt;td class="left"&gt;Max.   :5.000&lt;/td&gt;&lt;td class="left"&gt;Max.   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Max.   :1.366e+09&lt;/td&gt;&lt;td class="left"&gt;Max.   :  9818.25&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;(Other):1373320&lt;/td&gt;&lt;td class="left"&gt;nil&lt;/td&gt;&lt;td class="left"&gt;nil&lt;/td&gt;&lt;td class="left"&gt;nil&lt;/td&gt;&lt;td class="left"&gt;nil&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="left"&gt;@ESM13 :2553308&lt;/td&gt;
+&lt;td class="left"&gt;Min.   :1.000&lt;/td&gt;
+&lt;td class="left"&gt;Min.   :1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;Min.   :1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;Min.   :-85800.76&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;@NQM13 :1285545&lt;/td&gt;
+&lt;td class="left"&gt;1st Qu.:3.000&lt;/td&gt;
+&lt;td class="left"&gt;1st Qu.:1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;1st Qu.:1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;1st Qu.:     0.22&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;@YMM13 :1216006&lt;/td&gt;
+&lt;td class="left"&gt;Median :3.000&lt;/td&gt;
+&lt;td class="left"&gt;Median :1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;Median :1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;Median :     0.33&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;EBK13  : 917275&lt;/td&gt;
+&lt;td class="left"&gt;Mean   :3.107&lt;/td&gt;
+&lt;td class="left"&gt;Mean   :1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;Mean   :1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;Mean   :   226.44&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;@JYM13 : 844995&lt;/td&gt;
+&lt;td class="left"&gt;3rd Qu.:4.000&lt;/td&gt;
+&lt;td class="left"&gt;3rd Qu.:1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;3rd Qu.:1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;3rd Qu.:   600.22&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;EBM13  : 610827&lt;/td&gt;
+&lt;td class="left"&gt;Max.   :5.000&lt;/td&gt;
+&lt;td class="left"&gt;Max.   :1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;Max.   :1.366e+09&lt;/td&gt;
+&lt;td class="left"&gt;Max.   :  9818.25&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;(Other):1373320&lt;/td&gt;
+&lt;td class="left"&gt;nil&lt;/td&gt;
+&lt;td class="left"&gt;nil&lt;/td&gt;
+&lt;td class="left"&gt;nil&lt;/td&gt;
+&lt;td class="left"&gt;nil&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-
-
 &lt;/li&gt;
+
 &lt;li&gt;bigvis manipulations
+&lt;div class="org-src-container"&gt;
 
-
-
-&lt;pre class="src src-R"&gt;require(&lt;span class="org-string"&gt;"bigvis"&lt;/span&gt;)
-require(&lt;span class="org-string"&gt;"ggplot2"&lt;/span&gt;)
+&lt;pre class="src src-R"&gt;&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(&lt;span style="color: #cc9393;"&gt;"bigvis"&lt;/span&gt;)
+&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(&lt;span style="color: #cc9393;"&gt;"ggplot2"&lt;/span&gt;)
 df1 = condense(bin(event.df$event.time,60),bin(event.df$event.latency,0.05))
 df2 = df1[(df1$event.df.event.latency &amp;gt; 0) &amp;amp; (df1$event.df.event.latency &amp;lt; 1),]   
-dfg = data.frame(as.POSIXct(df2[,1]+10*60*60,origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;""&lt;/span&gt;),df2[,2],df2[,3])
-colnames(dfg) = c(&lt;span class="org-string"&gt;"Time"&lt;/span&gt;,&lt;span class="org-string"&gt;"Latency"&lt;/span&gt;,&lt;span class="org-string"&gt;"Count"&lt;/span&gt;)
+dfg = data.frame(as.POSIXct(df2[,1]+10*60*60,origin=&lt;span style="color: #cc9393;"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;),df2[,2],df2[,3])
+colnames(dfg) = c(&lt;span style="color: #cc9393;"&gt;"Time"&lt;/span&gt;,&lt;span style="color: #cc9393;"&gt;"Latency"&lt;/span&gt;,&lt;span style="color: #cc9393;"&gt;"Count"&lt;/span&gt;)
 g = ggplot(data=dfg,aes(x=Time,y=Latency))
-g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=&lt;span class="org-string"&gt;"#e5e5e5"&lt;/span&gt;, high = &lt;span class="org-string"&gt;"#444548"&lt;/span&gt;) + scale_y_continuous(limits=c(-1,1))
-ggsave(&lt;span class="org-string"&gt;"quote-latency-condensed.svg"&lt;/span&gt;)
-
+g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=&lt;span style="color: #cc9393;"&gt;"#e5e5e5"&lt;/span&gt;, high = &lt;span style="color: #cc9393;"&gt;"#444548"&lt;/span&gt;) + scale_y_continuous(limits=c(-1,1))
+ggsave(&lt;span style="color: #cc9393;"&gt;"quote-latency-condensed.svg"&lt;/span&gt;)
 &lt;/pre&gt;
+&lt;/div&gt;
 
 
+&lt;div class="figure"&gt;
+&lt;p&gt;&lt;img src="../blog/latency-research/quote-latency-condensed.svg"  alt="quote-latency-condensed.svg"/&gt;&lt;/p&gt;
+&lt;/div&gt;
+
 &lt;p&gt;
-  &lt;img src="../blog/latency-research/quote-latency-condensed.svg"  alt="../blog/latency-research/quote-latency-condensed.svg" /&gt;
-&lt;/p&gt;
-&lt;p&gt;
-  Unlike the iqfeed ping, there is a consistent latency pattern when comparing
-  market stamp and local system stamp, with no spurious negative values.
-  Latency values from 9am to 4pm (regular market open) at 500 millsecs are
-  common and may be due to TCP issues (dropped packets say).
+Unlike the iqfeed ping, there is a consistent latency pattern when comparing
+market stamp and local system stamp, with no spurious negative values.
+Latency values from 9am to 4pm (regular market open) at 500 millsecs are
+common and may be due to TCP issues (dropped packets say).
 &lt;/p&gt;
 &lt;/li&gt;
+
 &lt;li&gt;symbols
 
-
-
+&lt;div class="org-src-container"&gt;
 
 &lt;pre class="src src-R"&gt;summary(as.factor(stream$symbol[]))
 &lt;/pre&gt;
-
-
+&lt;/div&gt;
 &lt;/li&gt;
+
 &lt;li&gt;emini latency
 
-&lt;p&gt;  
-  The latency pattern for the E-MINI SP500 (@ESM13 is the iqfeed code) is
-  very similar to the overall latency pattern. The average latency over the
-  day was:
+&lt;p&gt;
+The latency pattern for the E-MINI SP500 (@ESM13 is the iqfeed code) is
+very similar to the overall latency pattern. The average latency over the
+day was:
 &lt;/p&gt;
 
+&lt;div class="org-src-container"&gt;
 
-
-&lt;pre class="src src-R"&gt;require(ggplot2)
-require(bigvis)
-ind.emini = indexEQ(ind.symbol,&lt;span class="org-string"&gt;"@ESM13 "&lt;/span&gt;)
-df1 = condense(bin(event.df$event.time[ind.emini],300,name=&lt;span class="org-string"&gt;"time"&lt;/span&gt;),bin(event.df$event.latency[ind.emini],0.05,name=&lt;span class="org-string"&gt;"latency"&lt;/span&gt;))
+&lt;pre class="src src-R"&gt;&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(ggplot2)
+&lt;span style="color: #bfebbf;"&gt;require&lt;/span&gt;(bigvis)
+ind.emini = indexEQ(ind.symbol,&lt;span style="color: #cc9393;"&gt;"@ESM13 "&lt;/span&gt;)
+df1 = condense(bin(event.df$event.time[ind.emini],300,name=&lt;span style="color: #cc9393;"&gt;"time"&lt;/span&gt;),bin(event.df$event.latency[ind.emini],0.05,name=&lt;span style="color: #cc9393;"&gt;"latency"&lt;/span&gt;))
 df2 = df1[(df1$latency &amp;gt; 0) &amp;amp; (df1$latency &amp;lt; 2),]
 lat.av = tapply(df2$latency*df2$.count,df2$time,sum)/tapply(df2$.count,df2$time,sum)
-dfg = data.frame(Time=as.POSIXct(as.double(row.names(lat.av))+10*60*60,origin=&lt;span class="org-string"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span class="org-string"&gt;""&lt;/span&gt;),Latency=lat.av)
-#colnames(dfg) = c(&lt;span class="org-string"&gt;"Time"&lt;/span&gt;,&lt;span class="org-string"&gt;"Latency"&lt;/span&gt;,&lt;span class="org-string"&gt;"Count"&lt;/span&gt;)
+dfg = data.frame(Time=as.POSIXct(as.double(row.names(lat.av))+10*60*60,origin=&lt;span style="color: #cc9393;"&gt;"1960-01-01"&lt;/span&gt;, tz=&lt;span style="color: #cc9393;"&gt;""&lt;/span&gt;),Latency=lat.av)
+&lt;span style="color: #7f9f7f;"&gt;#&lt;/span&gt;&lt;span style="color: #7f9f7f;"&gt;colnames(dfg) = c("Time","Latency","Count")&lt;/span&gt;
 g = ggplot(data=dfg,aes(x=Time,y=Latency))
 g + geom_point()
-ggsave(&lt;span class="org-string"&gt;"quote-latency-averagecondensed.svg"&lt;/span&gt;)
+ggsave(&lt;span style="color: #cc9393;"&gt;"quote-latency-averagecondensed.svg"&lt;/span&gt;)
 &lt;/pre&gt;
+&lt;/div&gt;
 
 
-&lt;p&gt;
-  &lt;img src="../blog/latency-research/quote-latency-averagecondensed.svg"  alt="../blog/latency-research/quote-latency-averagecondensed.svg" /&gt;
-&lt;/p&gt;&lt;/li&gt;
+&lt;div class="figure"&gt;
+&lt;p&gt;&lt;img src="../blog/latency-research/quote-latency-averagecondensed.svg"  alt="quote-latency-averagecondensed.svg"/&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
-
-
-
 &lt;/div&gt;
 &lt;/div&gt;
 </content>
@@ -343,42 +805,42 @@ ggsave(&lt;span class="org-string"&gt;"quote-latency-averagecondensed.svg"&lt;/s
 There is no such thing as live market data for free (please let us know if
 this is wrong!).
 &lt;/p&gt;
+
 &lt;p&gt;
 The closest to free data is the Interactive Brokers feed.  IB consolidate
 market data and post every 0.3 seconds however, making it unsuitable for
 testing lower-latency ideas.
 &lt;/p&gt;
+
 &lt;p&gt;
 Initial testing of market data is concentrating on &lt;a href="http://www.iqfeed.net/"&gt;iqfeed&lt;/a&gt;.
-&lt;/p&gt;&lt;ul&gt;
+&lt;/p&gt;
+&lt;ul class="org-ul"&gt;
 &lt;li&gt;iqfeed is the cheapest "unencumbered" market data feed option
 &lt;/li&gt;
 &lt;li&gt;it can be downloaded for free and a demo account used for testing (data is
-  delayed)
+delayed)
 &lt;/li&gt;
 &lt;li&gt;5.0 has just been released and this includes millisecond resolution for
-  both trade and quote times.
+both trade and quote times.
 &lt;/li&gt;
 &lt;/ul&gt;
 
-
 &lt;p&gt;
 Now the bad news:
-&lt;/p&gt;&lt;ul&gt;
+&lt;/p&gt;
+&lt;ul class="org-ul"&gt;
 &lt;li&gt;iqfeed exists only as windows software 
 &lt;/li&gt;
 &lt;li&gt;the process is hardwired to communicate via a tcp connection. 
 &lt;/li&gt;
 &lt;li&gt;the feed has a habit of going down several times a day so that there will
-  be gaps in the event stream.
+be gaps in the event stream.
 &lt;/li&gt;
 &lt;li&gt;you will need a login id and password to use the software which you get in
-  a free trial
+a free trial
 &lt;/li&gt;
 &lt;/ul&gt;
-
-
-
 </content>
 </entry>
 <entry>
@@ -395,10 +857,9 @@ in the top-down design of the system. To achieve this, the overall design is
 first being modelled using graphviz.  The current candidate system looks like this:
 &lt;/p&gt;
 
-
 &lt;img class="hero-chart" src="&lt;lisp&gt;(ob:path-to-root)&lt;/lisp&gt;/&lt;lisp&gt;(ob:blog-assets-dir BLOG)&lt;/lisp&gt;/candidate.svg" alt="design" width="100%"&gt;
 
-&lt;ul&gt;
+&lt;ul class="org-ul"&gt;
 &lt;li&gt;blue boxes represent individual components of the system
 &lt;/li&gt;
 &lt;li&gt;other colors represent external systems and data sources
@@ -406,122 +867,119 @@ first being modelled using graphviz.  The current candidate system looks like th
 &lt;li&gt;each edge of the chart represents a messaging sytem requirement
 &lt;/li&gt;
 &lt;li&gt;there are two main one-way message passing routines that probably
-  need to be very very fast (blue lines)
+need to be very very fast (blue lines)
 &lt;/li&gt;
 &lt;li&gt;there is one read from database and one write to database (red lines) 
 &lt;/li&gt;
 &lt;li&gt;every component registers to an observer component that records system
-  state and dynamics (grey dotted).
+state and dynamics (grey dotted).
 &lt;/li&gt;
 &lt;/ul&gt;
-
 
 
 &lt;p&gt;
 The components have been grouped into several clusters:
 &lt;/p&gt;
-&lt;ul&gt;
+
+&lt;ul class="org-ul"&gt;
 &lt;li&gt;market data: representing trade data, order book and news information
-  flowing from outside the sytem to a local data node.
+flowing from outside the sytem to a local data node.
 &lt;/li&gt;
 &lt;li&gt;broker data: representing communication with trading mechanisms
 &lt;/li&gt;
 &lt;li&gt;onwire: components that are "in the event stream".  This is motivated by
-  the specifications and documentation of the disruptor which argues that a
-  single thread "wheel" is the best way to enable fast processing of market
-  data into trading orders.
+the specifications and documentation of the disruptor which argues that a
+single thread "wheel" is the best way to enable fast processing of market
+data into trading orders.
 &lt;/li&gt;
 &lt;li&gt;offwire: this represents algorithms and processing that are not on the
-  single-thread process.  The motivation here is to test the hypothesis in
-  the disruptor argument.
+single-thread process.  The motivation here is to test the hypothesis in
+the disruptor argument.
 &lt;/li&gt;
 &lt;/ul&gt;
-
 
 &lt;p&gt;
 There are several ideas that are being tested:
 &lt;/p&gt;
-&lt;ul&gt;
+
+&lt;ul class="org-ul"&gt;
 &lt;li&gt;that the entire system should be the subject of search and optimisation,
-  rather than componentry.  One example of this is separation of complex
-  event definitions from the statistical analysis once events are defined.
+rather than componentry.  One example of this is separation of complex
+event definitions from the statistical analysis once events are defined.
 &lt;/li&gt;
 &lt;li&gt;there is a focus on automation and machine learning.  As such there is no
-  place for human interaction.  In particular, no visualization is required. 
+place for human interaction.  In particular, no visualization is required. 
 &lt;/li&gt;
 &lt;li&gt;messaging between components can be the same general process.  The
-  components can also be tested in exactly the same way (such as speed and
-  robustness testing)
+components can also be tested in exactly the same way (such as speed and
+robustness testing)
 &lt;/li&gt;
 &lt;/ul&gt;
-
 
 &lt;p&gt;
 And here's the dot code:
 &lt;/p&gt;
 
-
+&lt;div class="org-src-container"&gt;
 
 &lt;pre class="src src-dot"&gt;digraph G {
-        node [label=&lt;span class="org-string"&gt;"\N"&lt;/span&gt;];
-        node [style=filled, color=&lt;span class="org-string"&gt;"#1f3950"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#eeeeee"&lt;/span&gt;,shape=box]; 
+        node [label=&lt;span style="color: #cc9393;"&gt;"\N"&lt;/span&gt;];
+        node [style=filled, color=&lt;span style="color: #cc9393;"&gt;"#1f3950"&lt;/span&gt;,fontcolor=&lt;span style="color: #cc9393;"&gt;"#eeeeee"&lt;/span&gt;,shape=box]; 
         subgraph cluster_market_data {
-                graph [label=&lt;span class="org-string"&gt;"market data"&lt;/span&gt;, color=&lt;span class="org-string"&gt;"#909090"&lt;/span&gt;];
-                exchange [shape=egg,color=&lt;span class="org-string"&gt;"#ff111111"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#101010"&lt;/span&gt;,label=&lt;span class="org-string"&gt;"exchanges"&lt;/span&gt;];
-                aggregator [shape=egg,color=&lt;span class="org-string"&gt;"#cc11cc22"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#101010"&lt;/span&gt;,label=&lt;span class="org-string"&gt;"data stream"&lt;/span&gt;];
-                localport [label=&lt;span class="org-string"&gt;"local node"&lt;/span&gt;];
+                graph [label=&lt;span style="color: #cc9393;"&gt;"market data"&lt;/span&gt;, color=&lt;span style="color: #cc9393;"&gt;"#909090"&lt;/span&gt;];
+                exchange [shape=egg,color=&lt;span style="color: #cc9393;"&gt;"#ff111111"&lt;/span&gt;,fontcolor=&lt;span style="color: #cc9393;"&gt;"#101010"&lt;/span&gt;,label=&lt;span style="color: #cc9393;"&gt;"exchanges"&lt;/span&gt;];
+                aggregator [shape=egg,color=&lt;span style="color: #cc9393;"&gt;"#cc11cc22"&lt;/span&gt;,fontcolor=&lt;span style="color: #cc9393;"&gt;"#101010"&lt;/span&gt;,label=&lt;span style="color: #cc9393;"&gt;"data stream"&lt;/span&gt;];
+                localport [label=&lt;span style="color: #cc9393;"&gt;"local node"&lt;/span&gt;];
                 exchange -&amp;gt; aggregator [dir=none];
                 aggregator -&amp;gt; localport [dir=both];
         }
         subgraph cluster_offwire {
-                graph [label=&lt;span class="org-string"&gt;"offwire"&lt;/span&gt;,
-                        color=&lt;span class="org-string"&gt;"#909090"&lt;/span&gt;];
-                offwirealgo [label=&lt;span class="org-string"&gt;"offline algo"&lt;/span&gt;];
+                graph [label=&lt;span style="color: #cc9393;"&gt;"offwire"&lt;/span&gt;,
+                        color=&lt;span style="color: #cc9393;"&gt;"#909090"&lt;/span&gt;];
+                offwirealgo [label=&lt;span style="color: #cc9393;"&gt;"offline algo"&lt;/span&gt;];
                 observer;
                 databases;
-                observer -&amp;gt; databases [color=red,label=&lt;span class="org-string"&gt;"write"&lt;/span&gt;,fontcolor=red];
+                observer -&amp;gt; databases [color=red,label=&lt;span style="color: #cc9393;"&gt;"write"&lt;/span&gt;,fontcolor=red];
         }
         subgraph cluster_onwire {
-                graph [label=&lt;span class="org-string"&gt;"onwire"&lt;/span&gt;,
-                        color=&lt;span class="org-string"&gt;"#909090"&lt;/span&gt;];
+                graph [label=&lt;span style="color: #cc9393;"&gt;"onwire"&lt;/span&gt;,
+                        color=&lt;span style="color: #cc9393;"&gt;"#909090"&lt;/span&gt;];
                 node [style=filled];
-                disruptor [label=&lt;span class="org-string"&gt;"event server"&lt;/span&gt;];
-                eventalgo [label=&lt;span class="org-string"&gt;"algo"&lt;/span&gt;];
+                disruptor [label=&lt;span style="color: #cc9393;"&gt;"event server"&lt;/span&gt;];
+                eventalgo [label=&lt;span style="color: #cc9393;"&gt;"algo"&lt;/span&gt;];
                 controller;
-                controller -&amp;gt; eventalgo [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,dir=both]
+                controller -&amp;gt; eventalgo [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;,dir=both]
                 disruptor -&amp;gt; listener;
                 disruptor -&amp;gt; eventalgo;
                 disruptor -&amp;gt; controller;
-                controller -&amp;gt; disruptor [color=&lt;span class="org-string"&gt;"#0080ff"&lt;/span&gt;];
+                controller -&amp;gt; disruptor [color=&lt;span style="color: #cc9393;"&gt;"#0080ff"&lt;/span&gt;];
         }
         subgraph cluster_broker {
-                graph [label=&lt;span class="org-string"&gt;"broker data"&lt;/span&gt;,
-                        color=&lt;span class="org-string"&gt;"#909090"&lt;/span&gt;];
-                broker [shape=egg,color=&lt;span class="org-string"&gt;"#ff111111"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#101010"&lt;/span&gt;,label=&lt;span class="org-string"&gt;"brokers"&lt;/span&gt;];
-                brokeraggregator [shape=egg,color=&lt;span class="org-string"&gt;"#cc11cc22"&lt;/span&gt;,fontcolor=&lt;span class="org-string"&gt;"#101010"&lt;/span&gt;,label=&lt;span class="org-string"&gt;"aggregation"&lt;/span&gt;];
+                graph [label=&lt;span style="color: #cc9393;"&gt;"broker data"&lt;/span&gt;,
+                        color=&lt;span style="color: #cc9393;"&gt;"#909090"&lt;/span&gt;];
+                broker [shape=egg,color=&lt;span style="color: #cc9393;"&gt;"#ff111111"&lt;/span&gt;,fontcolor=&lt;span style="color: #cc9393;"&gt;"#101010"&lt;/span&gt;,label=&lt;span style="color: #cc9393;"&gt;"brokers"&lt;/span&gt;];
+                brokeraggregator [shape=egg,color=&lt;span style="color: #cc9393;"&gt;"#cc11cc22"&lt;/span&gt;,fontcolor=&lt;span style="color: #cc9393;"&gt;"#101010"&lt;/span&gt;,label=&lt;span style="color: #cc9393;"&gt;"aggregation"&lt;/span&gt;];
                 broker -&amp;gt; brokeraggregator [dir=none];
                 brokeraggregator -&amp;gt; trader [dir=both];
         }
-        localport -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
-        controller -&amp;gt; localport [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;];
-        localport -&amp;gt; disruptor [color=&lt;span class="org-string"&gt;"#0080ff"&lt;/span&gt;];
-        listener -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
-        controller -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
-        controller -&amp;gt; trader [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,dir=both];
-        controller -&amp;gt; offwirealgo [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,dir=both];
-        databases -&amp;gt; offwirealgo [color=red,label=&lt;span class="org-string"&gt;"read"&lt;/span&gt;,fontcolor=red];
-        trader -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
-        eventalgo -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
-        offwirealgo -&amp;gt; observer [color=&lt;span class="org-string"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        localport -&amp;gt; observer [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        controller -&amp;gt; localport [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;];
+        localport -&amp;gt; disruptor [color=&lt;span style="color: #cc9393;"&gt;"#0080ff"&lt;/span&gt;];
+        listener -&amp;gt; observer [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        controller -&amp;gt; observer [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        controller -&amp;gt; trader [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;,dir=both];
+        controller -&amp;gt; offwirealgo [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;,dir=both];
+        databases -&amp;gt; offwirealgo [color=red,label=&lt;span style="color: #cc9393;"&gt;"read"&lt;/span&gt;,fontcolor=red];
+        trader -&amp;gt; observer [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        eventalgo -&amp;gt; observer [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
+        offwirealgo -&amp;gt; observer [color=&lt;span style="color: #cc9393;"&gt;"#aaaaaa"&lt;/span&gt;,style=dotted];
 }
 &lt;/pre&gt;
+&lt;/div&gt;
 
-
-
-&lt;div id="outline-container-1" class="outline-3"&gt;
-&lt;h3 id="sec-1"&gt;haskell interaction&lt;/h3&gt;
-&lt;div class="outline-text-3" id="text-1"&gt;
-
+&lt;div id="outline-container-sec-1" class="outline-2"&gt;
+&lt;h2 id="sec-1"&gt;haskell interaction&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-1"&gt;
 
 &lt;p&gt;
 Via haskell, the dot chart can be the specifications for an actual system as well as a
@@ -529,135 +987,251 @@ representation. And via svg technology, the picture can also be modified to
 be a reporting front-end in a production environment.
 &lt;/p&gt;
 
+&lt;div class="org-src-container"&gt;
 
-
-&lt;pre class="src src-haskell"&gt;&lt;span class="org-keyword"&gt;module&lt;/span&gt; &lt;span class="org-type"&gt;ControllerTest&lt;/span&gt;&lt;span class="org-whitespace-trailing"&gt; &lt;/span&gt;
+&lt;pre class="src src-haskell"&gt;&lt;span style="color: #f0dfaf; font-weight: bold;"&gt;module&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;ControllerTest&lt;/span&gt;&lt;span style="color: #cc9393; background-color: #3f3f3f;"&gt; &lt;/span&gt;
 ( importDotFile
 , importDot
 , printGraph
 , nodeList
 , edgeList
-) &lt;span class="org-keyword"&gt;where&lt;/span&gt;
+) &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;where&lt;/span&gt;
 
-&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;Data.GraphViz&lt;/span&gt;
-&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-keyword"&gt;qualified&lt;/span&gt; &lt;span class="org-type"&gt;Data.Text.Lazy&lt;/span&gt; &lt;span class="org-keyword"&gt;as&lt;/span&gt; &lt;span class="org-type"&gt;L&lt;/span&gt;
-&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-keyword"&gt;qualified&lt;/span&gt; &lt;span class="org-type"&gt;Data.Text.Lazy.IO&lt;/span&gt; &lt;span class="org-keyword"&gt;as&lt;/span&gt; &lt;span class="org-type"&gt;I&lt;/span&gt;
-&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-keyword"&gt;qualified&lt;/span&gt; &lt;span class="org-type"&gt;Data.GraphViz.Types.Generalised&lt;/span&gt; &lt;span class="org-keyword"&gt;as&lt;/span&gt; &lt;span class="org-type"&gt;G&lt;/span&gt;
-&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;Data.Graph.Inductive.Graph&lt;/span&gt;
+&lt;span style="color: #f0dfaf; font-weight: bold;"&gt;import&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;Data.GraphViz&lt;/span&gt;
+&lt;span style="color: #f0dfaf; font-weight: bold;"&gt;import&lt;/span&gt; &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;qualified&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;Data.Text.Lazy&lt;/span&gt; &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;as&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;L&lt;/span&gt;
+&lt;span style="color: #f0dfaf; font-weight: bold;"&gt;import&lt;/span&gt; &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;qualified&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;Data.Text.Lazy.IO&lt;/span&gt; &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;as&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;I&lt;/span&gt;
+&lt;span style="color: #f0dfaf; font-weight: bold;"&gt;import&lt;/span&gt; &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;qualified&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;Data.GraphViz.Types.Generalised&lt;/span&gt; &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;as&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;G&lt;/span&gt;
+&lt;span style="color: #f0dfaf; font-weight: bold;"&gt;import&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;Data.Graph.Inductive.Graph&lt;/span&gt;
 
-&lt;span class="org-function-name"&gt;importDotFile&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;FilePath&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="org-type"&gt;IO&lt;/span&gt; (&lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;String&lt;/span&gt;)
-&lt;span class="org-function-name"&gt;importDotFile&lt;/span&gt; f &lt;span class="org-variable-name"&gt;=&lt;/span&gt; &lt;span class="org-keyword"&gt;do&lt;/span&gt;
-        dotText &lt;span class="org-variable-name"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="org-type"&gt;I&lt;/span&gt;&lt;span class="org-variable-name"&gt;.&lt;/span&gt;readFile f&lt;span class="org-whitespace-trailing"&gt; &lt;/span&gt;
-        return &lt;span class="org-variable-name"&gt;$&lt;/span&gt; parseDotGraph dotText
+&lt;span style="color: #8cd0d3;"&gt;importDotFile&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;::&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;FilePath&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;IO&lt;/span&gt; (&lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;G.DotGraph&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;String&lt;/span&gt;)
+&lt;span style="color: #8cd0d3;"&gt;importDotFile&lt;/span&gt; f &lt;span style="color: #dfaf8f;"&gt;=&lt;/span&gt; &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;do&lt;/span&gt;
+        dotText &lt;span style="color: #dfaf8f;"&gt;&amp;lt;-&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;I&lt;/span&gt;&lt;span style="color: #dfaf8f;"&gt;.&lt;/span&gt;readFile f&lt;span style="color: #cc9393; background-color: #3f3f3f;"&gt; &lt;/span&gt;
+        return &lt;span style="color: #dfaf8f;"&gt;$&lt;/span&gt; parseDotGraph dotText
 
-&lt;span class="org-function-name"&gt;importDot&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;L.Text&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;Node&lt;/span&gt;
-&lt;span class="org-function-name"&gt;importDot&lt;/span&gt; s &lt;span class="org-variable-name"&gt;=&lt;/span&gt; parseDotGraph s
+&lt;span style="color: #8cd0d3;"&gt;importDot&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;::&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;L.Text&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;G.DotGraph&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;Node&lt;/span&gt;
+&lt;span style="color: #8cd0d3;"&gt;importDot&lt;/span&gt; s &lt;span style="color: #dfaf8f;"&gt;=&lt;/span&gt; parseDotGraph s
 
-&lt;span class="org-function-name"&gt;printGraph&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;String&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="org-type"&gt;IO&lt;/span&gt; &lt;span class="org-type"&gt;()&lt;/span&gt;
-&lt;span class="org-function-name"&gt;printGraph&lt;/span&gt; d &lt;span class="org-variable-name"&gt;=&lt;/span&gt; &lt;span class="org-keyword"&gt;do&lt;/span&gt;
-        putStrLn &lt;span class="org-variable-name"&gt;$&lt;/span&gt; &lt;span class="org-type"&gt;L&lt;/span&gt;&lt;span class="org-variable-name"&gt;.&lt;/span&gt;unpack &lt;span class="org-variable-name"&gt;$&lt;/span&gt; printDotGraph d
-        return&lt;span class="org-type"&gt;()&lt;/span&gt;
+&lt;span style="color: #8cd0d3;"&gt;printGraph&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;::&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;G.DotGraph&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;String&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;IO&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;()&lt;/span&gt;
+&lt;span style="color: #8cd0d3;"&gt;printGraph&lt;/span&gt; d &lt;span style="color: #dfaf8f;"&gt;=&lt;/span&gt; &lt;span style="color: #f0dfaf; font-weight: bold;"&gt;do&lt;/span&gt;
+        putStrLn &lt;span style="color: #dfaf8f;"&gt;$&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;L&lt;/span&gt;&lt;span style="color: #dfaf8f;"&gt;.&lt;/span&gt;unpack &lt;span style="color: #dfaf8f;"&gt;$&lt;/span&gt; printDotGraph d
+        return&lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;()&lt;/span&gt;
 
-&lt;span class="org-function-name"&gt;nodeList&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;String&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; [&lt;span class="org-type"&gt;String&lt;/span&gt;]
-&lt;span class="org-function-name"&gt;nodeList&lt;/span&gt; g &lt;span class="org-variable-name"&gt;=&lt;/span&gt; map nodeID &lt;span class="org-variable-name"&gt;$&lt;/span&gt; graphNodes g
+&lt;span style="color: #8cd0d3;"&gt;nodeList&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;::&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;G.DotGraph&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;String&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;-&amp;gt;&lt;/span&gt; [&lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;String&lt;/span&gt;]
+&lt;span style="color: #8cd0d3;"&gt;nodeList&lt;/span&gt; g &lt;span style="color: #dfaf8f;"&gt;=&lt;/span&gt; map nodeID &lt;span style="color: #dfaf8f;"&gt;$&lt;/span&gt; graphNodes g
 
-&lt;span class="org-function-name"&gt;edgeList&lt;/span&gt; &lt;span class="org-variable-name"&gt;::&lt;/span&gt; &lt;span class="org-type"&gt;G.DotGraph&lt;/span&gt; &lt;span class="org-type"&gt;String&lt;/span&gt; &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; [(&lt;span class="org-type"&gt;String&lt;/span&gt;,&lt;span class="org-type"&gt;String&lt;/span&gt;)]
-&lt;span class="org-function-name"&gt;edgeList&lt;/span&gt; g &lt;span class="org-variable-name"&gt;=&lt;/span&gt;  map (&lt;span class="org-variable-name"&gt;\&lt;/span&gt;x &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; (fromNode x, toNode x)) &lt;span class="org-variable-name"&gt;$&lt;/span&gt; graphEdges g
+&lt;span style="color: #8cd0d3;"&gt;edgeList&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;::&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;G.DotGraph&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;String&lt;/span&gt; &lt;span style="color: #dfaf8f;"&gt;-&amp;gt;&lt;/span&gt; [(&lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;String&lt;/span&gt;,&lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;String&lt;/span&gt;)]
+&lt;span style="color: #8cd0d3;"&gt;edgeList&lt;/span&gt; g &lt;span style="color: #dfaf8f;"&gt;=&lt;/span&gt;  map (&lt;span style="color: #dfaf8f;"&gt;\&lt;/span&gt;x &lt;span style="color: #dfaf8f;"&gt;-&amp;gt;&lt;/span&gt; (fromNode x, toNode x)) &lt;span style="color: #dfaf8f;"&gt;$&lt;/span&gt; graphEdges g
 &lt;/pre&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;
 So, a new picture generates a new system with potentially new components
 (nodes) and messaging requirements (edges).
 &lt;/p&gt;
 &lt;/div&gt;
-
 &lt;/div&gt;
+&lt;div id="outline-container-sec-2" class="outline-2"&gt;
+&lt;h2 id="sec-2"&gt;edges&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-2"&gt;
 
-&lt;div id="outline-container-2" class="outline-3"&gt;
-&lt;h3 id="sec-2"&gt;edges&lt;/h3&gt;
-&lt;div class="outline-text-3" id="text-2"&gt;
+&lt;div class="org-src-container"&gt;
 
-
-
-
-
-&lt;pre class="src src-haskell"&gt;&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;ControllerTest&lt;/span&gt;
-g &lt;span class="org-variable-name"&gt;&amp;lt;-&lt;/span&gt; importDotFile &lt;span class="org-string"&gt;"../candidate.dot"&lt;/span&gt;
-&lt;span class="org-function-name"&gt;edgeList&lt;/span&gt; g
+&lt;pre class="src src-haskell"&gt;&lt;span style="color: #f0dfaf; font-weight: bold;"&gt;import&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;ControllerTest&lt;/span&gt;
+g &lt;span style="color: #dfaf8f;"&gt;&amp;lt;-&lt;/span&gt; importDotFile &lt;span style="color: #cc9393;"&gt;"../candidate.dot"&lt;/span&gt;
+&lt;span style="color: #8cd0d3;"&gt;edgeList&lt;/span&gt; g
 &lt;/pre&gt;
-
+&lt;/div&gt;
 
 &lt;table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides"&gt;
-&lt;colgroup&gt;&lt;col class="left" /&gt;&lt;col class="left" /&gt;
+
+
+&lt;colgroup&gt;
+&lt;col class="left"/&gt;
+
+&lt;col class="left"/&gt;
 &lt;/colgroup&gt;
 &lt;tbody&gt;
-&lt;tr&gt;&lt;td class="left"&gt;exchange&lt;/td&gt;&lt;td class="left"&gt;aggregator&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;aggregator&lt;/td&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;td class="left"&gt;databases&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;eventalgo&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;td class="left"&gt;listener&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;td class="left"&gt;eventalgo&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;broker&lt;/td&gt;&lt;td class="left"&gt;brokeraggregator&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;brokeraggregator&lt;/td&gt;&lt;td class="left"&gt;trader&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;listener&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;trader&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;td class="left"&gt;offwirealgo&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;databases&lt;/td&gt;&lt;td class="left"&gt;offwirealgo&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;trader&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;eventalgo&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;offwirealgo&lt;/td&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="left"&gt;exchange&lt;/td&gt;
+&lt;td class="left"&gt;aggregator&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;aggregator&lt;/td&gt;
+&lt;td class="left"&gt;localport&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;observer&lt;/td&gt;
+&lt;td class="left"&gt;databases&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;controller&lt;/td&gt;
+&lt;td class="left"&gt;eventalgo&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;disruptor&lt;/td&gt;
+&lt;td class="left"&gt;listener&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;disruptor&lt;/td&gt;
+&lt;td class="left"&gt;eventalgo&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;disruptor&lt;/td&gt;
+&lt;td class="left"&gt;controller&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;controller&lt;/td&gt;
+&lt;td class="left"&gt;disruptor&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;broker&lt;/td&gt;
+&lt;td class="left"&gt;brokeraggregator&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;brokeraggregator&lt;/td&gt;
+&lt;td class="left"&gt;trader&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;localport&lt;/td&gt;
+&lt;td class="left"&gt;observer&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;controller&lt;/td&gt;
+&lt;td class="left"&gt;localport&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;localport&lt;/td&gt;
+&lt;td class="left"&gt;disruptor&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;listener&lt;/td&gt;
+&lt;td class="left"&gt;observer&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;controller&lt;/td&gt;
+&lt;td class="left"&gt;observer&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;controller&lt;/td&gt;
+&lt;td class="left"&gt;trader&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;controller&lt;/td&gt;
+&lt;td class="left"&gt;offwirealgo&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;databases&lt;/td&gt;
+&lt;td class="left"&gt;offwirealgo&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;trader&lt;/td&gt;
+&lt;td class="left"&gt;observer&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;eventalgo&lt;/td&gt;
+&lt;td class="left"&gt;observer&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;offwirealgo&lt;/td&gt;
+&lt;td class="left"&gt;observer&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-
-
-
+&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;/div&gt;
+&lt;div id="outline-container-sec-3" class="outline-2"&gt;
+&lt;h2 id="sec-3"&gt;nodes&lt;/h2&gt;
+&lt;div class="outline-text-2" id="text-3"&gt;
+&lt;div class="org-src-container"&gt;
 
-&lt;div id="outline-container-3" class="outline-3"&gt;
-&lt;h3 id="sec-3"&gt;nodes&lt;/h3&gt;
-&lt;div class="outline-text-3" id="text-3"&gt;
-
-
-
-
-
-&lt;pre class="src src-haskell"&gt;&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;ControllerTest&lt;/span&gt;
-&lt;span class="org-keyword"&gt;import&lt;/span&gt; &lt;span class="org-type"&gt;Data.List&lt;/span&gt;
-g &lt;span class="org-variable-name"&gt;&amp;lt;-&lt;/span&gt; importDotFile &lt;span class="org-string"&gt;"../dot/candidate.dot"&lt;/span&gt;
-&lt;span class="org-function-name"&gt;map&lt;/span&gt; (&lt;span class="org-variable-name"&gt;\&lt;/span&gt;x &lt;span class="org-variable-name"&gt;-&amp;gt;&lt;/span&gt; [x]) &lt;span class="org-variable-name"&gt;$&lt;/span&gt; nodeList g
+&lt;pre class="src src-haskell"&gt;&lt;span style="color: #f0dfaf; font-weight: bold;"&gt;import&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;ControllerTest&lt;/span&gt;
+&lt;span style="color: #f0dfaf; font-weight: bold;"&gt;import&lt;/span&gt; &lt;span style="color: #8cd0d3; background-color: #3f3f3f;"&gt;Data.List&lt;/span&gt;
+g &lt;span style="color: #dfaf8f;"&gt;&amp;lt;-&lt;/span&gt; importDotFile &lt;span style="color: #cc9393;"&gt;"../dot/candidate.dot"&lt;/span&gt;
+&lt;span style="color: #8cd0d3;"&gt;map&lt;/span&gt; (&lt;span style="color: #dfaf8f;"&gt;\&lt;/span&gt;x &lt;span style="color: #dfaf8f;"&gt;-&amp;gt;&lt;/span&gt; [x]) &lt;span style="color: #dfaf8f;"&gt;$&lt;/span&gt; nodeList g
 &lt;/pre&gt;
-
+&lt;/div&gt;
 
 &lt;table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides"&gt;
-&lt;colgroup&gt;&lt;col class="left" /&gt;
+
+
+&lt;colgroup&gt;
+&lt;col class="left"/&gt;
 &lt;/colgroup&gt;
 &lt;tbody&gt;
-&lt;tr&gt;&lt;td class="left"&gt;aggregator&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;broker&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;brokeraggregator&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;controller&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;databases&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;disruptor&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;eventalgo&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;exchange&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;listener&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;localport&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;observer&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;offwirealgo&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td class="left"&gt;trader&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="left"&gt;aggregator&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;broker&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;brokeraggregator&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;controller&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;databases&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;disruptor&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;eventalgo&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;exchange&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;listener&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;localport&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;observer&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;offwirealgo&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class="left"&gt;trader&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-
-
 &lt;/div&gt;
 &lt;/div&gt;
 </content>

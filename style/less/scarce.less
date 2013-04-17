@@ -669,7 +669,13 @@ table {
 }
 
 // a comment line
-code, #page pre.src, #page pre.example {
+code {
+background-color: rgb(120,0,0);
+color: white;
+border: 3px solid rgb(250,250,250)
+}
+
+#page pre.src, #page pre.example {
   background: none repeat scroll 0% 0% rgb(248,248,248);
   border: 1px solid rgb(204,204,204);
   font-size: 0.8em;
@@ -682,10 +688,8 @@ code, #page pre.src, #page pre.example {
   box-shadow: none;
   color: rgb(20,20,20);
   word-break: normal;
-  resize: both;
+  word-wrap: normal;
   white-space: pre;
-  display: block;
-  max-height: 20em;
 }
 
 .org-comment-delimiter, 
@@ -724,6 +728,28 @@ code, #page pre.src, #page pre.example {
 
 svg { 
   max-height: 100%; 
+}
+
+#page .article-content .outline-1 {
+  margin-left: 0;
+}
+#page .article-content .outline-2 {
+  margin-left: 0;
+}
+#page .article-content .outline-3 {
+  margin-left: 0;
+}
+#page .article-content .outline-4 {
+  margin-left: 0;
+}
+#page .article-content .outline-5 {
+  margin-left: 0;
+}
+#page .article-content .outline-6 {
+  margin-left: 0;
+}
+.MathJax_Display {
+text-align: left !important;
 }
 
 @media (min-width: 768px) and (max-width: 979px) {

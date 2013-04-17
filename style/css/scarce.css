@@ -8693,7 +8693,11 @@ table > caption {
 table {
   margin: 30px 0px;
 }
-code,
+code {
+  background-color: #780000;
+  color: white;
+  border: 3px solid #fafafa;
+}
 #page pre.src,
 #page pre.example {
   background: none repeat scroll 0% 0% #f8f8f8;
@@ -8708,10 +8712,8 @@ code,
   box-shadow: none;
   color: #141414;
   word-break: normal;
-  resize: both;
+  word-wrap: normal;
   white-space: pre;
-  display: block;
-  max-height: 20em;
 }
 .org-comment-delimiter,
 .org-comment {
@@ -8742,6 +8744,27 @@ code,
 }
 svg {
   max-height: 100%;
+}
+#page .article-content .outline-1 {
+  margin-left: 0;
+}
+#page .article-content .outline-2 {
+  margin-left: 0;
+}
+#page .article-content .outline-3 {
+  margin-left: 0;
+}
+#page .article-content .outline-4 {
+  margin-left: 0;
+}
+#page .article-content .outline-5 {
+  margin-left: 0;
+}
+#page .article-content .outline-6 {
+  margin-left: 0;
+}
+.MathJax_Display {
+  text-align: left !important;
 }
 @media (min-width: 768px) and (max-width: 979px) {
   .article-content {
