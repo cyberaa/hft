@@ -1,132 +1,28 @@
-#+TITLE: hft project
-#+OPTIONS: toc:2 num:nil ^:nil
-#+COLUMNS: %25ITEM %30tangle
+#+Language: en
+#+TITLE: hft,
+#+DESCRIPTION: hft project
+#+AUTHOR: tony day
+#+PROPERTY: noarchive t
+#+STARTUP: logdone
+#+STYLE_DIR: ../style
+#+ASSETS_DIR: assets
+#+TEMPLATE_DIR: ~/stuff/site/templates
+#+PUBLISH_DIR: gh-pages
+#+URL: http://scarcecapital.com/hft
+#+PROPERTIES: tangle no
+#+COLUMNS: %25ITEM %30tangle %10PAGE
+#+DEFAULT_CATEGORY: Blog
+#+ANALYTICS: UA-22236293-1
+#+DISQUS: scarce
+#+POSTS_FILTER: +blog="t"
+#+LaTeX_CLASS: scarce-org-article
+#+OPTIONS: H:nil num:nil toc:nil \n:nil @:t ::t |:t ^:t f:t TeX:t tags:nil author:nil
+#+COLUMNS: %25ITEM %30tangle %5blog %5top %15PAGE
 #+PROPERTY: session *R*
+#+LATEX: t
+#+FEEDS: hft
 
-Main org file for the hft project
-
-scarecapital.com/hft
-
-* README.md
-:PROPERTIES:
-:tangle:   README.md
-:END:
-
-#+begin_src markdown
-
-<img src="http://scarcecapital.com/assets/hft-blue.png" width="100px">
-
-[Blog](http://scarcecapital.com/hft)
-
-hft is a small project with a big ambition. We aim to build the worlds best
-algorithmic trading platform using the best off-the-shelf open source
-technology stack to be found.
-
-hft is created and maintained by [Tony Day](http://scarcecapital.com).
-
-## Quick start
-
-There is no quick start for hft.  The easiest way to get up to speed is to read the project [blog](http://scarcecapital.com/hft).  If you're interested in contributing to development or find a logic bug, then fork me with:
-
-```
-$ git clone https://github.com/tonyday567/hft.git
-```
-
-# technology stack #
-
-The world of high frequency trading is a broad church of opinion, technology, ideas and motivations.  hft is being developed using many different tools:
-
-### [emacs](http://www.gnu.org/software/emacs/), [org-mode](http://orgmode.org) and literate programming###
-
-[hft.org](https://github.com/tonyday567/hft/blob/master/hft.org) is the nerve
-center of active development and contains just about all the important code, research notes
-and design tools being used.
-
-The project makes heavy use of [babel](http://orgmode.org/worg/org-contrib/babel/) to pick and mix between coding environments and languages, whilst still remaining [literate](http://www.haskell.org/haskellwiki/Literate_programming):
-
->The main idea is to regard a program as a communication to human beings rather than as a set of instructions to a computer. ~ Knuth
-
-Similarly, a project such as hft is as much about communication between human beings as it is about maintenance of source code.
-
-### [R](http://www.r-project.org) ###
-
-R is a strongly functional but imperative language being used for rapid
-development and research of hft and algo ideas as they arise. Most everything
-that you can think of (databases, broker interfaces, statistical analysis,
-visualization) has an R package ready to get you up and going in 5 minutes.
-
-### [haskell](http://www.haskell.org/haskellwiki/Haskell) ###
-
-R can be many things but what it is least set up for is development of
-asyncronous code. To fill this gap, the project is using haskell to frame the
-system as and when it develops.
-
-### [Interactive Brokers](http://www.interactivebrokers.com/en/main.php) ###
-
-Eventually, hft will be broker independent but during the development phase IB
-is the test case. Interactive has the most mature API that works out of the
-box and a demo account so that hft can come pre-plumbed so that (eventually)
-the project can also run out of the box.
-
-Interactive Brokers consolidates tick data into 0.3 second time slices so it
-isn't appropriate for low-latency work.
-
-### [iqfeed](http://www.iqfeed.net)  ###
-
-Just because it's open-source doesn't mean that it's cost free. iqfeed has
-been chosen as an initial data feed to base project R&D efforts on. iqfeed
-costs dollars but the software can be downloaded for free and a demo version
-allows live data to flow with a lag.
-
-A useful way to support the hft project is to let DTN know if you decide to
-purshase iqfeed due to the project.
-
-## bug tracker
-
-Have a bug or a feature request? [Please open a new issue](https://github.com/tonyday567/hft/issues). 
-
-## Community
-
-hft is sponsored by [Scarce Capital](http://scarcecapital.com) as an adjunct to client advisory services.
-
-Follow [@scarcecapital on Twitter](http://twitter.com/scarcecapital).
-
-Read, subscribe (and contribute!) to the [The Official hft Blog](http://scarcecapital.com/hft).
-
-The project is partially due to active discussions on the [Open Source HFT Linkedin group](http://www.linkedin.com/groups?home=&gid=4405119&trk=anet_ug_hm)
-
-## Contributing
-
-Please submit all pull requests against the master branch.
-
-Thanks!
-
-## Authors
-
-**Tony Day**
-
-+ [http://twitter.com/tonyday567](http://twitter.com/tonyday567)
-+ [http://github.com/tonyday567](http://github.com/tonyday567)
-
-
-## Copyright and license
-
-Copyright 2013 Scarce Capital.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this work except in compliance with the License.
-You may obtain a copy of the License in the LICENSE file, or at:
-
-  [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-#+end_src
-
+HFT project pages
 
 * TODO 0.2 schedule
 - connect IB
@@ -221,7 +117,7 @@ first being modelled using graphviz.  The current candidate system is:
 
 ** candidate svg dot
 
-#+begin_src dot :file img/candidate.svg :cmdline -Kdot -Tpng :exports both
+#+begin_src dot :file img/candidate.svg :cmdline -Kdot -Tsvg :exports both
 digraph G {
         node [label="\N"];
         node [style=filled, color="#1f3950",fontcolor="#eeeeee",shape=box]; 
@@ -594,7 +490,6 @@ ghc --make controller.hs
 
 
 * TODO market data feed
-
 ** choices
 
 There is no such thing as live market data for free (please let us know if
@@ -732,7 +627,6 @@ R sucks at asynchronous programming.
 
 
 ** TODO haskell interfacing
-
 *** feed
 :PROPERTIES:
 :tangle:   haskell/feed.hs
@@ -2041,7 +1935,7 @@ http://www.bnosac.be/index.php/blog/26-massive-online-data-stream-mining-with-r
 
 
 
-* NEXT algo
+* TODO algo
 
 There's a few hypotheses guilding the evolution of the algorithm design:
 - whatever the complexity of an algorithm, the outcome can usually be
@@ -2053,6 +1947,271 @@ There's a few hypotheses guilding the evolution of the algorithm design:
   simultaneously and with certainty.
 - that a comparative advantage of the HFT project is in algorithm design
   rather than raw speed.
+
+
+** generalised statistical forecasting
+
+A bewildering, seemingly infinite number of approaches exist for statistical
+forecasting of returns. An early mistake made in this choice can doom an
+algorithmic approach to trading (whether high-frequency or low) from the very
+beginning of the hunt.
+
+My experience, however, is that many seemingly disparate techniques are, in
+fact, the same basic calculation of simple statistics with varying parameters
+and restrictions of the solution space.
+
+*** the moving average
+
+*Simple Moving Average (SMA)*
+
+The workhorse of technical market analytics is the moving average. As an
+example, the simplest and most famous technical signal is the 20-day moving
+average of price.  When the price falls below the moving average sell, and
+when it moves above the average, buy.  Reaching for my latex cheat sheet:
+
+\begin{multline}
+signal = price_{0} - \frac{\sum\limits_{i=0}^{19}price_{i}}{20}
+\end{multline}
+
+where $price_{0}$ is current price (as at a close say) and $price_{19}$ the price 19 days ago.
+
+Rearranging:
+
+\begin{multline}
+signal = \left( \begin{array}{c} 0.95 & -0.05 & ... & -0.05 \end{array} \right) \ast \left( \begin{array}{c} p_{0} & p_{1} & ... & p_{19} \end{array} \right)
+\end{multline}
+
+So the signal can be expressed as a weighted sum of price where the weights add to zero.
+
+
+Moving on to the next most popular moving average crossover, let's look at the
+signal from that results from using the 100 day average crossing the 20 day
+average (120 actually but I'm making the maths easy):
+
+\begin{equation}
+\begin{split}
+signal &= \frac{\sum\limits_{i=0}^{19}price_{-i}}{20} - \frac{\sum\limits_{i=0}^{99}price_{-i}}{100} \\
+&= \left( \begin{array}{cccc} 0.04 & 0.04 & ... & -0.01 & ... & -0.01 \end{array} \right) \ast \left( \begin{array}{c} p_{0} & p_{1} & ... & p_{20} & ... & p_{99} \end{array} \right)
+\end{split}
+\end{equation}
+
+
+*Exponential Moving Average (EMA)*
+
+An exponential moving average adopts a weighting scheme where the weight
+geometrically =decays= at a constant rate of $(1 - \frac{1}{days})$ the further back in time
+you go. Price crossing a 10-day EMA signal looks like:
+
+\begin{equation}
+\begin{split}
+signal &= price_{0} - \frac{\sum\limits_{i=0}^{\infty}0.9^{i} \ast price_{i}}{10} \\
+&= \left( \begin{array}{c} 0.9 & -0.09 & -0.081 & ... \end{array} \right) \ast \left( \begin{array}{c} p_{0} & p_{1} & p_{2} & ...  \end{array} \right)
+\end{split}
+\end{equation}
+
+So, no matter how many different moving average rules are combined, nor the alternative
+ways of specifying a moving average, moving average signal rules all boil down to a weighted sum
+calculation of price.
+
+\begin{multline}
+signal = \sum\limits_{i=0}^{n}(k_{i} \ast price_{i})
+\end{multline}
+
+where $k_{i}$ are weights adding to zero.
+
+*return-based signals*
+
+A signal based on historical prices can also be expressed in terms of
+historical returns given:
+
+\begin{multline}
+1 + return_{n} = \frac{price_{n}}{price_{(n-1)}}
+\end{multline}
+
+and thus
+
+\begin{multline}
+\frac{price_{0}}{price_{n}} =
+\end{multline}
+\begin{multline}
+\frac{price_{0}}{price_{1}} \ast \frac{price_{1}}{price_{2}} \ast \cdots \ast \frac{price_{(n-1)}}{price_{n}} =
+\end{multline}
+\begin{multline}
+\prod\limits_{i=0}^{n-1}(1+return_{i}) \approxeq
+\end{multline}
+\begin{multline}
+1 + return_{0} + return_{1} + \cdots + return_{n-1}
+\end{multline}
+(dropping the insignificant terms from the taylor series expansion)
+
+
+Now being a generic signal, you can divide by anything you want and it's still
+a signal.  Dividing by $price_{19}$ (I'm making the maths easier) gives:
+
+\begin{multline}
+(k_{0} \ast \frac{price_{0}}{price{19}}) + (k_{1} \ast \frac{price_{1}}{price{19}}) + \cdots + (k_{19} \ast \frac{price_{19}}{price_{19}}
+\end{multline}
+\begin{multline}
+(k_{0} \ast (1 + return_{0} + ... + return_{19}) + (k_{1} \ast (1 + return_{1} + ... + return_{19}) + \cdots + (k_{19} \ast 1
+\end{multline}
+\begin{multline}
+(\sum\limits\_0^19k_{i}) + k_{0} \ast return_{0} + (k_{0} +k_{1}) \ast return_{1} + ... + \sum\limits\_0^19k_{i} \ast return_{19}
+\end{multline}
+
+The first term (sum of weights) is zero, so for our first price MA example
+[SMA(20)] looks like this in return terms:
+
+\begin{multline}
+signal = 0.95 \ast return_{0} + 0.9 \ast return_{1} + ... + 0.05 \ast return_{19}
+\end{multline}
+
+So a price moving average signal is the same as a return moving average where
+weights decline by 0.05 each time period (simple =decay=).
+
+Before we leave technicals, it might be useful to show the EMA(10) example as
+a code snippet (and with a few practical tweaks) compared to the SMA(20) from
+the previous example:
+
+*R code*
+#+begin_src R :results graphics :file rweights.png :exports both
+  k.weights
+  max.n = 20
+  days = 10
+  k.weights = -(1-(1/days))^(0:(max.n-1))/days # the ema weights
+  k.weights[1] = 1 + k.weights[1] # the current price
+  k.weights = k.weights/sum(k.weights) # normalising to sum=1 because we capped the length
+  ema.weights = cumsum(k.weights)
+  ema.weights = ema.weights/sum(ema.weights) # normalising so sum=1
+  sma.weights = seq(0.95,0.00,by=-0.05)/sum(seq(0.95,0.00,by=-0.05))
+  require(reshape)
+  require(ggplot2)
+  df.long = melt(data.frame(ema.weights,sma.weights,time=0:(max.n-1)),id="time")
+  g = ggplot(data=df.long,
+	 aes(x=time, y=value,color=variable)) +
+    geom_line()
+#+end_src
+
+#+results:
+[[file:img/rweights.png]]
+
+
+*** momentum signals
+
+Momentum in standard finance literature is defined like this:
+
+#+begin_quote
+  When the return over the last 12 months is negative, go short the market, otherwise stay long
+#+end_quote
+
+Assuming there are 250 trading days in a year gives:
+
+\begin{multline}
+signal = \sum\limits_{i=0}^{249}return_{i}
+\end{multline}
+\begin{multline}
+signal = 1 \ast return_{0} + 1 \ast return_{1} + ... + 1 \ast return_{249}
+\end{multline}
+
+
+The weights are different and the signal uses a longer series but the
+underlying formulae structure is exactly the same.
+
+*** volatility
+
+The volatility of a return series is calculated as (20 day series say which
+would be broadly comparable to the VIX):
+
+\begin{multline}
+standard deviation estimate = \sqrt(0.05 * (return_{0} - average return)^{2} + 0.05 * (return_{1} - average return)^{2} + ... + 0.05 * (return_{19} - average return)^{2})
+\end{multline}
+
+Now one problem with statistical analysis of time series that standard fiaince
+is all over is that this is often a bad estimate of underlying volatility, because
+volatility is auto-conditional (future volatility is highly dependent on
+recent historical volatility).
+
+To deal with this, the workhorse of standard finance historical volatility
+analysis is the GARCH model. This note is getting quite long so I wont bore
+with the details but the guts of the model /uses an exponential weighting
+scheme/ to calculate volatility in a manner spookily like the EMA
+calculations in return space.
+
+\begin{multline}
+standard deviation estimate = \sqrt(0.09 * (return_{0} - average return)^{2} + 0.081 * (return_{1} - average return)^{2} + ...)
+\end{multline}
+
+Same as the standard volatility calculation but with a different weighting
+scheme.
+
+Now, one more trick and I'll get to the main point. The average return in the
+volatility equation is there as an estimate of the underlying mean return.
+Much of technical analysis and momentum research is actually alternative
+specifications of a useful expected return approximation (once you constrain
+the weights to add up to 1). We can thus insert our weighted return formulae
+in the volatility formulae:
+
+\begin{multline}
+return estimate = \sqrt(0.09 * return_{0} + 0.081 * return_{1} + ...) \\
+volatility estimate = \sqrt(0.09 * (return_{0} - return estimate)^{2} + 0.081 * (return_{1} - return estimate)^{2} + ...)
+\end{multline}
+(the weighting schemes don't have to be the same)
+
+*** weighted.historicals
+
+The function below applies these calculations to an historical time series
+where =hist.weights$mean= are the return weights and =hist.weights$vol= are the
+volatility weights.
+
+#+begin_src R :results silent
+  weighted.historicals = function(rets, hist.weights) {
+    hmean=as.double(filter(rets,hist.weights$mean,sides=1))
+    hmean[1:length(hist.weights$mean)]=cumsum(rets[1:length(hist.weights$mean)]*t(as.matrix(hist.weights$mean)))
+    xvol=(rets-hmean)^2
+    hvol=as.double(filter(xvol,hist.weights$vol,sides=1))^0.5
+    hvol[1:length(hist.weights$vol)]=cumsum(xvol[length(hist.weights$vol)]*t(as.matrix(hist.weights$vol)))^0.5
+    weighted.historicals=data.frame(hmean=hmean, hvol=hvol)
+  }
+#+end_src
+
+*** the point
+
+This function encapsulates a very broad church of finance theory concerned
+with forecasting future returns. Trend following and reversions, breakouts,
+technical analysis, bollinger bands, momentum theory, stochastic volatility,
+tweaks to option pricing, copulas (by extending the reasoning to correlations)
+and many other concepts can all be represented as operations involving
+calculating historical moments (average and volatility) using various
+weighting schemes.
+
+On the one hand, this increases the rigour in systemically forecasting
+returns. In particular, accidentally combining two signals that you think are
+different (orthogonal) to each other but are very similar in reality often
+leads to spurious predictions.
+
+On the other hand, it opens up a richer set of curves to test than the
+standard set used in forecasting.
+
+#+begin_src R :results graphics :file mweights.png :exports both
+  mom.weights = rep(0.05,20)
+  df.long = melt(data.frame(ema.weights,sma.weights,mom.weights,time=0:(max.n-1)),id="time")
+  ggplot(data=df.long,
+	   aes(x=time, y=value,color=variable)) +
+      geom_line()
+#+end_src
+
+#+results:
+[[file:img/mweights.png]]
+
+A momentum signal doesn't have to be arrived at using a linear weighting
+scheme - it makes much more sense if recent returns are more important
+indicators of what will happen next compared with returns in the distant past.
+Always using an exponential weighting scheme is like assuming that markets
+behave exactly like atoms undergoing nuclear decay. There's no fundamental
+reason why weights can't go negative and doing this would naturally
+incorporate mean reversion potentials naturally with momentum forces.
+
+Using this generalist approach to calculating historical statistics is a core
+of the proposed system design.
 
 ** algo soup
 
@@ -3099,3 +3258,1200 @@ http://apple.stackexchange.com/questions/82878/how-to-tell-when-time-has-been-sy
 
 
 
+** TODO notes from HN discussions
+
+- [ ] consider switch to python (from R)
+- [ ] bitcoin as a test case?
+
+
+https://github.com/quantopian/zipline
+
+http://prof7bit.github.io/goxtool/
+
+https://github.com/fmstephe/matching_engine
+
+https://github.com/brotchie/ib-zmq
+
+https://github.com/brotchie/r-zerotws
+
+http://hackage.haskell.org/package/HLearn-algebra
+
+
+
+* TODO gh-pages production
+** blogging instructions
+Anyone who would like to publish bits and bobs is welcome to do so, and
+everyone is encouraged to as well.
+
+The project site ([[http:scarcecapital.com.hft][scarcecapital.com/hft]]) is
+- a static site located in the gh-pages branch of the repo
+- published using the material in hft.org (this file)
+- published using [[https://github.com/renard/o-blog][o-blog]]
+
+So to publish a blog, you just:
+- alter this file, typically by adding a new subtree below
+- add a blog: t properties (like the other blog posts - follow your nose)
+- throw images and charts in the assets directory
+- send a pull request
+
+Once the pull is merged, the blog will appear the next time I rebuild the
+site (which I have down to 2 button pushes if there are no snaffoos, which
+there usually is)
+
+If anyone would like more info or to try it all out in a fork, let me know
+and I can help you out with what else you will need (which is pretty much
+some style/css files and html templates).
+
+** NEXT todo list
+
+- [ ] org.org (emacs setup and instructions)
+  - new o-blog
+  - R
+  - haskell
+  - .emacs.d
+
+- [ ] reverse babelling
+
+** local vars
+#+begin_src emacs-lisp
+      (setq o-blog-local-site "~/Sites/hft")
+      (setq o-blog-out-dir "gh-pages")
+      (setq o-blog-local-url-index "http://127.0.0.1/~tonyday/hft/index.html")
+#+end_src
+
+#+results:
+: http://127.0.0.1/~tonyday/hft/index.html
+
+** Pages
+*** HFT
+:PROPERTIES:
+  :PAGE:     index.html
+  :TEMPLATE: plain.html
+  :END:
+
+#+begin_html
+  <div class="hero-unit">
+    <div class="row-fluid">
+      <div class="span6">
+	<h1>hft</h1>
+	<br>
+	<p>
+	  (Semi-) High Frequency and (Semi-) Algorithmic trading, research and design
+	</p>
+	<p>
+	  using <a href="http://www.haskell.org/haskellwiki/Haskell">haskell</a>,<a href="http://www.r-project.org">R</a> and <a href="http://www.gnu.org/software/emacs/">emacs</a> <a href="http://orgmode.org">org-mode</a>.
+	</p>
+	<p>
+	  open-source and on a budget (hence the Semi)
+	</p>
+	<a class="btn btn-large hero-button" href="http://eepurl.com/xZDev">email feed &raquo;</a>
+	<br>
+      </div>
+
+
+      <div class="span6">
+	  <a class="image-link" href="{lisp}(ob:path-to-root){/lisp}/{lisp}(ob:post-htmlfile (ob-get-post-by-title POSTS "Candidate Structure")){/lisp}">
+	    <span class="tooltip">
+	      Candidate Structure
+	    </span>
+	    <img class="hero-chart" src="<lisp>(ob:path-to-root)</lisp>/<lisp>(ob:blog-assets-dir BLOG)</lisp>/candidate.svg" alt="design">
+	  </a>
+      </div>
+      <div class="span12">
+
+	<p><code>$ git clone https://github.com/tonyday567/hft.git</code></p>
+      </div>
+    </div>
+  </div>
+
+#+end_html
+
+*** Articles by Category
+  :PROPERTIES:
+  :PAGE:     tags.html
+  :TEMPLATE: blog_post-by-tags.html
+  :END:
+
+
+
+*** Welcome to HFT!
+CLOSED: [2013-04-11 Thu 15:47]
+  :PROPERTIES:
+  :PAGE:     about.html
+  :template: about.html
+  :blog:     t
+  :top:      t
+  :END:
+
+#+begin_html
+<p><img src="<lisp>(ob:path-to-root)</lisp>/<lisp>(ob:blog-assets-dir
+BLOG)</lisp>/hft-blue.png" width="100" alt=""></p>
+
+<br>
+
+<p>HFT is a small project with a big ambition. We aim to build the worlds best
+algorithmic trading platform using the best off-the-shelf open source
+technology stack to be found. And all of this on a tight budget.</p>
+
+<p>HFT is created and maintained by <a href="http://twitter.com/tonyday567">Tony Day</a>.</p>
+
+<h1>Quick Start</h1>
+
+<p>There is no quick start for hft.  The easiest way to get up to speed is to read the project <a href="http://scarcecapital.com/hft">blog</a>.  If you're interested in contributing to development or find a logic bug, then fork me with:</p>
+
+<p><code>
+$ git clone https://github.com/tonyday567/hft.git
+</code></p>
+
+<h1>Technology Stack</h1>
+
+<p>The world of high frequency trading is a broad church of opinion, technology, ideas and motivations.  hft is being developed using many different tools:</p>
+
+<h3><a href="http://www.gnu.org/software/emacs/">emacs</a>, <a href="http://orgmode.org">org-mode</a> and literate programming</h3>
+
+<p><a href="https://github.com/tonyday567/hft/blob/master/hft.org">hft.org</a> is the nerve
+center of active development and contains just about all the important code, research notes
+and design tools being used.</p>
+
+<p>The project makes heavy use of <a href="http://orgmode.org/worg/org-contrib/babel/">babel</a> to pick and mix between coding environments and languages, whilst still remaining <a href="http://www.haskell.org/haskellwiki/Literate_programming">literate</a>:</p>
+
+<blockquote>
+  <p>The main idea is to regard a program as a communication to human beings rather than as a set of instructions to a computer. ~ Knuth</p>
+</blockquote>
+
+<p>Similarly, a project such as hft is as much about communication between human beings as it is about maintenance of source code.</p>
+
+<h3><a href="http://www.r-project.org">R</a></h3>
+
+<p>R is a strongly functional but imperative language being used for rapid
+development and research of hft and algo ideas as they arise. Most everything
+that you can think of (databases, broker interfaces, statistical analysis,
+visualization) has an R package ready to get you up and going in 5 minutes.</p>
+
+<h3><a href="http://www.haskell.org/haskellwiki/Haskell">haskell</a></h3>
+
+<p>R can be many things but what it is least set up for is development of
+asyncronous code. To fill this gap, the project is using haskell to frame the
+system as and when it develops.</p>
+
+<h3><a href="http://www.interactivebrokers.com/en/main.php">Interactive Brokers</a></h3>
+
+<p>Eventually, hft will be broker independent but during the development phase IB
+is the test case. Interactive has the most mature API that works out of the
+box and a demo account so that hft can come pre-plumbed so that (eventually)
+the project can also run out of the box.</p>
+
+<p>Interactive Brokers consolidates tick data into 0.3 second time slices so it
+isn't appropriate for low-latency work.</p>
+
+<h3><a href="http://www.iqfeed.net">iqfeed</a></h3>
+
+<p>Just because it's open-source doesn't mean that it's cost free. iqfeed has
+been chosen as an initial data feed to base project R&amp;D efforts on. iqfeed
+costs dollars but the software can be downloaded for free and a demo version
+allows live data to flow with a lag.</p>
+
+<p>A useful way to support the hft project is to let DTN know if you decide to
+purshase iqfeed due to the project.</p>
+
+<h2>Bug Tracker</h2>
+
+<p>Have a bug or a feature request? <br> <a href="https://github.com/tonyday567/hft/issues">Please open a new issue</a>. </p>
+
+<h2>Community</h2>
+
+<p>hft is sponsored by <a href="http://scarcecapital.com">Scarce Capital</a></p>
+
+<p>Follow <a href="http://twitter.com/scarcecapital">@scarcecapital on Twitter</a>.</p>
+
+<p>Read, subscribe (and contribute!) to the hft <a href="http://scarcecapital.com/hft">blog</a>.</p>
+
+<h2>Contributing</h2>
+
+<p>Please submit all pull requests against the master branch.</p>
+
+<p>Thanks!</p>
+
+<h2>Authors</h2>
+
+<p><strong>Tony Day</strong></p>
+
+<ul>
+<li><a href="http://twitter.com/tonyday567">http://twitter.com/tonyday567</a></li>
+<li><a href="http://github.com/tonyday567">http://github.com/tonyday567</a></li>
+</ul>
+#+end_html
+
+** Elements
+*** Navigation
+  :PROPERTIES:
+  :SNIPPET:  t
+  :END:
+
+#+begin_html
+  <ul class="nav">
+   <li>
+     <a href="{lisp}(ob:path-to-root){/lisp}/about.html"><i>icon-user icon-white</i> About</a>
+   </li>
+   <li>
+  <a class="caret-before" href="{lisp}(format "%s/%s" (ob:path-to-root) (ob:post-htmlfile (ob:get-last-post "Blog" 0))){/lisp}">
+       <i class="icon-coffee icon-white">
+       </i>
+       Blog
+     </a>
+  </li>
+   <li class="dropdown">
+ <a class="dropdown-toggle caret-after" data-toggle="dropdown" data-hover="dropdown" data-delay="2000">
+ </a>
+     <ul class="dropdown-menu">
+
+
+{lisp}
+     (mapconcat (lambda (x) (format "<li><a href=\"%s/%s\">%s</a></li>"
+	   (ob:path-to-root)
+	      (ob:post-htmlfile (ob:get-last-post "Blog" x))
+(ob:post-title (ob:get-last-post "Blog" x))
+))
+'(0 1 2 3)  "")
+{/lisp}
+
+  </ul>
+
+  </li>
+  <li><a href="https://github.com/tonyday567/hft"><i>icon-github icon-white</i> HFT</a>
+
+  </li>
+  <li><a href="{lisp}(ob:path-to-root){/lisp}/tags.html"><i>icon-tags icon-white</i> Tags</a>
+
+  </li>
+  <li><a href="{lisp}(ob:path-to-root){/lisp}/archives.html"><i>icon-list icon-white</i> Archives</a>
+
+  </li>
+  <li><a href="{lisp}(ob:path-to-root){/lisp}/index.xml"><i>icon-rss icon-white</i> RSS</a>
+  </li>
+  <li><a href="http://scarcecapital.com"><i>icon-home icon-white</i> scarce,</a>
+  </li>
+
+  </ul>
+#+end_html
+
+
+*** Copyright
+  :PROPERTIES:
+  :SNIPPET:
+  :END:
+
+#+begin_html
+Copyright <a href="http://scarcecapital.com">Scarce Capital</a> 2010-2013
+#+end_html
+
+*** Copyright
+  :PROPERTIES:
+  :SNIPPET: t
+  :END:
+
+#+begin_html
+Copyright <a href="http://scarcecapital.com">Scarce Capital</a> 2010-2013
+
+<p>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this work except in compliance with the License.
+You may obtain a copy of the License in the LICENSE file, or at:</p>
+
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+#+end_html
+
+
+
+
+** Blog
+*** Statistical Forecasting
+CLOSED: [2013-04-17 Wed 16:23]
+:LOGBOOK:
+- State "DONE"       from ""           [2013-04-17 Wed 16:23]
+:END:
+:PROPERTIES:
+:blog:     t
+:top:      t
+:END:
+
+#+begin_html
+<script type="text/javascript"
+  src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+#+end_html
+
+A bewildering, seemingly infinite number of approaches exist for statistical
+forecasting of returns. An early mistake made in this choice can doom an
+algorithmic approach to trading (whether high-frequency or low) from the very
+beginning of the hunt.
+
+My experience, however, is that many seemingly disparate techniques are, in
+fact, the same basic calculation of simple statistics with varying parameters
+and restrictions of the solution space.
+
+**** the moving average
+
+*Simple Moving Average (SMA)*
+
+The workhorse of technical market analytics is the moving average. As an
+example, the simplest and most famous technical signal is the 20-day moving
+average of price.  When the price falls below the moving average sell, and
+when it moves above the average, buy.  Reaching for my latex cheat sheet:
+
+$signal = price_{0} - \frac{\sum\limits_{i=0}^{19}price_{i}}{20}$
+
+where $price_{0}$ is current price (as at a close say) and $price_{19}$ the price 19 days ago.
+
+Rearranging:
+
+\begin{align}
+signal = &\left( \begin{array}{c} 0.95 & -0.05 & ... & -0.05 \end{array} \right) \ast \\
+&\left( \begin{array}{c} p_{0} & p_{1} & ... & p_{19} \end{array} \right)
+\end{align}
+
+So the signal can be expressed as a weighted sum of price where the weights add to zero.
+
+
+Moving on to the next most popular moving average crossover, let's look at the
+signal from that results from using the 100 day average crossing the 20 day
+average (120 actually but I'm making the maths easy):
+
+\begin{equation}
+\begin{split}
+signal &= &\frac{\sum\limits_{i=0}^{19}price_{-i}}{20} - \frac{\sum\limits_{i=0}^{99}price_{-i}}{100} &\\
+&= &\left( \begin{array}{cccc} 0.04 & 0.04 & ... & -0.01 & ... & -0.01 \end{array} \right) \ast \\
+&&\left( \begin{array}{c} p_{0} & p_{1} & ... & p_{20} & ... & p_{99} \end{array} \right)
+\end{split}
+\end{equation}
+
+
+*Exponential Moving Average (EMA)*
+
+An exponential moving average adopts a weighting scheme where the weight
+geometrically decays at a constant rate of $(1 - \frac{1}{days})$ the further back in time
+you go. Price crossing a 10-day EMA signal looks like:
+
+\begin{equation}
+\begin{split}
+signal &= &price_{0} - \frac{\sum\limits_{i=0}^{\infty}0.9^{i} \ast price_{i}}{10} \\
+&= &\left( \begin{array}{c} 0.9 & -0.09 & -0.081 & ... \end{array} \right) \ast \\
+&&\left( \begin{array}{c} p_{0} & p_{1} & p_{2} & ...  \end{array} \right)
+\end{split}
+\end{equation}
+
+So, no matter how many different moving average rules are combined, nor the alternative
+ways of specifying a moving average, moving average signal rules all boil down to a weighted sum
+calculation of price.
+
+\begin{equation}
+signal = \sum\limits_{i=0}^{n}(k_{i} \ast price_{i})
+\end{equation}
+
+where $k_{i}$ are weights adding to zero.
+
+*return-based signals*
+
+A signal based on historical prices can also be expressed in terms of
+historical returns given:
+
+\begin{align}
+1 + return_{n} = \frac{price_{n}}{price_{(n-1)}}
+\end{align}
+
+and thus
+
+\begin{equation}
+\frac{price_{0}}{price_{n}} =
+\end{equation}
+\begin{equation}
+\frac{price_{0}}{price_{1}} \ast \frac{price_{1}}{price_{2}} \ast \cdots \ast \frac{price_{(n-1)}}{price_{n}} =
+\end{equation}
+\begin{equation}
+\prod\limits_{i=0}^{n-1}(1+return_{i}) \approxeq
+\end{equation}
+\begin{equation}
+1 + return_{0} + return_{1} + \cdots + return_{n-1}
+\end{equation}
+(dropping the insignificant terms from the taylor series expansion)
+
+
+Now being a generic signal, you can divide by anything you want and it's still
+a signal.  Dividing by $price_{19}$ (I'm making the maths easier) gives:
+
+\begin{align}
+&(k_{0} \ast \frac{price_{0}}{price_{19}}) + (k_{1} \ast \frac{price_{1}}{price_{19}}) + \cdots + (k_{19} \ast \frac{price_{19}}{price_{19}}) \\
+\Rightarrow &(k_{0} \ast (1 + return_{0} + ... + return_{19}) + \\
+&(k_{1} \ast (1 + return_{1} + ... + return_{19}) + \cdots + (k_{19} \ast 1) \\
+\Rightarrow&(\sum\limits_{0}^{19}k_{i}) + k_{0} \ast return_{0} + \\
+&(k_{0} +k_{1}) \ast return_{1} + ... \\
+&+ \sum\limits_{0}^{19}k_{i} \ast return_{19}
+\end{align}
+
+The first term (sum of weights) is zero, so for our first price MA example
+[SMA(20)] looks like this in return terms:
+
+\begin{align}
+signal = &0.95 \ast return_{0} +\\
+&0.9 \ast return_{1} + ... +\\
+&0.05 \ast return_{19}
+\end{align}
+
+So a price moving average signal is the same as a return moving average where
+weights decline by 0.05 each time period (simple decay).
+
+Before we leave technicals, it might be useful to show the EMA(10) example as
+a code snippet (and with a few practical tweaks) compared to the SMA(20) from
+the previous example:
+
+*R code*
+#+begin_src R :results graphics :file rweights.png :exports both
+  k.weights
+  max.n = 20
+  days = 10
+  k.weights = -(1-(1/days))^(0:(max.n-1))/days # the ema weights
+  k.weights[1] = 1 + k.weights[1] # the current price
+  k.weights = k.weights/sum(k.weights) # normalising to sum=1 because we capped the length
+  ema.weights = cumsum(k.weights)
+  ema.weights = ema.weights/sum(ema.weights) # normalising so sum=1
+  sma.weights = seq(0.95,0.00,by=-0.05)/sum(seq(0.95,0.00,by=-0.05))
+  require(reshape)
+  require(ggplot2)
+  df.long = melt(data.frame(ema.weights,sma.weights,time=0:(max.n-1)),id="time")
+  g = ggplot(data=df.long,
+	 aes(x=time, y=value,color=variable)) +
+    geom_line()
+#+end_src
+
+#+results:
+[[file:assets/rweights.png]]
+
+
+**** momentum signals
+
+Momentum in standard finance literature is defined like this:
+
+#+begin_quote
+  When the return over the last 12 months is negative, go short the market, otherwise stay long
+#+end_quote
+
+Assuming there are 250 trading days in a year gives:
+
+\begin{equation}
+signal = \sum\limits_{i=0}^{249}return_{i}
+\end{equation}
+\begin{equation}
+signal = 1 \ast return_{0} + 1 \ast return_{1} + ... + 1 \ast return_{249}
+\end{equation}
+
+
+The weights are different and the signal uses a longer series but the
+underlying formulae structure is exactly the same.
+
+**** volatility
+
+The volatility of a return series is calculated as (20 day series say which
+would be broadly comparable to the VIX):
+
+\begin{align}
+vol_{0} = &\sqrt(0.05 * (return_{0} - av)^{2} + 0.05 * (return_{1} - av)^{2} \\
+&+ ... + 0.05 * (return_{19} - av)^{2})
+\end{align}
+
+Now one problem with statistical analysis of time series that standard fiaince
+is all over is that this is often a bad estimate of underlying volatility, because
+volatility is auto-conditional (future volatility is highly dependent on
+recent historical volatility).
+
+To deal with this, the workhorse of standard finance historical volatility
+analysis is the GARCH model. This note is getting quite long so I wont bore
+with the details but the guts of the model /uses an exponential weighting
+scheme/ to calculate volatility in a manner spookily like the EMA
+calculations in return space.
+
+\begin{align}
+vol_{0} = \sqrt(&0.09 * (return_{0} - av)^{2} + \\
+&0.081 * (return_{1} - av)^{2} + ...)
+\end{align}
+
+Same as the standard volatility calculation but with a different weighting
+scheme.
+
+Now, one more trick and I'll get to the main point. The average return in the
+volatility equation is there as an estimate of the underlying mean return.
+Much of technical analysis and momentum research is actually alternative
+specifications of a useful expected return approximation (once you constrain
+the weights to add up to 1). We can thus insert our weighted return formulae
+in the volatility formulae:
+
+\begin{align}
+E(return_{0}) = \sqrt(&0.09 * return_{0} + 0.081 * return_{1} + ...) \\
+E(vol_{0}) = \sqrt(&0.09 * (return_{0} - return estimate)^{2} + \\
+&0.081 * (return_{1} - return estimate)^{2} + ...)
+\end{align}
+(the weighting schemes don't have to be the same)
+
+**** weighted.historicals
+
+The function below applies these calculations to an historical time series
+where hist.weights$mean are the return weights and hist.weights$vol are the
+volatility weights.
+
+#+begin_src R :results silent
+  weighted.historicals = function(rets, hist.weights) {
+    hmean=as.double(filter(rets,hist.weights$mean,sides=1))
+    hmean[1:length(hist.weights$mean)]=cumsum(rets[1:length(hist.weights$mean)]*t(as.matrix(hist.weights$mean)))
+    xvol=(rets-hmean)^2
+    hvol=as.double(filter(xvol,hist.weights$vol,sides=1))^0.5
+    hvol[1:length(hist.weights$vol)]=cumsum(xvol[length(hist.weights$vol)]*t(as.matrix(hist.weights$vol)))^0.5
+    weighted.historicals=data.frame(hmean=hmean, hvol=hvol)
+  }
+#+end_src
+
+**** the point
+
+This function encapsulates a very broad church of finance theory concerned
+with forecasting future returns. Trend following and reversions, breakouts,
+technical analysis, bollinger bands, momentum theory, stochastic volatility,
+tweaks to option pricing, copulas (by extending the reasoning to correlations)
+and many other concepts can all be represented as operations involving
+calculating historical moments (average and volatility) using various
+weighting schemes.
+
+On the one hand, this increases the rigour in systemically forecasting
+returns. In particular, accidentally combining two signals that you think are
+different (orthogonal) to each other but are very similar in reality often
+leads to spurious predictions.
+
+On the other hand, it opens up a richer set of curves to test than the
+standard set used in forecasting.
+
+#+begin_src R :results graphics :file mweights.png :exports both
+  mom.weights = rep(0.05,20)
+  df.long = melt(data.frame(ema.weights,sma.weights,mom.weights,time=0:(max.n-1)),id="time")
+  ggplot(data=df.long,
+	   aes(x=time, y=value,color=variable)) +
+      geom_line()
+#+end_src
+
+#+results:
+[[file:assets/mweights.png]]
+
+#+html: <br>
+
+A momentum signal doesn't have to be arrived at using a linear weighting
+scheme - it makes much more sense if recent returns are more important
+indicators of what will happen next compared with returns in the distant past.
+Always using an exponential weighting scheme is like assuming that markets
+behave exactly like atoms undergoing nuclear decay. There's no fundamental
+reason why weights can't go negative and doing this would naturally
+incorporate mean reversion potentials naturally with momentum forces.
+
+Using this generalist approach to calculating historical statistics is a core
+of the proposed system design.
+
+
+*** Latency Research                                             :research:
+CLOSED: [2013-04-12 Thu 16:46]
+:LOGBOOK:
+- State "DONE"       from ""           [2013-04-11 Thu 16:46]
+:END:
+:PROPERTIES:
+:blog:     t
+:top:      t
+:END:
+
+I collected trade and order ticks for 12 contracts on 14th March from iqfeed,
+and timestamped each tick with current system time. There was about 8 million
+data points.
+
+
+**** feed ping latency
+
+Iqfeed sends a ping once a second as part of the stream.
+
+    #+begin_src R
+      t = read.csv("data/streamt.txt",header=FALSE,as.is=TRUE)
+      pingtime = strptime(t[,3], "%Y%m%d %H:%M:%S")
+      stamp = strptime(paste(strftime(pingtime,"%Y%m%d"), t[,1], sep=" "), "%Y%m%d %H:%M:%OS")
+      latency = as.double(stamp - pingtime)
+      df = data.frame(pingtime=pingtime, latency=latency)
+      summary(df)
+    #+end_src
+
+    | Min.   :2013-03-14 07:30:57 | Min.   :-0.90665 |
+    | 1st Qu.:2013-03-14 17:15:41 | 1st Qu.:-0.01492 |
+    | Median :2013-03-15 03:02:15 | Median : 0.14950 |
+    | Mean   :2013-03-15 03:01:28 | Mean   : 0.38876 |
+    | 3rd Qu.:2013-03-15 12:46:33 | 3rd Qu.: 0.22824 |
+    | Max.   :2013-03-15 22:33:24 | Max.   : 7.89887 |
+    | NA's   :1                   | NA's   :1        |
+
+    #+begin_src R
+    require(ggplot2)
+    qplot(data=df, x=pingtime, y=latency)
+    ggsave("ping-latency.svg")
+    #+end_src
+
+    #+results:
+
+    [[file:assets/ping-latency.png]]
+
+    The simple scatterplot shows many negative values, especially when the
+    market is open, and a step jump in the later pings (when no quotes were
+    being recorded).  These jumps may be due to changes in my system clock
+    (automatic appletime resolutions) or due to a lack of accuracy in the
+    iqfeed pings.
+
+    Scatterplots tend to provide dubious visualisation for bigdata, and a new
+    package out that helps is [[http://vita.had.co.nz/papers/bigvis.html][bigvis]].
+
+    Bigvis is not yet available at CRAN but can be installed via a github
+    repository (see https://github.com/hadley/bigvis for details).
+
+    #+begin_src R
+    install.packages("devtools")
+    devtools::install_github("bigvis")
+    #+end_src
+
+    Bigvis doesn't handle non-numeric data (like time), so rather than
+    autopilot, I use ggplot directly.
+
+    #+begin_src R :results file
+      require(bigvis)
+      require(ggplot2)
+      dfn = condense(bin(as.double(df$pingtime),60),bin(df$latency,.1))
+      dfg = data.frame(as.POSIXct(dfn[,1],origin="1960-01-01", tz="GMT"),dfn[,2],dfn[,3])
+      colnames(dfg) = c("Time","Latency","Count")
+      g = ggplot(data=dfg,aes(x=Time,y=Latency))
+      g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low="#e5e5e5", high = "#444548") + scale_y_continuous(limits=c(-1,1))
+      ggsave("ping-latency-condensed.svg")
+   #+end_src
+
+   [[file:assets/ping-latency-condensed.svg]]
+
+   Using the bigvis techniques clarifies a few main issues for further research:
+   - there is a step jump near market open where the majority of the pings
+     jump from around 250 msecs to -750 msecs. This looks like either a coding
+     error or the ping being off by up to a second.
+   - during market open (when tick volume is high) ping can vary by a second.
+
+
+
+**** disconnects
+   Just looking at the ping counts after binning into one minute intervals:
+
+   #+begin_src R
+      df.dis = condense(bin(as.double(df$pingtime),60))
+      dfg = data.frame(as.POSIXct(df.dis[,1],origin="1960-01-01", tz="GMT"),60-df.dis[,2])
+      colnames(dfg) = c("Time","Count")
+      g = ggplot(data=dfg,aes(x=Time,y=Count))
+      g + geom_line(aes())
+      ggsave("disconnects.png")
+
+   #+end_src
+
+   [[file:assets/disconnects.png]]
+
+   iqfeed regularly suffers from disconnects with reconnection occuring within
+   a minute.
+
+
+**** event latency
+
+The ticks for the day were processed into column-data formats using the mmap
+package from R (see hft.org for the gory details).
+
+From the R database of the one day quote ticks...
+
+- open data
+  #+begin_src R
+
+  rm(list = ls())
+  require("mmap")
+  require("rindex")
+  require("plyr")
+  require("stringr")
+  raw.stream = "streamqh"
+  # where the mmap db is located
+  db.path = paste("data/",raw.stream,"/",sep="")
+
+  load(paste(db.path,".Rdbinfo",sep=""))
+  #m = mmap(main.filename, mode=st)
+  stream = NULL
+  stream$stamp = mmap(paste(db.path,fields[1],".data",sep=""), mode=double())
+  stream$code = mmap(paste(db.path,fields[2],".data",sep=""), mode=char(1))
+  stream$symbol = mmap(paste(db.path,fields[3],".data",sep=""), mode=char(ticker.length))
+  stream$trade = mmap(paste(db.path,fields[4],".data",sep=""), mode=double())
+  stream$vol = mmap(paste(db.path,fields[5],".data",sep=""), mode=integer())
+  stream$tradetime = mmap(paste(db.path,fields[6],".data",sep=""), mode=double())
+  stream$tradeex = mmap(paste(db.path,fields[7],".data",sep=""), mode=double())
+  stream$volex = mmap(paste(db.path,fields[8],".data",sep=""), mode=integer())
+  stream$tradetimeex = mmap(paste(db.path,fields[9],".data",sep=""), mode=double())
+  stream$voltot = mmap(paste(db.path,fields[10],".data",sep=""), mode=integer())
+  stream$bid = mmap(paste(db.path,fields[11],".data",sep=""), mode=double())
+  stream$bidvol = mmap(paste(db.path,fields[12],".data",sep=""), mode=integer())
+  stream$bidtime = mmap(paste(db.path,fields[13],".data",sep=""), mode=double())
+  stream$ask = mmap(paste(db.path,fields[14],".data",sep=""), mode=double())
+  stream$askvol = mmap(paste(db.path,fields[15],".data",sep=""), mode=integer())
+  stream$asktime = mmap(paste(db.path,fields[16],".data",sep=""), mode=double())
+  stream$event = mmap(paste(db.path,fields[17],".data",sep=""), mode=char(12))
+  stream$id = mmap(paste(db.path,fields[18],".data",sep=""), mode=integer())
+
+  #+end_src
+
+  #+results:
+
+- Define events and extract relevant times
+  #+begin_src R
+  n = length(stream$event[])
+
+  tC = grepl("C",stream$event[])
+  tO = grepl("O",stream$event[])
+  ta = grepl("a",stream$event[])
+  tb = grepl("b",stream$event[])
+  ta = ta & !(tC | tO)
+  tb = tb & !(tC | tO | ta)
+  tother = !(ta | tb | tC | tO)
+
+  event.category = (1 * tC) + (2 * tO) + (3 * ta) + (4 * tb) + (5 * tother)
+
+  event.time = (stream$tradetime[] * tC +
+	  stream$tradetimeex[] * tO +
+	  stream$asktime[] * ta +
+	  stream$bidtime[] * tb +
+	  stream$tradetime[] * tother)
+
+  event.time.posix = as.POSIXct(event.time,origin="1960-01-01", tz="GMT")
+  event.stamp = stream$stamp[]
+
+  event.latency = event.stamp - event.time
+
+  event.df = data.frame(symbol=stream$symbol[],event.category,event.time, event.stamp, event.latency)
+  summary(event.df)
+  #+end_src
+
+  | @ESM13 :2553308 | Min.   :1.000 | Min.   :1.366e+09 | Min.   :1.366e+09 | Min.   :-85800.76 |
+  | @NQM13 :1285545 | 1st Qu.:3.000 | 1st Qu.:1.366e+09 | 1st Qu.:1.366e+09 | 1st Qu.:     0.22 |
+  | @YMM13 :1216006 | Median :3.000 | Median :1.366e+09 | Median :1.366e+09 | Median :     0.33 |
+  | EBK13  : 917275 | Mean   :3.107 | Mean   :1.366e+09 | Mean   :1.366e+09 | Mean   :   226.44 |
+  | @JYM13 : 844995 | 3rd Qu.:4.000 | 3rd Qu.:1.366e+09 | 3rd Qu.:1.366e+09 | 3rd Qu.:   600.22 |
+  | EBM13  : 610827 | Max.   :5.000 | Max.   :1.366e+09 | Max.   :1.366e+09 | Max.   :  9818.25 |
+  | (Other):1373320 | nil           | nil               | nil               | nil               |
+
+- bigvis manipulations
+  #+begin_src R
+  require("bigvis")
+  require("ggplot2")
+  df1 = condense(bin(event.df$event.time,60),bin(event.df$event.latency,0.05))
+  df2 = df1[(df1$event.df.event.latency > 0) & (df1$event.df.event.latency < 1),]
+  dfg = data.frame(as.POSIXct(df2[,1]+10*60*60,origin="1960-01-01", tz=""),df2[,2],df2[,3])
+  colnames(dfg) = c("Time","Latency","Count")
+  g = ggplot(data=dfg,aes(x=Time,y=Latency))
+  g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low="#e5e5e5", high = "#444548") + scale_y_continuous(limits=c(-1,1))
+  ggsave("quote-latency-condensed.svg")
+
+  #+end_src
+
+  #+results:
+
+  [[file:assets/quote-latency-condensed.svg]]
+
+  Unlike the iqfeed ping, there is a consistent latency pattern when comparing
+  market stamp and local system stamp, with no spurious negative values.
+  Latency values from 9am to 4pm (regular market open) at 500 millsecs are
+  common and may be due to TCP issues (dropped packets say).
+
+- symbols
+
+  #+begin_src R :results output
+  summary(as.factor(stream$symbol[]))
+  #+end_src
+
+  #+results:
+  : +SK13   +SPH13  @EDM13  @EDU13  @ESH13  @ESM13  @F1M13  @JYM13  @N1M13  @NQM13
+  :  299398     108  120731  167649  273192 2553308   27715  844995   27357 1285545
+  : @T1M13  @USNM13 @VMJ13  @YMM13  CRDJ13  EBK13   EBM13
+  :    1524   54804    3146 1216006  397696  917275  610827
+
+- emini latency
+
+  The latency pattern for the E-MINI SP500 (@ESM13 is the iqfeed code) is
+  very similar to the overall latency pattern. The average latency over the
+  day was:
+
+  #+begin_src R
+    require(ggplot2)
+    require(bigvis)
+    ind.emini = indexEQ(ind.symbol,"@ESM13 ")
+    df1 = condense(bin(event.df$event.time[ind.emini],300,name="time"),bin(event.df$event.latency[ind.emini],0.05,name="latency"))
+    df2 = df1[(df1$latency > 0) & (df1$latency < 2),]
+    lat.av = tapply(df2$latency*df2$.count,df2$time,sum)/tapply(df2$.count,df2$time,sum)
+    dfg = data.frame(Time=as.POSIXct(as.double(row.names(lat.av))+10*60*60,origin="1960-01-01", tz=""),Latency=lat.av)
+    #colnames(dfg) = c("Time","Latency","Count")
+    g = ggplot(data=dfg,aes(x=Time,y=Latency))
+    g + geom_point()
+    ggsave("quote-latency-averagecondensed.svg")
+  #+end_src
+
+  [[file:assets/quote-latency-averagecondensed.svg]]
+
+
+
+*** Market Feed Selection
+CLOSED: [2013-04-12 Thu 12:46]
+:LOGBOOK:
+- State "DONE"       from ""           [2013-04-11 Thu 16:46]
+:END:
+:PROPERTIES:
+:blog:     t
+:top:      t
+:END:
+
+There is no such thing as live market data for free (please let us know if
+this is wrong!).
+
+The closest to free data is the Interactive Brokers feed.  IB consolidate
+market data and post every 0.3 seconds however, making it unsuitable for
+testing lower-latency ideas.
+
+Initial testing of market data is concentrating on [[http://www.iqfeed.net/][iqfeed]].
+- iqfeed is the cheapest "unencumbered" market data feed option
+- it can be downloaded for free and a demo account used for testing (data is
+  delayed)
+- 5.0 has just been released and this includes millisecond resolution for
+  both trade and quote times.
+
+Now the bad news:
+- iqfeed exists only as windows software
+- the process is hardwired to communicate via a tcp connection.
+- the feed has a habit of going down several times a day so that there will
+  be gaps in the event stream.
+- you will need a login id and password to use the software which you get in
+  a free trial
+
+
+
+*** Candidate Structure                                            :design:
+CLOSED: [2013-04-11 Thu 16:46]
+:LOGBOOK:
+- State "DONE"       from ""           [2013-04-11 Thu 16:46]
+:END:
+:PROPERTIES:
+:blog:     t
+:top:      t
+:END:
+
+hft is in an experimental phase and, as such, there is a need for flexibility
+in the top-down design of the system. To achieve this, the overall design is
+first being modelled using graphviz.  The current candidate system looks like this:
+
+#+html: <img class="hero-chart" src="<lisp>(ob:path-to-root)</lisp>/<lisp>(ob:blog-assets-dir BLOG)</lisp>/candidate.svg" alt="design" width="100%">
+
+- blue boxes represent individual components of the system
+- other colors represent external systems and data sources
+- each edge of the chart represents a messaging sytem requirement
+- there are two main one-way message passing routines that probably
+  need to be very very fast (blue lines)
+- there is one read from database and one write to database (red lines)
+- every component registers to an observer component that records system
+  state and dynamics (grey dotted).
+
+
+The components have been grouped into several clusters:
+
+- market data: representing trade data, order book and news information
+  flowing from outside the sytem to a local data node.
+- broker data: representing communication with trading mechanisms
+- onwire: components that are "in the event stream".  This is motivated by
+  the specifications and documentation of the disruptor which argues that a
+  single thread "wheel" is the best way to enable fast processing of market
+  data into trading orders.
+- offwire: this represents algorithms and processing that are not on the
+  single-thread process.  The motivation here is to test the hypothesis in
+  the disruptor argument.
+
+There are several ideas that are being tested:
+
+- that the entire system should be the subject of search and optimisation,
+  rather than componentry.  One example of this is separation of complex
+  event definitions from the statistical analysis once events are defined.
+- there is a focus on automation and machine learning.  As such there is no
+  place for human interaction.  In particular, no visualization is required.
+- messaging between components can be the same general process.  The
+  components can also be tested in exactly the same way (such as speed and
+  robustness testing)
+
+And here's the dot code:
+
+#+begin_src dot :file candidate.svg :cmdline -Kdot -Tpng :exports code
+digraph G {
+	node [label="\N"];
+	node [style=filled, color="#1f3950",fontcolor="#eeeeee",shape=box];
+	subgraph cluster_market_data {
+		graph [label="market data", color="#909090"];
+		exchange [shape=egg,color="#ff111111",fontcolor="#101010",label="exchanges"];
+		aggregator [shape=egg,color="#cc11cc22",fontcolor="#101010",label="data stream"];
+		localport [label="local node"];
+		exchange -> aggregator [dir=none];
+		aggregator -> localport [dir=both];
+	}
+	subgraph cluster_offwire {
+		graph [label="offwire",
+			color="#909090"];
+		offwirealgo [label="offline algo"];
+		observer;
+		databases;
+		observer -> databases [color=red,label="write",fontcolor=red];
+	}
+	subgraph cluster_onwire {
+		graph [label="onwire",
+			color="#909090"];
+		node [style=filled];
+		disruptor [label="event server"];
+		eventalgo [label="algo"];
+		controller;
+		controller -> eventalgo [color="#aaaaaa",dir=both]
+		disruptor -> listener;
+		disruptor -> eventalgo;
+		disruptor -> controller;
+		controller -> disruptor [color="#0080ff"];
+	}
+	subgraph cluster_broker {
+		graph [label="broker data",
+			color="#909090"];
+		broker [shape=egg,color="#ff111111",fontcolor="#101010",label="brokers"];
+		brokeraggregator [shape=egg,color="#cc11cc22",fontcolor="#101010",label="aggregation"];
+		broker -> brokeraggregator [dir=none];
+		brokeraggregator -> trader [dir=both];
+	}
+	localport -> observer [color="#aaaaaa",style=dotted];
+	controller -> localport [color="#aaaaaa"];
+	localport -> disruptor [color="#0080ff"];
+	listener -> observer [color="#aaaaaa",style=dotted];
+	controller -> observer [color="#aaaaaa",style=dotted];
+	controller -> trader [color="#aaaaaa",dir=both];
+	controller -> offwirealgo [color="#aaaaaa",dir=both];
+	databases -> offwirealgo [color=red,label="read",fontcolor=red];
+	trader -> observer [color="#aaaaaa",style=dotted];
+	eventalgo -> observer [color="#aaaaaa",style=dotted];
+	offwirealgo -> observer [color="#aaaaaa",style=dotted];
+}
+#+end_src
+
+**** haskell interaction
+:PROPERTIES:
+:blog:
+:top:
+:END:
+
+Via haskell, the dot chart can be the specifications for an actual system as well as a
+representation. And via svg technology, the picture can also be modified to
+be a reporting front-end in a production environment.
+
+#+begin_src haskell
+module ControllerTest
+( importDotFile
+, importDot
+, printGraph
+, nodeList
+, edgeList
+) where
+
+import Data.GraphViz
+import qualified Data.Text.Lazy as L
+import qualified Data.Text.Lazy.IO as I
+import qualified Data.GraphViz.Types.Generalised as G
+import Data.Graph.Inductive.Graph
+
+importDotFile :: FilePath -> IO (G.DotGraph String)
+importDotFile f = do
+	dotText <- I.readFile f
+	return $ parseDotGraph dotText
+
+importDot :: L.Text -> G.DotGraph Node
+importDot s = parseDotGraph s
+
+printGraph :: G.DotGraph String -> IO ()
+printGraph d = do
+	putStrLn $ L.unpack $ printDotGraph d
+	return()
+
+nodeList :: G.DotGraph String -> [String]
+nodeList g = map nodeID $ graphNodes g
+
+edgeList :: G.DotGraph String -> [(String,String)]
+edgeList g =  map (\x -> (fromNode x, toNode x)) $ graphEdges g
+#+end_src
+
+So, a new picture generates a new system with potentially new components
+(nodes) and messaging requirements (edges).
+
+**** edges
+:PROPERTIES:
+:blog:
+:END:
+
+#+begin_src haskell :results value
+import ControllerTest
+g <- importDotFile "../candidate.dot"
+edgeList g
+#+end_src
+
+| exchange         | aggregator       |
+| aggregator       | localport        |
+| observer         | databases        |
+| controller       | eventalgo        |
+| disruptor        | listener         |
+| disruptor        | eventalgo        |
+| disruptor        | controller       |
+| controller       | disruptor        |
+| broker           | brokeraggregator |
+| brokeraggregator | trader           |
+| localport        | observer         |
+| controller       | localport        |
+| localport        | disruptor        |
+| listener         | observer         |
+| controller       | observer         |
+| controller       | trader           |
+| controller       | offwirealgo      |
+| databases        | offwirealgo      |
+| trader           | observer         |
+| eventalgo        | observer         |
+| offwirealgo      | observer         |
+
+
+**** nodes
+
+#+begin_src haskell
+import ControllerTest
+import Data.List
+g <- importDotFile "../dot/candidate.dot"
+map (\x -> [x]) $ nodeList g
+#+end_src
+
+| aggregator       |
+| broker           |
+| brokeraggregator |
+| controller       |
+| databases        |
+| disruptor        |
+| eventalgo        |
+| exchange         |
+| listener         |
+| localport        |
+| observer         |
+| offwirealgo      |
+| trader           |
+
+
+*** Welcome to hft,
+CLOSED: [2013-04-11 Thu 15:47]
+  :PROPERTIES:
+  :blog:     t
+  :top:      t
+  :END:
+
+#+begin_html
+<p><img src="<lisp>(ob:path-to-root)</lisp>/<lisp>(ob:blog-assets-dir
+BLOG)</lisp>/hft-blue.png" width="100" alt=""></p>
+
+<br>
+
+<p>HFT is a small project with a big ambition. We aim to build the worlds best
+algorithmic trading platform using the best off-the-shelf open source
+technology stack to be found. And all of this on a tight budget.</p>
+
+<p>HFT is created and maintained by <a href="http://twitter.com/tonyday567">Tony Day</a>.</p>
+
+<h1>Quick Start</h1>
+
+<p>There is no quick start for hft.  The easiest way to get up to speed is to read the project <a href="http://scarcecapital.com/hft">blog</a>.  If you're interested in contributing to development or find a logic bug, then fork me with:</p>
+
+<p><code>
+$ git clone https://github.com/tonyday567/hft.git
+</code></p>
+
+<h1>Technology Stack</h1>
+
+<p>The world of high frequency trading is a broad church of opinion, technology, ideas and motivations.  hft is being developed using many different tools:</p>
+
+<h3><a href="http://www.gnu.org/software/emacs/">emacs</a>, <a href="http://orgmode.org">org-mode</a> and literate programming</h3>
+
+<p><a href="https://github.com/tonyday567/hft/blob/master/hft.org">hft.org</a> is the nerve
+center of active development and contains just about all the important code, research notes
+and design tools being used.</p>
+
+<p>The project makes heavy use of <a href="http://orgmode.org/worg/org-contrib/babel/">babel</a> to pick and mix between coding environments and languages, whilst still remaining <a href="http://www.haskell.org/haskellwiki/Literate_programming">literate</a>:</p>
+
+<blockquote>
+  <p>The main idea is to regard a program as a communication to human beings rather than as a set of instructions to a computer. ~ Knuth</p>
+</blockquote>
+
+<p>Similarly, a project such as hft is as much about communication between human beings as it is about maintenance of source code.</p>
+
+<h3><a href="http://www.r-project.org">R</a></h3>
+
+<p>R is a strongly functional but imperative language being used for rapid
+development and research of hft and algo ideas as they arise. Most everything
+that you can think of (databases, broker interfaces, statistical analysis,
+visualization) has an R package ready to get you up and going in 5 minutes.</p>
+
+<h3><a href="http://www.haskell.org/haskellwiki/Haskell">haskell</a></h3>
+
+<p>R can be many things but what it is least set up for is development of
+asyncronous code. To fill this gap, the project is using haskell to frame the
+system as and when it develops.</p>
+
+<h3><a href="http://www.interactivebrokers.com/en/main.php">Interactive Brokers</a></h3>
+
+<p>Eventually, hft will be broker independent but during the development phase IB
+is the test case. Interactive has the most mature API that works out of the
+box and a demo account so that hft can come pre-plumbed so that (eventually)
+the project can also run out of the box.</p>
+
+<p>Interactive Brokers consolidates tick data into 0.3 second time slices so it
+isn't appropriate for low-latency work.</p>
+
+<h3><a href="http://www.iqfeed.net">iqfeed</a></h3>
+
+<p>Just because it's open-source doesn't mean that it's cost free. iqfeed has
+been chosen as an initial data feed to base project R&amp;D efforts on. iqfeed
+costs dollars but the software can be downloaded for free and a demo version
+allows live data to flow with a lag.</p>
+
+<p>A useful way to support the hft project is to let DTN know if you decide to
+purshase iqfeed due to the project.</p>
+
+<h2>Bug Tracker</h2>
+
+<p>Have a bug or a feature request? <br> <a href="https://github.com/tonyday567/hft/issues">Please open a new issue</a>. </p>
+
+<h2>Community</h2>
+
+<p>hft is sponsored by <a href="http://scarcecapital.com">Scarce Capital</a></p>
+
+<p>Follow <a href="http://twitter.com/scarcecapital">@scarcecapital on Twitter</a>.</p>
+
+<p>Read, subscribe (and contribute!) to the hft <a href="http://scarcecapital.com/hft">blog</a>.</p>
+
+<h2>Contributing</h2>
+
+<p>Please submit all pull requests against the master branch.</p>
+
+<p>Thanks!</p>
+
+<h2>Authors</h2>
+
+<p><strong>Tony Day</strong></p>
+
+<ul>
+<li><a href="http://twitter.com/tonyday567">http://twitter.com/tonyday567</a></li>
+<li><a href="http://github.com/tonyday567">http://github.com/tonyday567</a></li>
+</ul>
+#+end_html
