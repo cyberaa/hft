@@ -342,24 +342,24 @@ CLOCK: [2013-03-23 Sat 17:00]--[2013-03-23 Sat 17:55] =>  0:55
   The idea is to /start/ with a dot graph and use this to register each
   component and the messaging between components.
   - [ ] register nodes from candidate dot
-  - [ ] swap dotText in controller.hs from file to hardcoded string (thus
+  - [ ] swap dotText in Controller.hs from file to hardcoded string (thus
     removing IO issues)
   - [ ] register edges (which will use STM or common messaging systems)
 
-The controller module is both a component of the overall system and is the complete system.
+The Controller module is both a component of the overall system and is the complete system.
 
 To (eventually) compile and run the hft project, compile and run the following code:
 
-** controller.hs
+** Controller.hs
 :PROPERTIES:
-:tangle:   haskell/controller.hs
+:tangle:   haskell/Controller.hs
 :END:
 
 #+begin_src haskell
 -- Example
 --
--- $ ghc --make controller.hs
--- $ ./controller
+-- $ ghc --make Controller.hs
+-- $ ./Controller
 import ControllerTest
 import System.Environment
 import Data.Maybe
@@ -377,9 +377,9 @@ main = do
 
 #+end_src
 
-** controllertest.hs
+** ControllerTest.hs
 :PROPERTIES:
-:tangle:   haskell/controllertest.hs
+:tangle:   haskell/ControllerTest.hs
 :END:
 
 #+begin_src haskell
@@ -478,8 +478,8 @@ map (\x -> [x]) $ nodeList g
 ** commandline
 #+begin_src sh :results output
 cd ~/projects/hft/haskell
-ghc --make controller.hs
-./controller
+ghc --make Controller.hs
+./Controller
 #+end_src
 
 #+results:
