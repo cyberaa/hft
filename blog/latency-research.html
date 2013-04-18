@@ -151,9 +151,9 @@ Iqfeed sends a ping once a second as part of the stream.
 
 <div class="org-src-container">
 
-<pre class="src src-R">t = read.csv(<span style="color: #cc9393;">"data/streamt.txt"</span>,header=<span style="color: #8cd0d3; background-color: #3f3f3f;">FALSE</span>,as.is=<span style="color: #8cd0d3; background-color: #3f3f3f;">TRUE</span>)
-pingtime = strptime(t[,3], <span style="color: #cc9393;">"%Y%m%d %H:%M:%S"</span>)
-stamp = strptime(paste(strftime(pingtime,<span style="color: #cc9393;">"%Y%m%d"</span>), t[,1], sep=<span style="color: #cc9393;">" "</span>), <span style="color: #cc9393;">"%Y%m%d %H:%M:%OS"</span>)    
+<pre class="src src-R">t = read.csv("data/streamt.txt",header=FALSE,as.is=TRUE)
+pingtime = strptime(t[,3], "%Y%m%d %H:%M:%S")
+stamp = strptime(paste(strftime(pingtime,"%Y%m%d"), t[,1], sep=" "), "%Y%m%d %H:%M:%OS")    
 latency = as.double(stamp - pingtime)
 df = data.frame(pingtime=pingtime, latency=latency)
 summary(df)
@@ -208,9 +208,9 @@ summary(df)
 
 <div class="org-src-container">
 
-<pre class="src src-R"><span style="color: #bfebbf;">require</span>(ggplot2)
+<pre class="src src-R">require(ggplot2)
 qplot(data=df, x=pingtime, y=latency)
-ggsave(<span style="color: #cc9393;">"ping-latency.svg"</span>)
+ggsave("ping-latency.svg")
 </pre>
 </div>
 
@@ -239,8 +239,8 @@ repository (see <a href="https://github.com/hadley/bigvis">https://github.com/ha
 
 <div class="org-src-container">
 
-<pre class="src src-R">install.packages(<span style="color: #cc9393;">"devtools"</span>)
-devtools::install_github(<span style="color: #cc9393;">"bigvis"</span>)
+<pre class="src src-R">install.packages("devtools")
+devtools::install_github("bigvis")
 </pre>
 </div>
 
@@ -251,14 +251,14 @@ autopilot, I use ggplot directly.
 
 <div class="org-src-container">
 
-<pre class="src src-R"><span style="color: #bfebbf;">require</span>(bigvis)
-<span style="color: #bfebbf;">require</span>(ggplot2)
+<pre class="src src-R">require(bigvis)
+require(ggplot2)
 dfn = condense(bin(as.double(df$pingtime),60),bin(df$latency,.1))
-dfg = data.frame(as.POSIXct(dfn[,1],origin=<span style="color: #cc9393;">"1960-01-01"</span>, tz=<span style="color: #cc9393;">"GMT"</span>),dfn[,2],dfn[,3])
-colnames(dfg) = c(<span style="color: #cc9393;">"Time"</span>,<span style="color: #cc9393;">"Latency"</span>,<span style="color: #cc9393;">"Count"</span>)
+dfg = data.frame(as.POSIXct(dfn[,1],origin="1960-01-01", tz="GMT"),dfn[,2],dfn[,3])
+colnames(dfg) = c("Time","Latency","Count")
 g = ggplot(data=dfg,aes(x=Time,y=Latency))
-g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=<span style="color: #cc9393;">"#e5e5e5"</span>, high = <span style="color: #cc9393;">"#444548"</span>) + scale_y_continuous(limits=c(-1,1))
-ggsave(<span style="color: #cc9393;">"ping-latency-condensed.svg"</span>)
+g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low="#e5e5e5", high = "#444548") + scale_y_continuous(limits=c(-1,1))
+ggsave("ping-latency-condensed.svg")
 </pre>
 </div>
 
@@ -292,11 +292,11 @@ Just looking at the ping counts after binning into one minute intervals:
 <div class="org-src-container">
 
 <pre class="src src-R">df.dis = condense(bin(as.double(df$pingtime),60))
-dfg = data.frame(as.POSIXct(df.dis[,1],origin=<span style="color: #cc9393;">"1960-01-01"</span>, tz=<span style="color: #cc9393;">"GMT"</span>),60-df.dis[,2])
-colnames(dfg) = c(<span style="color: #cc9393;">"Time"</span>,<span style="color: #cc9393;">"Count"</span>)
+dfg = data.frame(as.POSIXct(df.dis[,1],origin="1960-01-01", tz="GMT"),60-df.dis[,2])
+colnames(dfg) = c("Time","Count")
 g = ggplot(data=dfg,aes(x=Time,y=Count))
 g + geom_line(aes())
-ggsave(<span style="color: #cc9393;">"disconnects.png"</span>)
+ggsave("disconnects.png")
 </pre>
 </div>
 
@@ -329,35 +329,35 @@ From the R database of the one day quote ticks&#x2026;
 <div class="org-src-container">
 
 <pre class="src src-R">rm(list = ls())
-<span style="color: #bfebbf;">require</span>(<span style="color: #cc9393;">"mmap"</span>)
-<span style="color: #bfebbf;">require</span>(<span style="color: #cc9393;">"rindex"</span>)
-<span style="color: #bfebbf;">require</span>(<span style="color: #cc9393;">"plyr"</span>)
-<span style="color: #bfebbf;">require</span>(<span style="color: #cc9393;">"stringr"</span>)
-raw.stream = <span style="color: #cc9393;">"streamqh"</span>
-<span style="color: #7f9f7f;"># </span><span style="color: #7f9f7f;">where the mmap db is located</span>
-db.path = paste(<span style="color: #cc9393;">"data/"</span>,raw.stream,<span style="color: #cc9393;">"/"</span>,sep=<span style="color: #cc9393;">""</span>)
+require("mmap")
+require("rindex")
+require("plyr")
+require("stringr")
+raw.stream = "streamqh"
+# where the mmap db is located
+db.path = paste("data/",raw.stream,"/",sep="")
 
-load(paste(db.path,<span style="color: #cc9393;">".Rdbinfo"</span>,sep=<span style="color: #cc9393;">""</span>))
-<span style="color: #7f9f7f;">#</span><span style="color: #7f9f7f;">m = mmap(main.filename, mode=st)</span>
-stream = <span style="color: #8cd0d3; background-color: #3f3f3f;">NULL</span>
-stream$stamp = mmap(paste(db.path,fields[1],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=double())
-stream$code = mmap(paste(db.path,fields[2],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=char(1))
-stream$symbol = mmap(paste(db.path,fields[3],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=char(ticker.length))
-stream$trade = mmap(paste(db.path,fields[4],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=double())
-stream$vol = mmap(paste(db.path,fields[5],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=integer())
-stream$tradetime = mmap(paste(db.path,fields[6],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=double())
-stream$tradeex = mmap(paste(db.path,fields[7],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=double())
-stream$volex = mmap(paste(db.path,fields[8],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=integer())
-stream$tradetimeex = mmap(paste(db.path,fields[9],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=double())
-stream$voltot = mmap(paste(db.path,fields[10],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=integer())
-stream$bid = mmap(paste(db.path,fields[11],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=double())
-stream$bidvol = mmap(paste(db.path,fields[12],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=integer())
-stream$bidtime = mmap(paste(db.path,fields[13],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=double())
-stream$ask = mmap(paste(db.path,fields[14],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=double())
-stream$askvol = mmap(paste(db.path,fields[15],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=integer())
-stream$asktime = mmap(paste(db.path,fields[16],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=double())
-stream$event = mmap(paste(db.path,fields[17],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=char(12))
-stream$id = mmap(paste(db.path,fields[18],<span style="color: #cc9393;">".data"</span>,sep=<span style="color: #cc9393;">""</span>), mode=integer())
+load(paste(db.path,".Rdbinfo",sep=""))
+#m = mmap(main.filename, mode=st)
+stream = NULL
+stream$stamp = mmap(paste(db.path,fields[1],".data",sep=""), mode=double())
+stream$code = mmap(paste(db.path,fields[2],".data",sep=""), mode=char(1))
+stream$symbol = mmap(paste(db.path,fields[3],".data",sep=""), mode=char(ticker.length))
+stream$trade = mmap(paste(db.path,fields[4],".data",sep=""), mode=double())
+stream$vol = mmap(paste(db.path,fields[5],".data",sep=""), mode=integer())
+stream$tradetime = mmap(paste(db.path,fields[6],".data",sep=""), mode=double())
+stream$tradeex = mmap(paste(db.path,fields[7],".data",sep=""), mode=double())
+stream$volex = mmap(paste(db.path,fields[8],".data",sep=""), mode=integer())
+stream$tradetimeex = mmap(paste(db.path,fields[9],".data",sep=""), mode=double())
+stream$voltot = mmap(paste(db.path,fields[10],".data",sep=""), mode=integer())
+stream$bid = mmap(paste(db.path,fields[11],".data",sep=""), mode=double())
+stream$bidvol = mmap(paste(db.path,fields[12],".data",sep=""), mode=integer())
+stream$bidtime = mmap(paste(db.path,fields[13],".data",sep=""), mode=double())
+stream$ask = mmap(paste(db.path,fields[14],".data",sep=""), mode=double())
+stream$askvol = mmap(paste(db.path,fields[15],".data",sep=""), mode=integer())
+stream$asktime = mmap(paste(db.path,fields[16],".data",sep=""), mode=double())
+stream$event = mmap(paste(db.path,fields[17],".data",sep=""), mode=char(12))
+stream$id = mmap(paste(db.path,fields[18],".data",sep=""), mode=integer())
 </pre>
 </div>
 </li>
@@ -367,10 +367,10 @@ stream$id = mmap(paste(db.path,fields[18],<span style="color: #cc9393;">".data"<
 
 <pre class="src src-R">n = length(stream$event[])
 
-tC = grepl(<span style="color: #cc9393;">"C"</span>,stream$event[])
-tO = grepl(<span style="color: #cc9393;">"O"</span>,stream$event[])
-ta = grepl(<span style="color: #cc9393;">"a"</span>,stream$event[])
-tb = grepl(<span style="color: #cc9393;">"b"</span>,stream$event[])
+tC = grepl("C",stream$event[])
+tO = grepl("O",stream$event[])
+ta = grepl("a",stream$event[])
+tb = grepl("b",stream$event[])
 ta = ta &amp; !(tC | tO)
 tb = tb &amp; !(tC | tO | ta)
 tother = !(ta | tb | tC | tO)
@@ -383,7 +383,7 @@ event.time = (stream$tradetime[] * tC +
         stream$bidtime[] * tb +
         stream$tradetime[] * tother)
 
-event.time.posix = as.POSIXct(event.time,origin=<span style="color: #cc9393;">"1960-01-01"</span>, tz=<span style="color: #cc9393;">"GMT"</span>)
+event.time.posix = as.POSIXct(event.time,origin="1960-01-01", tz="GMT")
 event.stamp = stream$stamp[]
 
 event.latency = event.stamp - event.time  
@@ -470,15 +470,15 @@ summary(event.df)
 <li>bigvis manipulations
 <div class="org-src-container">
 
-<pre class="src src-R"><span style="color: #bfebbf;">require</span>(<span style="color: #cc9393;">"bigvis"</span>)
-<span style="color: #bfebbf;">require</span>(<span style="color: #cc9393;">"ggplot2"</span>)
+<pre class="src src-R">require("bigvis")
+require("ggplot2")
 df1 = condense(bin(event.df$event.time,60),bin(event.df$event.latency,0.05))
 df2 = df1[(df1$event.df.event.latency &gt; 0) &amp; (df1$event.df.event.latency &lt; 1),]   
-dfg = data.frame(as.POSIXct(df2[,1]+10*60*60,origin=<span style="color: #cc9393;">"1960-01-01"</span>, tz=<span style="color: #cc9393;">""</span>),df2[,2],df2[,3])
-colnames(dfg) = c(<span style="color: #cc9393;">"Time"</span>,<span style="color: #cc9393;">"Latency"</span>,<span style="color: #cc9393;">"Count"</span>)
+dfg = data.frame(as.POSIXct(df2[,1]+10*60*60,origin="1960-01-01", tz=""),df2[,2],df2[,3])
+colnames(dfg) = c("Time","Latency","Count")
 g = ggplot(data=dfg,aes(x=Time,y=Latency))
-g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low=<span style="color: #cc9393;">"#e5e5e5"</span>, high = <span style="color: #cc9393;">"#444548"</span>) + scale_y_continuous(limits=c(-1,1))
-ggsave(<span style="color: #cc9393;">"quote-latency-condensed.svg"</span>)
+g + geom_tile(aes(fill=Count)) + scale_fill_gradient(low="#e5e5e5", high = "#444548") + scale_y_continuous(limits=c(-1,1))
+ggsave("quote-latency-condensed.svg")
 </pre>
 </div>
 
@@ -514,17 +514,17 @@ day was:
 
 <div class="org-src-container">
 
-<pre class="src src-R"><span style="color: #bfebbf;">require</span>(ggplot2)
-<span style="color: #bfebbf;">require</span>(bigvis)
-ind.emini = indexEQ(ind.symbol,<span style="color: #cc9393;">"@ESM13 "</span>)
-df1 = condense(bin(event.df$event.time[ind.emini],300,name=<span style="color: #cc9393;">"time"</span>),bin(event.df$event.latency[ind.emini],0.05,name=<span style="color: #cc9393;">"latency"</span>))
+<pre class="src src-R">require(ggplot2)
+require(bigvis)
+ind.emini = indexEQ(ind.symbol,"@ESM13 ")
+df1 = condense(bin(event.df$event.time[ind.emini],300,name="time"),bin(event.df$event.latency[ind.emini],0.05,name="latency"))
 df2 = df1[(df1$latency &gt; 0) &amp; (df1$latency &lt; 2),]
 lat.av = tapply(df2$latency*df2$.count,df2$time,sum)/tapply(df2$.count,df2$time,sum)
-dfg = data.frame(Time=as.POSIXct(as.double(row.names(lat.av))+10*60*60,origin=<span style="color: #cc9393;">"1960-01-01"</span>, tz=<span style="color: #cc9393;">""</span>),Latency=lat.av)
-<span style="color: #7f9f7f;">#</span><span style="color: #7f9f7f;">colnames(dfg) = c("Time","Latency","Count")</span>
+dfg = data.frame(Time=as.POSIXct(as.double(row.names(lat.av))+10*60*60,origin="1960-01-01", tz=""),Latency=lat.av)
+#colnames(dfg) = c("Time","Latency","Count")
 g = ggplot(data=dfg,aes(x=Time,y=Latency))
 g + geom_point()
-ggsave(<span style="color: #cc9393;">"quote-latency-averagecondensed.svg"</span>)
+ggsave("quote-latency-averagecondensed.svg")
 </pre>
 </div>
 
@@ -555,10 +555,13 @@ ggsave(<span style="color: #cc9393;">"quote-latency-averagecondensed.svg"</span>
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
   })();
 </script>
+
 <div class="get-scarce">
       <p>feeds:   <a href="https://twitter.com/scarcecapital">Twitter</a> | <a href="../index.xml">RSS</a> | <a href="http://eepurl.com/xZDev">Email</a>
       </p>
 </div>
+
+
     <p>
       Top Posts:
       

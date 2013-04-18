@@ -303,15 +303,15 @@ the previous example:
 <pre class="src src-R">k.weights
 max.n = 20
 days = 10
-k.weights = -(1-(1/days))^(0:(max.n-1))/days <span style="color: #7f9f7f;"># </span><span style="color: #7f9f7f;">the ema weights</span>
-k.weights[1] = 1 + k.weights[1] <span style="color: #7f9f7f;"># </span><span style="color: #7f9f7f;">the current price</span>
-k.weights = k.weights/sum(k.weights) <span style="color: #7f9f7f;"># </span><span style="color: #7f9f7f;">normalising to sum=1 because we capped the length</span>
+k.weights = -(1-(1/days))^(0:(max.n-1))/days # the ema weights
+k.weights[1] = 1 + k.weights[1] # the current price
+k.weights = k.weights/sum(k.weights) # normalising to sum=1 because we capped the length
 ema.weights = cumsum(k.weights)
-ema.weights = ema.weights/sum(ema.weights) <span style="color: #7f9f7f;"># </span><span style="color: #7f9f7f;">normalising so sum=1</span>
+ema.weights = ema.weights/sum(ema.weights) # normalising so sum=1
 sma.weights = seq(0.95,0.00,by=-0.05)/sum(seq(0.95,0.00,by=-0.05))
-<span style="color: #bfebbf;">require</span>(reshape)
-<span style="color: #bfebbf;">require</span>(ggplot2)
-df.long = melt(data.frame(ema.weights,sma.weights,time=0:(max.n-1)),id=<span style="color: #cc9393;">"time"</span>) 
+require(reshape)
+require(ggplot2)
+df.long = melt(data.frame(ema.weights,sma.weights,time=0:(max.n-1)),id="time") 
 g = ggplot(data=df.long,
        aes(x=time, y=value,color=variable)) +
   geom_line()
@@ -424,7 +424,7 @@ volatility weights.
 
 <div class="org-src-container">
 
-<pre class="src src-R">weighted.historicals = <span style="color: #f0dfaf; font-weight: bold;">function</span>(rets, hist.weights) {
+<pre class="src src-R">weighted.historicals = function(rets, hist.weights) {
   hmean=as.double(filter(rets,hist.weights$mean,sides=1))
   hmean[1:length(hist.weights$mean)]=cumsum(rets[1:length(hist.weights$mean)]*t(as.matrix(hist.weights$mean)))
   xvol=(rets-hmean)^2
@@ -464,7 +464,7 @@ standard set used in forecasting.
 <div class="org-src-container">
 
 <pre class="src src-R">mom.weights = rep(0.05,20)  
-df.long = melt(data.frame(ema.weights,sma.weights,mom.weights,time=0:(max.n-1)),id=<span style="color: #cc9393;">"time"</span>)
+df.long = melt(data.frame(ema.weights,sma.weights,mom.weights,time=0:(max.n-1)),id="time")
 ggplot(data=df.long,
          aes(x=time, y=value,color=variable)) +
     geom_line()
@@ -513,10 +513,13 @@ of the proposed system design.
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
   })();
 </script>
+
 <div class="get-scarce">
       <p>feeds:   <a href="https://twitter.com/scarcecapital">Twitter</a> | <a href="../index.xml">RSS</a> | <a href="http://eepurl.com/xZDev">Email</a>
       </p>
 </div>
+
+
     <p>
       Top Posts:
       
