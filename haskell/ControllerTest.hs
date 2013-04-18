@@ -1,9 +1,9 @@
 module ControllerTest 
 ( importDotFile
- importDot
- printGraph
- nodeList
- edgeList
+, importDot
+, printGraph
+, nodeList
+, edgeList
 ) where
 
 import Data.GraphViz
