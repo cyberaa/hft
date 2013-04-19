@@ -1,3 +1,4 @@
+
 digraph G {
         node [label="\N"];
         subgraph cluster_market_data {

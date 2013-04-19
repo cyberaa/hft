@@ -1,9 +1,8 @@
+
 -- Example
 --
--- $ ghc --make controller.hs
--- $ ./controller
-module Controller where
-
+-- $ ghc --make Controller.hs
+-- $ ./Controller
 import ControllerTest
 import System.Environment
 import Data.Maybe

@@ -1,4 +1,3 @@
-module Background where
 
 import Control.Monad
 import Control.Concurrent
@@ -28,14 +27,13 @@ spawnWorkers i | i <= 0 = error "Need positive number of workers"
     return (writeTChan workChan . Just,stopCommand)
 
 printJob :: Int -> IO ()
-printJob i = do
-    threadDelay (i*1000)
-    id <- myThreadId
-    print ("printJob took "++show i++" ms in thread "++show id)
+printJob i = do threadDelay (i*1000)
+                id <- myThreadId
+                print ("printJob took "++show i++" ms in thread "++show id)
 
 main :: IO ()
 main = do
-    (submit,stop) <- spawnWorkers 10
-    mapM_ (atomically . submit . printJob) (take 40 (cycle [100,200,300,400]))
-    atomically $ submit (error "Boom")
-    stop
+  (submit,stop) <- spawnWorkers 10
+  mapM_ (atomically . submit . printJob) (take 40 (cycle [100,200,300,400]))
+  atomically $ submit (error "Boom")
+  stop

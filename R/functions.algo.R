@@ -1,3 +1,4 @@
+
 weighted.curve = function(maxn,slope,weight,delay) {
   c = rep(0,maxn)
   for (x1 in 1:length(slope)) {

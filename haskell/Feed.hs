@@ -1,8 +1,3 @@
--- Example: 
---
--- ghc --make Feed.hs threaded
--- ./Feed data.out
-module Feed where
 
 import Control.Concurrent
 import Network

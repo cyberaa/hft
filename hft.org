@@ -21,7 +21,7 @@
 #+PROPERTY: session *R*
 #+LATEX: t
 #+FEEDS: hft
-'#+PROPERTY: comments link
+#+PROPERTY: comments link
 
 HFT project pages
 

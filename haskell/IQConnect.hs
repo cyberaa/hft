@@ -1,4 +1,3 @@
-module IQConnect where
 
 import Control.Concurrent
 import Network
