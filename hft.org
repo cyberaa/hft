@@ -21,6 +21,7 @@
 #+PROPERTY: session *R*
 #+LATEX: t
 #+FEEDS: hft
+'#+PROPERTY: comments link
 
 HFT project pages
 
@@ -638,7 +639,7 @@ no automation or control yet
 
 To compile and run:
 
-#+begin_src sh :results output
+#+begin_src sh :results output :tangle no
 cd haskell
 ghc --make feed.hs threaded
 ./feed data.out
@@ -764,7 +765,6 @@ In development: feed control and management
 - [ ] error reporting
   - [ ] dodgy trades and quotes
   - [ ] specials
-
 
 #+begin_src haskell
 import Control.Concurrent
@@ -1746,15 +1746,6 @@ colnames(m[])
 #+results:
 
 
-
-
-
-
-
-
-
-
-
 ** stream -> price vector
 *** event codes
 
@@ -2495,7 +2486,6 @@ delay is delaying the curve by x time units
 so slope=100, delay = 0 is yesterday
 slope = 0, delay = 0 is a simple ma
 
-
 #+begin_src R :results silent
   weighted.curve = function(maxn,slope,weight,delay) {
     c = rep(0,maxn)
@@ -2860,7 +2850,6 @@ instead of ret being used we could:
 :END:
 
 ***** startup
-
 #+begin_src R
   momentum.startup = function() {
     rm(list = ls())
