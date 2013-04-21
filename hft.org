@@ -31,6 +31,126 @@ HFT project pages
   - feed control
 - integrate disruptor
 
+* README.md
+:PROPERTIES:
+:tangle:   README.md
+:END:
+
+#+begin_src markdown
+<img src="http://scarcecapital.com/assets/hft-blue.png" width="100px">
+
+[Blog](http://scarcecapital.com/hft)
+
+hft is a small project with a big ambition. We aim to build the worlds best
+algorithmic trading platform using the best off-the-shelf open source
+technology stack to be found.
+
+hft is created and maintained by [Tony Day](http://scarcecapital.com).
+
+## Quick start
+
+There is no quick start for hft.  The easiest way to get up to speed is to read the project [blog](http://scarcecapital.com/hft).  If you're interested in contributing to development or find a logic bug, then fork me with:
+
+```
+$ git clone https://github.com/tonyday567/hft.git
+```
+  
+  
+
+## Technology stack ##
+
+The world of high frequency trading is a broad church of opinion, technology, ideas and motivations.  hft is being developed using many different tools:
+
+### [emacs](http://www.gnu.org/software/emacs/), [org-mode](http://orgmode.org) and [literate programming](http://en.wikipedia.org/wiki/Literate_programming)###
+
+[hft.org](https://github.com/tonyday567/hft/blob/master/hft.org) is the nerve
+center of active development and contains just about all the important code, research notes
+and design tools being used.
+
+The project makes heavy use of [babel](http://orgmode.org/worg/org-contrib/babel/) to pick and mix between coding environments and languages, whilst still remaining [literate](http://www.haskell.org/haskellwiki/Literate_programming):
+
+>The main idea is to regard a program as a communication to human beings rather than as a set of instructions to a computer. ~ Knuth
+
+Similarly, a project such as hft is as much about communication between human beings as it is about maintenance of source code.
+
+### [R](http://www.r-project.org) ###
+
+R is a strongly functional but imperative language being used for rapid
+development and research of hft and algo ideas as they arise. Most everything
+that you can think of (databases, broker interfaces, statistical analysis,
+visualization) has an R package ready to get you up and going in 5 minutes.
+
+### [haskell](http://www.haskell.org/haskellwiki/Haskell) ###
+
+R can be many things but what it is least set up for is development of
+asyncronous code. To fill this gap, the project is using haskell to frame the
+system as and when it develops.
+
+### [Interactive Brokers](http://www.interactivebrokers.com/en/main.php) ###
+
+Eventually, hft will be broker independent but during the development phase IB
+is the test case. Interactive has the most mature API that works out of the
+box and a demo account so that hft can come pre-plumbed so that (eventually)
+the project can also run out of the box.
+
+Interactive Brokers consolidates tick data into 0.3 second time slices so it
+isn't appropriate for low-latency work.
+
+### [iqfeed](http://www.iqfeed.net)  ###
+
+Just because it's open-source doesn't mean that it's cost free. iqfeed has
+been chosen as an initial data feed to base project R&D efforts on. iqfeed
+costs dollars but the software can be downloaded for free and a demo version
+allows live data to flow with a lag.
+
+A useful way to support the hft project is to let DTN know if you decide to
+purshase iqfeed due to the project.
+
+## Bug tracker
+
+Have a bug or a feature request? [Please open a new issue](https://github.com/tonyday567/hft/issues). 
+
+## Community
+
+hft is sponsored by [Scarce Capital](http://scarcecapital.com) as an adjunct to client advisory services.
+
+Follow [@scarcecapital on Twitter](http://twitter.com/scarcecapital).
+
+Read, subscribe (and contribute!) to the [The Official hft Blog](http://scarcecapital.com/hft).
+
+The project is partially due to active discussions on the [Open Source HFT Linkedin group](http://www.linkedin.com/groups?home=&gid=4405119&trk=anet_ug_hm)
+
+## Contributing
+
+Please submit all pull requests against the master branch.
+
+Thanks!
+
+## Authors
+
+**Tony Day**
+
++ [http://twitter.com/tonyday567](http://twitter.com/tonyday567)
++ [http://github.com/tonyday567](http://github.com/tonyday567)
+
+
+## Copyright and license
+
+Copyright 2013 Scarce Capital.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this work except in compliance with the License.
+You may obtain a copy of the License in the LICENSE file, or at:
+
+  [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#+end_src
+
 * hft project design
 
 The solution space for a highish-frequency, automated, algorithmic trading
@@ -628,6 +748,7 @@ R sucks at asynchronous programming.
 
 
 ** TODO haskell interfacing
+SCHEDULED: <2013-04-21 Sun>
 *** feed
 :PROPERTIES:
 :tangle:   haskell/feed.hs
@@ -738,6 +859,7 @@ main = do
 #+end_src
 
 *** NEXT connect
+SCHEDULED: <2013-05-04 Sat>
 :LOGBOOK:
 CLOCK: [2013-03-24 Sun 17:15]--[2013-03-26 Tue 11:26] => 42:11
 :END:
@@ -1926,7 +2048,7 @@ http://www.bnosac.be/index.php/blog/26-massive-online-data-stream-mining-with-r
 
 
 
-* TODO algo
+* algo
 
 There's a few hypotheses guilding the evolution of the algorithm design:
 - whatever the complexity of an algorithm, the outcome can usually be
@@ -2082,9 +2204,6 @@ the previous example:
     geom_line()
 #+end_src
 
-#+results:
-[[file:img/rweights.png]]
-
 
 *** momentum signals
 
@@ -2204,6 +2323,10 @@ incorporate mean reversion potentials naturally with momentum forces.
 Using this generalist approach to calculating historical statistics is a core
 of the proposed system design.
 
+** NEXT signal prediction
+SCHEDULED: <2013-04-20 Sat>
+** NEXT speed testing
+SCHEDULED: <2013-04-20 Sat>
 ** algo soup
 
 A major part of this project is to invent a generic algorithm that
@@ -2772,7 +2895,7 @@ proceed as per the normal case.
 
 As long as everything is linear the optimization should stay convex.
 
-*** TODO distributional approach
+*** distributional approach
 
 Let's say we have an estimate of future returns based on historical returns as follows:
 
@@ -3141,9 +3264,12 @@ Ways to perform forecasting
 
 
 * event stream engineering
-** disruptor
+** NEXT disruptor
+SCHEDULED: <2013-04-20 Sat>
+- [ ] download latest repo
+- [ ] grok purposes and design
 
-The disrupture is a quality open-source project with a committment to low-latency.
+The disruptor is a quality open-source project with a committment to low-latency.
 
 [[https://github.com/odeheurles/Disruptor-net][disruptor project]]
 [[http://disruptor.googlecode.com/files/Disruptor-1.0.pdf][disruptor docs]]
@@ -3159,7 +3285,6 @@ http://msgpack.org/
 [[https://code.google.com/p/quickfast/][FAST]] 
 [[http://activequant.org/svn/aq2o/trunk/base/src/main/proto/messages.proto][ActiveQuant Google Protocol Buffer example]]
 
-
 http://www.aurorasolutions.org/over-6-million-transactions-per-second-in-a-real-time-system-an-out-of-the-box-approach/
 
 http://programmers.stackexchange.com/questions/121592/what-to-look-for-in-selecting-a-language-for-algorithmic-high-frequency-trading
@@ -3169,8 +3294,6 @@ http://stackoverflow.com/questions/731233/activemq-or-rabbitmq-or-zeromq-or
 http://wiki.msgpack.org/pages/viewpage.action?pageId=1081387
 
 http://kenai.com/downloads/javafx-sam/EventProcessinginAction.pdf
-
-
 
 *** esper
 
@@ -3187,87 +3310,7 @@ http://community.haskell.org/~simonmar/par-tutorial.pdf
 * trader
 ** TODO connect with IB
 
-* references
-** articles
-
-http://www.aurorasolutions.org/over-6-million-transactions-per-second-in-a-real-time-system-an-out-of-the-box-approach/
-
-http://programmers.stackexchange.com/questions/121592/what-to-look-for-in-selecting-a-language-for-algorithmic-high-frequency-trading
-
-http://stackoverflow.com/questions/731233/activemq-or-rabbitmq-or-zeromq-or
-
-http://wiki.msgpack.org/pages/viewpage.action?pageId=1081387
-
-http://kenai.com/downloads/javafx-sam/EventProcessinginAction.pdf
-
-** algo
-
-*** sornette
-
-http://arxiv.org/find/all/1/all:+sornette/0/1/0/all/0/1
-
-some specific articles
-
-http://arxiv.org/pdf/cond-mat/0301543.pdf
-http://arxiv.org/pdf/1108.0077.pdf
-http://arxiv.org/ftp/arxiv/papers/1012/1012.4118.pdf
-http://arxiv.org/pdf/1011.2882.pdf
-http://arxiv.org/pdf/1007.2420.pdf
-http://arxiv.org/pdf/0909.1007.pdf
-http://arxiv.org/ftp/arxiv/papers/0812/0812.2449.pdf
-http://arxiv.org/pdf/0909.1007.pdf
-
-
-
-** other system components and projects
-
-[[http://www.activequant.org][ActiveQuant]]
-[[https://github.com/Neverlord/libcppa][libcppa]]
-[[http://esper.codehaus.org][esper]]
-[[http://triceps.sourceforge.net][triceps]]
-[[http://code.google.com/p/cep-trader/][cep-trader]]
-[[http://algo-trader.googlecode.com][algo-trader]]
-[[http://code.google.com/p/tradelink/][tradelink]]
-[[http://artstkmkt.sourceforge.net/][ASM]]
-[[https://github.com/penberg/libtrading][libtrading]]
-[[https://github.com/dakka/fix8][fix]]
-[[http://tradexoft.wordpress.com/][tradexoft]]
-
-https://github.com/andykent/river
-  I like the idea of pushing data through queries (rather than
-  queries through data).
-
-http://www.quickfixengine.org/quickfix/doc/html/about.html
-  major broker API
-
-* clipboard
-** time
-
-http://apple.stackexchange.com/questions/82878/how-to-tell-when-time-has-been-synced-with-ntp-server-in-mac-os-x-lion
-
-
-
-** TODO notes from HN discussions
-
-- [ ] consider switch to python (from R)
-- [ ] bitcoin as a test case?
-
-
-https://github.com/quantopian/zipline
-
-http://prof7bit.github.io/goxtool/
-
-https://github.com/fmstephe/matching_engine
-
-https://github.com/brotchie/ib-zmq
-
-https://github.com/brotchie/r-zerotws
-
-http://hackage.haskell.org/package/HLearn-algebra
-
-
-
-* TODO gh-pages production
+* gh-pages production
 ** blogging instructions
 Anyone who would like to publish bits and bobs is welcome to do so, and
 everyone is encouraged to as well.
@@ -3291,17 +3334,7 @@ If anyone would like more info or to try it all out in a fork, let me know
 and I can help you out with what else you will need (which is pretty much
 some style/css files and html templates).
 
-** NEXT todo list
-
-- [ ] org.org (emacs setup and instructions)
-  - new o-blog
-  - R
-  - haskell
-  - .emacs.d
-
-- [ ] reverse babelling
-
-** local vars
+** o-blog helpers
 #+begin_src emacs-lisp
       (setq o-blog-local-site "~/Sites/hft")
       (setq o-blog-out-dir "gh-pages")
@@ -3310,6 +3343,35 @@ some style/css files and html templates).
 
 #+results:
 : http://127.0.0.1/~tonyday/hft/index.html
+
+- base test case
+  #+begin_src emacs-lisp
+  (setq BLOG (ob-parse-blog-headers))
+  (setq POSTS (ob-parse-entries
+               (org-map-entries 'point-marker
+                                (ob:blog-posts-filter BLOG)
+                                'file-with-archives)))
+(setq STATIC nil)
+	   (setq STATIC (append STATIC
+			   (ob-parse-entries
+			    (org-map-entries 'point-marker
+					     (ob:blog-static-filter BLOG)
+					     'file-with-archives))))
+ 
+  (setq POST (ob-get-post-by-title POSTS "Statistical Forecasting"))
+  (ob:post-id POST)
+  #+end_src
+
+  #+results:
+  : 0
+
+
+  #+begin_src emacs-lisp
+  (ob:path-to-root)
+  (ob:blog-assets-dir BLOG)
+  (ob:post-filepath POST)
+  (ob:blog-url BLOG)
+#+end_src
 
 ** Pages
 *** HFT
@@ -3675,11 +3737,13 @@ a signal.  Dividing by $price_{19}$ (I'm making the maths easier) gives:
 
 \begin{align}
 &(k_{0} \ast \frac{price_{0}}{price_{19}}) + (k_{1} \ast \frac{price_{1}}{price_{19}}) + \cdots + (k_{19} \ast \frac{price_{19}}{price_{19}}) \\
-\Rightarrow &(k_{0} \ast (1 + return_{0} + ... + return_{19}) + \\
-&(k_{1} \ast (1 + return_{1} + ... + return_{19}) + \cdots + (k_{19} \ast 1) \\
+\Rightarrow &k_{0} \ast (1 + return_{0} + ... + return_{19}) + \\
+&k_{1} \ast (1 + return_{1} + ... + return_{19}) + \\
+&\cdots + \\
+&k_{19} \ast (1 + return_{19}) \\
 \Rightarrow&(\sum\limits_{0}^{19}k_{i}) + k_{0} \ast return_{0} + \\
-&(k_{0} +k_{1}) \ast return_{1} + ... \\
-&+ \sum\limits_{0}^{19}k_{i} \ast return_{19}
+&(k_{0} +k_{1}) \ast return_{1} + ... + \\
+&\sum\limits_{0}^{19}k_{i} \ast return_{19}
 \end{align}
 
 The first term (sum of weights) is zero, so for our first price MA example
@@ -3699,13 +3763,11 @@ a code snippet (and with a few practical tweaks) compared to the SMA(20) from
 the previous example:
 
 *R code*
-#+begin_src R :results graphics :file rweights.png :exports both
-  k.weights
+#+begin_src R :results graphics :file assets/rweights.png
   max.n = 20
   days = 10
   k.weights = -(1-(1/days))^(0:(max.n-1))/days # the ema weights
   k.weights[1] = 1 + k.weights[1] # the current price
-  k.weights = k.weights/sum(k.weights) # normalising to sum=1 because we capped the length
   ema.weights = cumsum(k.weights)
   ema.weights = ema.weights/sum(ema.weights) # normalising so sum=1
   sma.weights = seq(0.95,0.00,by=-0.05)/sum(seq(0.95,0.00,by=-0.05))
@@ -3713,13 +3775,15 @@ the previous example:
   require(ggplot2)
   df.long = melt(data.frame(ema.weights,sma.weights,time=0:(max.n-1)),id="time")
   g = ggplot(data=df.long,
-	 aes(x=time, y=value,color=variable)) +
+         aes(x=time, y=value,color=variable)) +
     geom_line()
+  g
 #+end_src
 
 #+results:
 [[file:assets/rweights.png]]
 
+[[file:{lisp}(ob:blog-url BLOG){/lisp}/{lisp}(ob:blog-assets-dir BLOG){/lisp}/rweights.png]]
 
 **** momentum signals
 
@@ -3764,8 +3828,8 @@ scheme/ to calculate volatility in a manner spookily like the EMA
 calculations in return space.
 
 \begin{align}
-vol_{0} = \sqrt(&0.09 * (return_{0} - av)^{2} + \\
-&0.081 * (return_{1} - av)^{2} + ...)
+vol_{0} = \sqrt(&0.1 * (return_{0} - av)^{2} + \\
+&0.09 * (return_{1} - av)^{2} + ...)
 \end{align}
 
 Same as the standard volatility calculation but with a different weighting
@@ -3779,9 +3843,9 @@ the weights to add up to 1). We can thus insert our weighted return formulae
 in the volatility formulae:
 
 \begin{align}
-E(return_{0}) = \sqrt(&0.09 * return_{0} + 0.081 * return_{1} + ...) \\
-E(vol_{0}) = \sqrt(&0.09 * (return_{0} - return estimate)^{2} + \\
-&0.081 * (return_{1} - return estimate)^{2} + ...)
+E(return_{0}) = &0.1 * return_{0} + 0.09 * return_{1} + ... \\
+E(vol_{0}) = \sqrt(&0.1 * (return_{0} - return estimate)^{2} + \\
+&0.09 * (return_{1} - return estimate)^{2} + ...)
 \end{align}
 (the weighting schemes don't have to be the same)
 
@@ -3820,16 +3884,15 @@ leads to spurious predictions.
 On the other hand, it opens up a richer set of curves to test than the
 standard set used in forecasting.
 
-#+begin_src R :results graphics :file mweights.png :exports both
+#+begin_src R :results silent
   mom.weights = rep(0.05,20)
   df.long = melt(data.frame(ema.weights,sma.weights,mom.weights,time=0:(max.n-1)),id="time")
   ggplot(data=df.long,
-	   aes(x=time, y=value,color=variable)) +
+           aes(x=time, y=value,color=variable)) +
       geom_line()
 #+end_src
 
-#+results:
-[[file:assets/mweights.png]]
+[[file:{lisp}(ob:blog-url BLOG){/lisp}/{lisp}(ob:blog-assets-dir BLOG){/lisp}/mweights.png]]
 
 #+html: <br>
 
@@ -4444,3 +4507,85 @@ purshase iqfeed due to the project.</p>
 <li><a href="http://github.com/tonyday567">http://github.com/tonyday567</a></li>
 </ul>
 #+end_html
+* references
+** articles
+
+http://www.aurorasolutions.org/over-6-million-transactions-per-second-in-a-real-time-system-an-out-of-the-box-approach/
+
+http://programmers.stackexchange.com/questions/121592/what-to-look-for-in-selecting-a-language-for-algorithmic-high-frequency-trading
+
+http://stackoverflow.com/questions/731233/activemq-or-rabbitmq-or-zeromq-or
+
+http://wiki.msgpack.org/pages/viewpage.action?pageId=1081387
+
+http://kenai.com/downloads/javafx-sam/EventProcessinginAction.pdf
+
+** algo
+
+*** sornette
+
+http://arxiv.org/find/all/1/all:+sornette/0/1/0/all/0/1
+
+some specific articles
+
+http://arxiv.org/pdf/cond-mat/0301543.pdf
+http://arxiv.org/pdf/1108.0077.pdf
+http://arxiv.org/ftp/arxiv/papers/1012/1012.4118.pdf
+http://arxiv.org/pdf/1011.2882.pdf
+http://arxiv.org/pdf/1007.2420.pdf
+http://arxiv.org/pdf/0909.1007.pdf
+http://arxiv.org/ftp/arxiv/papers/0812/0812.2449.pdf
+http://arxiv.org/pdf/0909.1007.pdf
+
+
+
+** other system components and projects
+
+[[http://www.activequant.org][ActiveQuant]]
+[[https://github.com/Neverlord/libcppa][libcppa]]
+[[http://esper.codehaus.org][esper]]
+[[http://triceps.sourceforge.net][triceps]]
+[[http://code.google.com/p/cep-trader/][cep-trader]]
+[[http://algo-trader.googlecode.com][algo-trader]]
+[[http://code.google.com/p/tradelink/][tradelink]]
+[[http://artstkmkt.sourceforge.net/][ASM]]
+[[https://github.com/penberg/libtrading][libtrading]]
+[[https://github.com/dakka/fix8][fix]]
+[[http://tradexoft.wordpress.com/][tradexoft]]
+
+https://github.com/andykent/river
+  I like the idea of pushing data through queries (rather than
+  queries through data).
+
+http://www.quickfixengine.org/quickfix/doc/html/about.html
+  major broker API
+
+* clipboard
+** time
+
+http://apple.stackexchange.com/questions/82878/how-to-tell-when-time-has-been-synced-with-ntp-server-in-mac-os-x-lion
+
+
+
+** TODO notes from HN discussions
+https://news.ycombinator.com/item?id=5550930
+
+- [ ] consider switch to python (from R)
+- [ ] bitcoin as a test case?
+
+https://github.com/quantopian/zipline
+
+http://prof7bit.github.io/goxtool/
+
+https://github.com/fmstephe/matching_engine
+
+https://github.com/brotchie/ib-zmq
+
+https://github.com/brotchie/r-zerotws
+
+http://hackage.haskell.org/package/HLearn-algebra
+
+
+
+** bitcoin
+http://bitcoin.clarkmoody.com/

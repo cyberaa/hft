@@ -1,3 +1,4 @@
+-- [[file:~/projects/hft/hft.org::*Controller.hs][Controller\.hs:1]]
 
 -- Example
 --
@@ -17,3 +18,5 @@ main = do
      putStrLn "connections:"
      putStrLn $ show $ edgeList dotGraph
      return ()
+
+-- Controller\.hs:1 ends here

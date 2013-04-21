@@ -1,3 +1,4 @@
+-- [[file:~/projects/hft/hft.org::*ControllerTest.hs][ControllerTest\.hs:1]]
 
 module ControllerTest 
 ( importDotFile
@@ -31,3 +32,5 @@ nodeList g = map nodeID $ graphNodes g
 
 edgeList :: G.DotGraph String -> [(String,String)]
 edgeList g =  map (\x -> (fromNode x, toNode x)) $ graphEdges g
+
+-- ControllerTest\.hs:1 ends here

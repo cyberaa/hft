@@ -1,3 +1,4 @@
+-- [[file:~/projects/hft/hft.org::*feed][feed:1]]
 
 import Control.Concurrent
 import Network
@@ -88,3 +89,5 @@ main = do
   putStr "\ndelay finished\n"
   conFileTime "localhost" "5009" file
   return(ExitSuccess)
+
+-- feed:1 ends here

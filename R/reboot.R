@@ -1,3 +1,4 @@
+## [[file:~/projects/hft/hft.org::*reboot][reboot:1]]
 
 rm(list = ls())
 require("mmap")
@@ -30,3 +31,5 @@ stream$asktime = mmap(paste(db.path,fields[16],".data",sep=""), mode=double())
 stream$event = mmap(paste(db.path,fields[17],".data",sep=""), mode=char(12))
 stream$id = mmap(paste(db.path,fields[18],".data",sep=""), mode=integer())
 #save(list = ls(all=TRUE), file = paste(db.path,".Rsnap"))
+
+## reboot:1 ends here

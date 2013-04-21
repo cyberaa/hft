@@ -1,3 +1,4 @@
+-- [[file:~/projects/hft/hft.org::*threading%20example][threading\ example:1]]
 
 import Control.Monad
 import Control.Concurrent
@@ -37,3 +38,5 @@ main = do
   mapM_ (atomically . submit . printJob) (take 40 (cycle [100,200,300,400]))
   atomically $ submit (error "Boom")
   stop
+
+-- threading\ example:1 ends here
