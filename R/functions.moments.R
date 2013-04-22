@@ -1,3 +1,5 @@
+## [[file:~/projects/hft/hft.org::*startup][startup:1]]
+
 momentum.startup = function() {
   rm(list = ls())
   p=NULL
@@ -10,6 +12,10 @@ momentum.startup = function() {
   require(ggplot2)
   options(warn=-1)
 }
+
+## startup:1 ends here
+
+## [[file:~/projects/hft/hft.org::*return.to.stats.raw][return\.to\.stats\.raw:1]]
 
 return.to.stats.raw = function(r) {
   r=na.omit(r)
@@ -26,6 +32,10 @@ return.to.stats.raw = function(r) {
     skewness=skewness,
     kurtosis=kurtosis)
 }
+
+## return\.to\.stats\.raw:1 ends here
+
+## [[file:~/projects/hft/hft.org::*return.to.stats][return\.to\.stats:1]]
 
 return.to.stats = function(xts.r) {
   r=na.omit(xts.r)
@@ -46,6 +56,10 @@ return.to.stats = function(xts.r) {
     kurtosis=kurtosis)
 }
 
+## return\.to\.stats:1 ends here
+
+## [[file:~/projects/hft/hft.org::*weighted.historicals][weighted\.historicals:1]]
+
 weighted.historicals = function(rets, hist.weights) {
   hmean=as.double(filter(rets,hist.weights$mean,sides=1))
   hmean[1:length(hist.weights$mean)]=cumsum(rets[1:length(hist.weights$mean)]*t(as.matrix(hist.weights$mean)))
@@ -55,12 +69,20 @@ weighted.historicals = function(rets, hist.weights) {
   weighted.historicals=data.frame(hmean=hmean, hvol=hvol)
 }
 
+## weighted\.historicals:1 ends here
+
+## [[file:~/projects/hft/hft.org::*quantile.ts][quantile\.ts:1]]
+
 quantile.ts = function(ts,q) {
   n=length(ts)
   nq=length(q)
   quantile.ts=
   apply(matrix(ts,n,nq)>t(matrix(q,nq,n)),1,sum)
 }
+
+## quantile\.ts:1 ends here
+
+## [[file:~/projects/hft/hft.org::*bucket.stats.posandr][bucket\.stats\.posandr:1]]
 
 bucket.stats.posandr = function(pos, r, qts1, qts2, num.quantiles, delay.signal) {
   br=matrix(0,num.quantiles,num.quantiles);bcount=br;bpos=br;c=br;babsr=br;bsqr=br;bstd=br;
@@ -87,6 +109,10 @@ bucket.stats.posandr = function(pos, r, qts1, qts2, num.quantiles, delay.signal)
     bstd=bstd)
 }
 
+## bucket\.stats\.posandr:1 ends here
+
+## [[file:~/projects/hft/hft.org::*bucket.stats][bucket\.stats:1]]
+
 bucket.stats = function(r, qts1, qts2, num.quantiles, delay.signal) {
   br=matrix(0,num.quantiles,num.quantiles);bcount=br;c=br;babsr=br;bsqr=br;bstd=br;
   for (i in 1:num.quantiles){
@@ -110,6 +136,10 @@ bucket.stats = function(r, qts1, qts2, num.quantiles, delay.signal) {
     bstd=bstd)
 }
 
+## bucket\.stats:1 ends here
+
+## [[file:~/projects/hft/hft.org::*print.qstat][print\.qstat:1]]
+
 print.qstat = function(stat,count) {
   row.count = apply(count,1,sum)
   col.count = apply(count,2,sum)
@@ -122,6 +152,10 @@ print.qstat = function(stat,count) {
   rownames(out)=c("low", "low-mid", "mid", "high-mid", "high", "all")
   print.qstat=out }
 
+## print\.qstat:1 ends here
+
+## [[file:~/projects/hft/hft.org::*print.qstat.count][print\.qstat\.count:1]]
+
 print.qstat.count = function(count) {
   row.stat = apply(count,1,sum)
   col.stat = apply(count,2,sum)
@@ -130,3 +164,5 @@ print.qstat.count = function(count) {
   colnames(out)=c("low", "low-mid", "mid", "high-mid", "high", "all")
   rownames(out)=c("low", "low-mid", "mid", "high-mid", "high", "all")
   print.qstat=out }
+
+## print\.qstat\.count:1 ends here

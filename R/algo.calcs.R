@@ -1,3 +1,5 @@
+## [[file:~/projects/hft/hft.org::*moment%20calcs][moment\ calcs:1]]
+
 require(moments)
 source("R/functions.moments.R")
 num.quantiles=5
@@ -20,6 +22,10 @@ g = g + geom_point(aes(group=1))
 g
 str(dfg)
 
+## moment\ calcs:1 ends here
+
+## [[file:~/projects/hft/hft.org::*signal%20calc][signal\ calc:1]]
+
 delay.signal=1
 sig=c(as.logical(rep(0,delay.signal)),
   dfg$hmean[1:(dim(dfg)[1]-delay.signal)])
@@ -28,10 +34,18 @@ dfg$qts.sig=quantile.ts(sig,qs.sig)
 dfg$pos=as.numeric(dfg$qts.sig>27)
 summary(dfg$pos)
 
+## signal\ calc:1 ends here
+
+## [[file:~/projects/hft/hft.org::*stats][stats:1]]
+
 dfn = subset(dfg, select = -c(times) )  
 stats = return.to.stats.raw(dfn)
 rownames(stats) = colnames(dfn)
 stats
+
+## stats:1 ends here
+
+## [[file:~/projects/hft/hft.org::*bucket%20stats][bucket\ stats:1]]
 
 b = bucket.stats(
   dfg$ret,
@@ -39,6 +53,10 @@ b = bucket.stats(
   dfg$qts.hvol,
   num.quantiles,
   delay.signal)
+
+## bucket\ stats:1 ends here
+
+## [[file:~/projects/hft/hft.org::*std%20chart][std\ chart:1]]
 
 require(reshape)
 require(scales)
@@ -58,3 +76,5 @@ p <- ggplot(data.m, aes(return.level, volatility.level)) + geom_tile(aes(fill = 
 p + scale_fill_gradient(low = "white", high = "steelblue", space="Lab")
 p
 ggsave("pricevolheat.svg")
+
+## std\ chart:1 ends here

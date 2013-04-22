@@ -1,0 +1,13 @@
+#+TITLE: emacs.org
+#+OPTIONS: toc:2 num:nil ^:nil
+
+* TODO emacs setup instructions
+SCHEDULED: <2013-04-25 Thu>
+
+** dot files
+** emacs as an IDE
+*** haskell
+*** R
+*** python
+** org-mode setup
+** o-blog notes

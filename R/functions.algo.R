@@ -1,3 +1,5 @@
+## [[file:~/projects/hft/hft.org::*weighting%20function][weighting\ function:1]]
+
 weighted.curve = function(maxn,slope,weight,delay) {
   c = rep(0,maxn)
   for (x1 in 1:length(slope)) {
@@ -13,3 +15,5 @@ weighted.curve = function(maxn,slope,weight,delay) {
   }
   weighted.curve = c / sum(c)
 }
+
+## weighting\ function:1 ends here

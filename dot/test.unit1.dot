@@ -1,3 +1,5 @@
+// [[file:~/projects/hft/hft.org::*test.unit1.dot][test\.unit1\.dot:1]]
+
 digraph G {
         node [label="\N"];
         subgraph cluster_market_data {
@@ -44,3 +46,5 @@ digraph G {
         multithreadalgo -> controller;
         observer -> database;
 }
+
+// test\.unit1\.dot:1 ends here

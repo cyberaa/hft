@@ -1,8 +1,14 @@
+## [[file:~/projects/hft/hft.org::*libraries][libraries:1]]
+
 rm(list = ls())
 require("mmap")
 require("rindex")
 require("plyr")
 require(stringr)
+
+## libraries:1 ends here
+
+## [[file:~/projects/hft/hft.org::*variables][variables:1]]
 
 # stream with field header
 raw.stream = "streamqh"
@@ -16,6 +22,10 @@ file.csv.data = paste("data/",raw.stream,".txt",sep="")
 event.size = 12
 # maximum character length of the id field
 id.size = 12
+
+## variables:1 ends here
+
+## [[file:~/projects/hft/hft.org::*slurp%20in%20raw%20data%20(mmap)][slurp\ in\ raw\ data\ \(mmap\):1]]
 
 my.mmap.csv = function(file,
   file.mmap = NA,
@@ -68,6 +78,10 @@ my.mmap.csv = function(file,
     tmpstruct
 }
 
+## slurp\ in\ raw\ data\ \(mmap\):1 ends here
+
+## [[file:~/projects/hft/hft.org::*slurp%20in%20raw%20data%20(mmap)][slurp\ in\ raw\ data\ \(mmap\):1]]
+
 dir.create(db.path)
 
 colclasses = as.vector(c("character", "character", "character", "numeric", "integer", "character",
@@ -78,6 +92,10 @@ m = my.mmap.csv(file=file.csv.data, file.mmap=main.filename, header=TRUE, actual
 head(m)
 st = m$storage.mode
 ticker.length =  nbytes(st$Symbol) - 1
+
+## slurp\ in\ raw\ data\ \(mmap\):1 ends here
+
+## [[file:~/projects/hft/hft.org::*create%20mmaps%20for%20each%20column][create\ mmaps\ for\ each\ column:1]]
 
 stream = NULL
 stream$stamp = as.mmap(as.double(strptime(m[]$Stamp, "%H:%M:%OS",tz="GMT")),file=paste(db.path,"stamp.data",sep=""), mode=double())
@@ -99,11 +117,19 @@ stream$asktime = as.mmap(as.double(strptime(as.character(m[]$Ask.TimeMS), "%H:%M
 stream$event = as.mmap( str_pad(as.character(m[]$Message.Contents), event.size, side = "right", pad = " "),file=paste(db.path,"event.data",sep=""), mode=char(event.size))
 stream$id = as.mmap(m[]$TickID,file=paste(db.path,"id.data",sep=""), mode=integer())
 
+## create\ mmaps\ for\ each\ column:1 ends here
+
+## [[file:~/projects/hft/hft.org::*create%20indices%20using%20rindex][create\ indices\ using\ rindex:1]]
+
 require(rindex)
 ind.stamp = index(as.character(stream$stamp[]))
 ind.symbol = index(stream$symbol[])
 ind.event = index(stream$event[])
 ind.id = index(str_pad(as.character(stream$id[]), id.size, side = "left", pad = " "))
+
+## create\ indices\ using\ rindex:1 ends here
+
+## [[file:~/projects/hft/hft.org::*save%20indexes][save\ indexes:1]]
 
 fields = names(stream)
 save(list = c("ind.stamp",
@@ -118,3 +144,5 @@ save(list = c("ind.stamp",
        "id.size"
        ),
      file = paste(db.path,".Rdbinfo",sep=""))
+
+## save\ indexes:1 ends here

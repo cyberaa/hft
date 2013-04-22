@@ -1,4 +1,4 @@
-module IQConnect where
+-- [[file:~/projects/hft/hft.org::*connect][connect:1]]
 
 import Control.Concurrent
 import Network
@@ -110,3 +110,5 @@ main = do
   -- putStr "\ndelay finished\n"
   conFileTime "localhost" "5009" file
   return(ExitSuccess)
+
+-- connect:1 ends here

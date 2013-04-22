@@ -1,9 +1,9 @@
+-- [[file:~/projects/hft/hft.org::*Controller.hs][Controller\.hs:1]]
+
 -- Example
 --
--- $ ghc --make controller.hs
--- $ ./controller
-module Controller where
-
+-- $ ghc --make Controller.hs
+-- $ ./Controller
 import ControllerTest
 import System.Environment
 import Data.Maybe
@@ -18,3 +18,5 @@ main = do
      putStrLn "connections:"
      putStrLn $ show $ edgeList dotGraph
      return ()
+
+-- Controller\.hs:1 ends here

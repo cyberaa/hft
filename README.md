@@ -1,3 +1,5 @@
+<!-- [[file:~/projects/hft/hft.org::*README.md][README\.md:1]] -->
+
 <img src="http://scarcecapital.com/assets/hft-blue.png" width="100px">
 
 [Blog](http://scarcecapital.com/hft)
@@ -110,3 +112,5 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+<!-- README\.md:1 ends here -->
